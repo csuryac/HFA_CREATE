@@ -1,0 +1,109 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<pd:ProcessDefinition xmlns:pd="http://xmlns.tibco.com/bw/process/2003" xmlns:ns2="http://schemas.dbs.com/icc/ems" xmlns:ns1="http://www.tibco.com/namespaces/tnt/plugins/file" xmlns:xsl="http://www.w3.org/1999/XSL/Transform" xmlns:ns4="http://www.tibco.com/namespaces/tnt/plugins/jms" xmlns:ns="http://www.dbs.com/iwf/bpm/token" xmlns:ns3="http://schemas.dbs.com/icc/CustomerSvc" xmlns:wsdl="http://schemas.xmlsoap.org/wsdl/" xmlns:tib="http://www.tibco.com/bw/xslt/custom-functions" xmlns:pfx4="http://schemas.xmlsoap.org/soap/envelope/" xmlns:pfx3="http://schemas.dbs.com/icc/CardSvc" xmlns:pfx2="http://schemas.dbs.com/icc/BasicSvc" xmlns:ns5="http://www.tibco.com/namespaces/tnt/plugins/file/v2" xmlns:pfx="http://www.dbs.com/iwf/bpm/services/token">
+    <xs:import xmlns:xs="http://www.w3.org/2001/XMLSchema" namespace="http://schemas.dbs.com/icc/BasicSvc" schemaLocation="/SharedResources/Schema/IP/CaseMgmtRqAddOp_v1.1.xsd"/>
+    <xs:import xmlns:xs="http://www.w3.org/2001/XMLSchema" namespace="http://schemas.xmlsoap.org/soap/envelope/" schemaLocation="/SharedResources/Schema/IP/HFASchema.xsd"/>
+    <wsdl:import namespace="http://www.dbs.com/iwf/bpm/services/token" location="/SharedResources/WSDL/Concrete/TokenService.wsdl"/>
+    <pd:name>xUT/TestCaseStartUsingXMLFile.process</pd:name>
+    <pd:startName>Start</pd:startName>
+    <pd:startX>146</pd:startX>
+    <pd:startY>201</pd:startY>
+    <pd:returnBindings/>
+    <pd:endName>End</pd:endName>
+    <pd:endX>1091</pd:endX>
+    <pd:endY>202</pd:endY>
+    <pd:errorSchemas/>
+    <pd:processVariables/>
+    <pd:targetNamespace>http://xmlns.example.com/1458212519303</pd:targetNamespace>
+    <pd:activity name="JMS Queue Requestor">
+        <pd:type>com.tibco.plugin.jms.JMSQueueRequestReplyActivity</pd:type>
+        <pd:resourceType>ae.activities.JMSQueueRequestReplyActivity</pd:resourceType>
+        <pd:x>936</pd:x>
+        <pd:y>220</pd:y>
+        <config>
+            <PermittedMessageType>Text</PermittedMessageType>
+            <SessionAttributes>
+                <transacted>false</transacted>
+                <acknowledgeMode>1</acknowledgeMode>
+                <maxSessions>1</maxSessions>
+                <destination>BPM.ONL.RQ.CEP.BW.HFA</destination>
+            </SessionAttributes>
+            <ConfigurableHeaders>
+                <JMSDeliveryMode>PERSISTENT</JMSDeliveryMode>
+                <JMSExpiration>0</JMSExpiration>
+                <JMSPriority>4</JMSPriority>
+            </ConfigurableHeaders>
+            <ConnectionReference>/SharedResources/Connections/JMS/HFAJMS.sharedjmscon</ConnectionReference>
+        </config>
+        <pd:inputBindings>
+            <ns4:ActivityInput>
+                <replyToQueue>
+                    <xsl:value-of select="'BPM.ONL.RS.CEP.BW.HFA'"/>
+                </replyToQueue>
+                <Body>
+                    <xsl:value-of select="$Read-File/ns1:ReadActivityOutputTextClass/fileContent/textContent"/>
+                </Body>
+            </ns4:ActivityInput>
+        </pd:inputBindings>
+    </pd:activity>
+    <pd:activity name="Read File">
+        <pd:type>com.tibco.plugin.file.FileReadActivity</pd:type>
+        <pd:resourceType>ae.activities.FileReadActivity</pd:resourceType>
+        <pd:x>498</pd:x>
+        <pd:y>205</pd:y>
+        <config>
+            <encoding>text</encoding>
+        </config>
+        <pd:inputBindings>
+            <ns5:ReadActivityInputClass>
+                <fileName>
+                    <xsl:value-of select="'D:\Temp\Alert.xml'"/>
+                </fileName>
+            </ns5:ReadActivityInputClass>
+        </pd:inputBindings>
+    </pd:activity>
+    <pd:activity name="Parse XML">
+        <pd:type>com.tibco.plugin.xml.XMLParseActivity</pd:type>
+        <pd:resourceType>ae.activities.XMLParseActivity</pd:resourceType>
+        <pd:x>751</pd:x>
+        <pd:y>208</pd:y>
+        <config>
+            <inputStyle>text</inputStyle>
+            <xsdVersion>default</xsdVersion>
+            <validateOutput>true</validateOutput>
+            <term ref="pfx2:CaseMgmtRqAdd"/>
+        </config>
+        <pd:inputBindings>
+            <xmlString>
+                <xsl:value-of select="$Read-File/ns1:ReadActivityOutputTextClass/fileContent/textContent"/>
+            </xmlString>
+        </pd:inputBindings>
+    </pd:activity>
+    <pd:transition>
+        <pd:from>Start</pd:from>
+        <pd:to>Read File</pd:to>
+        <pd:lineType>Default</pd:lineType>
+        <pd:lineColor>-16777216</pd:lineColor>
+        <pd:conditionType>always</pd:conditionType>
+    </pd:transition>
+    <pd:transition>
+        <pd:from>JMS Queue Requestor</pd:from>
+        <pd:to>End</pd:to>
+        <pd:lineType>Default</pd:lineType>
+        <pd:lineColor>-16777216</pd:lineColor>
+        <pd:conditionType>always</pd:conditionType>
+    </pd:transition>
+    <pd:transition>
+        <pd:from>Read File</pd:from>
+        <pd:to>Parse XML</pd:to>
+        <pd:lineType>Default</pd:lineType>
+        <pd:lineColor>-16777216</pd:lineColor>
+        <pd:conditionType>always</pd:conditionType>
+    </pd:transition>
+    <pd:transition>
+        <pd:from>Parse XML</pd:from>
+        <pd:to>JMS Queue Requestor</pd:to>
+        <pd:lineType>Default</pd:lineType>
+        <pd:lineColor>-16777216</pd:lineColor>
+        <pd:conditionType>always</pd:conditionType>
+    </pd:transition>
+</pd:ProcessDefinition>

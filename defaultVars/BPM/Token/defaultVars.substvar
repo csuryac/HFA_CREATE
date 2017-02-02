@@ -1,0 +1,29 @@
+<?xml version = "1.0" encoding = "UTF-8"?>
+<repository xmlns:xsi = "http://www.w3.org/2001/XMLSchema-instance" xmlns = "http://www.tibco.com/xmlns/repo/types/2002">
+	<globalVariables>
+		<globalVariable>
+			<name>host</name>
+			<value>10.91.35.169</value>
+			<deploymentSettable>true</deploymentSettable>
+			<serviceSettable>false</serviceSettable>
+			<type>String</type>
+			<modTime>1462262824498</modTime>
+		</globalVariable>
+		<globalVariable>
+			<name>port</name>
+			<value>40002</value>
+			<deploymentSettable>true</deploymentSettable>
+			<serviceSettable>false</serviceSettable>
+			<type>String</type>
+			<modTime>1453977752794</modTime>
+		</globalVariable>
+		<globalVariable>
+			<name>timeout</name>
+			<value>60</value>
+			<deploymentSettable>true</deploymentSettable>
+			<serviceSettable>false</serviceSettable>
+			<type>String</type>
+			<modTime>1454498531438</modTime>
+		</globalVariable>
+	</globalVariables>
+</repository>

@@ -1,0 +1,323 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<pd:ProcessDefinition xmlns:xsl="http://www.w3.org/1999/XSL/Transform" xmlns:pfx="http://www.tibco.com/pe/GenerateErrorActivity/InputSchema" xmlns:pd="http://xmlns.tibco.com/bw/process/2003" xmlns:ns="http://www.tibco.com/pe/DeployedVarsType" xmlns:ns2="http://xmlns.example.com/1429342289226" xmlns:ns1="http://api.brm.n2.tibco.com" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance">
+    <pd:name>HFA/SubProcesses/UpdateInstanceID.process</pd:name>
+    <pd:startName>Start</pd:startName>
+    <pd:startX>105</pd:startX>
+    <pd:startY>99</pd:startY>
+    <pd:returnBindings/>
+    <pd:endName>End</pd:endName>
+    <pd:endX>1263</pd:endX>
+    <pd:endY>105</pd:endY>
+    <pd:errorSchemas/>
+    <pd:processVariables/>
+    <pd:targetNamespace>http://xmlns.example.com/1484117069211</pd:targetNamespace>
+    <pd:activity name="Log">
+        <pd:type>com.tibco.pe.core.CallProcessActivity</pd:type>
+        <pd:resourceType>ae.process.subprocess</pd:resourceType>
+        <pd:x>221</pd:x>
+        <pd:y>99</pd:y>
+        <config>
+            <processName>/HFA/SubProcesses/Log.process</processName>
+        </config>
+        <pd:inputBindings>
+            <Input>
+                <LogLocation>
+                    <xsl:value-of select="&quot;UpdateInstanceIDSTART&quot;"/>
+                </LogLocation>
+            </Input>
+        </pd:inputBindings>
+    </pd:activity>
+    <pd:activity name="GetCases">
+        <pd:type>com.tibco.plugin.jdbc.JDBCQueryActivity</pd:type>
+        <pd:resourceType>ae.activities.JDBCQueryActivity</pd:resourceType>
+        <pd:x>328</pd:x>
+        <pd:y>101</pd:y>
+        <config>
+            <timeout>%%Connections/JDBC/QueryTimeout%%</timeout>
+            <commit>false</commit>
+            <maxRows>%%Connections/JDBC/MaxRow%%</maxRows>
+            <emptyStrAsNil>false</emptyStrAsNil>
+            <jdbcSharedConfig>/SharedResources/Connections/JDBC/IWFDB.sharedjdbc</jdbcSharedConfig>
+            <statement>SELECT distinct CASE_NUM, USER_ID FROM HFA_CASE_DATA WHERE INSTANCE_ID IS NULL and CASE_CREATE_DT &gt; sysdate-2</statement>
+            <oraObjects/>
+            <oraTables/>
+            <QueryOutputCachedSchemaColumns>CASE_NUM</QueryOutputCachedSchemaColumns>
+            <QueryOutputCachedSchemaDataTypes>12</QueryOutputCachedSchemaDataTypes>
+            <QueryOutputCachedSchemaDataTypesName>VARCHAR2</QueryOutputCachedSchemaDataTypesName>
+            <QueryOutputCachedSchemaStatus>OptionalElement</QueryOutputCachedSchemaStatus>
+            <QueryOutputCachedSchemaColumns>USER_ID</QueryOutputCachedSchemaColumns>
+            <QueryOutputCachedSchemaDataTypes>12</QueryOutputCachedSchemaDataTypes>
+            <QueryOutputCachedSchemaDataTypesName>VARCHAR2</QueryOutputCachedSchemaDataTypesName>
+            <QueryOutputCachedSchemaStatus>OptionalElement</QueryOutputCachedSchemaStatus>
+        </config>
+        <pd:inputBindings>
+            <jdbcQueryActivityInput/>
+        </pd:inputBindings>
+    </pd:activity>
+    <pd:group name="Group">
+        <pd:type>com.tibco.pe.core.LoopGroup</pd:type>
+        <pd:resourceType>ae.process.group</pd:resourceType>
+        <pd:x>429</pd:x>
+        <pd:y>26</pd:y>
+        <pd:width>610</pd:width>
+        <pd:height>140</pd:height>
+        <pd:collapsedWidth>57</pd:collapsedWidth>
+        <pd:collapsedHeight>70</pd:collapsedHeight>
+        <pd:groupVariables/>
+        <pd:joinToggle>inherit</pd:joinToggle>
+        <config>
+            <pd:groupType>inputLoop</pd:groupType>
+            <pd:serializable>false</pd:serializable>
+            <pd:over>$GetCases/resultSet/Record</pd:over>
+            <pd:iterationElementSlot>el</pd:iterationElementSlot>
+            <pd:indexSlot>i</pd:indexSlot>
+            <pd:activityOutputName/>
+            <pd:accumulateOutput>false</pd:accumulateOutput>
+        </config>
+        <pd:inputBindings/>
+        <pd:expanded>true</pd:expanded>
+        <pd:transition>
+            <pd:from>start</pd:from>
+            <pd:to>bpmFindResources</pd:to>
+            <pd:lineType>Default</pd:lineType>
+            <pd:lineColor>-16777216</pd:lineColor>
+            <pd:conditionType>always</pd:conditionType>
+        </pd:transition>
+        <pd:transition>
+            <pd:from>UpdateInstanceID</pd:from>
+            <pd:to>end</pd:to>
+            <pd:lineType>Default</pd:lineType>
+            <pd:lineColor>-16777216</pd:lineColor>
+            <pd:conditionType>always</pd:conditionType>
+        </pd:transition>
+        <pd:transition>
+            <pd:from>bpmFindResources</pd:from>
+            <pd:to>Sleep</pd:to>
+            <pd:lineType>Default</pd:lineType>
+            <pd:lineColor>-16777216</pd:lineColor>
+            <pd:conditionType>always</pd:conditionType>
+        </pd:transition>
+        <pd:transition>
+            <pd:from>bpmGetWorkListItems</pd:from>
+            <pd:to>UpdateInstanceID</pd:to>
+            <pd:lineType>Default</pd:lineType>
+            <pd:lineColor>-16777216</pd:lineColor>
+            <pd:conditionType>always</pd:conditionType>
+        </pd:transition>
+        <pd:transition>
+            <pd:from>Sleep</pd:from>
+            <pd:to>bpmGetWorkListItems</pd:to>
+            <pd:lineType>Default</pd:lineType>
+            <pd:lineColor>-16777216</pd:lineColor>
+            <pd:conditionType>always</pd:conditionType>
+        </pd:transition>
+        <pd:activity name="bpmFindResources">
+            <pd:type>com.tibco.pe.core.CallProcessActivity</pd:type>
+            <pd:resourceType>ae.process.subprocess</pd:resourceType>
+            <pd:x>513</pd:x>
+            <pd:y>104</pd:y>
+            <config>
+                <processName>/HFA/BPM/bpmFindResources.process</processName>
+            </config>
+            <pd:inputBindings>
+                <bpmUserId>
+                    <bpmUserId>
+                        <xsl:value-of select="$el/Record/USER_ID"/>
+                    </bpmUserId>
+                </bpmUserId>
+            </pd:inputBindings>
+        </pd:activity>
+        <pd:activity name="bpmGetWorkListItems">
+            <pd:type>com.tibco.pe.core.CallProcessActivity</pd:type>
+            <pd:resourceType>ae.process.subprocess</pd:resourceType>
+            <pd:x>744</pd:x>
+            <pd:y>104</pd:y>
+            <config>
+                <processName>/HFA/BPM/bpmGetWorkListItems.process</processName>
+            </config>
+            <pd:inputBindings>
+                <Input>
+                    <casenum>
+                        <xsl:value-of select="$el/Record/CASE_NUM"/>
+                    </casenum>
+                    <SAMLTokenString>
+                        <xsl:value-of select="$bpmFindResources/Output/SAMLTokenString"/>
+                    </SAMLTokenString>
+                    <xsl:if test="$bpmFindResources/Output/resource[1]/guid">
+                        <GUID>
+                            <xsl:value-of select="$bpmFindResources/Output/resource[1]/guid"/>
+                        </GUID>
+                    </xsl:if>
+                </Input>
+            </pd:inputBindings>
+        </pd:activity>
+        <pd:activity name="UpdateInstanceID">
+            <pd:type>com.tibco.plugin.jdbc.JDBCUpdateActivity</pd:type>
+            <pd:resourceType>ae.activities.JDBCUpdateActivity</pd:resourceType>
+            <pd:x>885</pd:x>
+            <pd:y>103</pd:y>
+            <config>
+                <timeout>%%Connections/JDBC/QueryTimeout%%</timeout>
+                <commit>false</commit>
+                <emptyStrAsNil>false</emptyStrAsNil>
+                <jdbcSharedConfig>/SharedResources/Connections/JDBC/IWFDB.sharedjdbc</jdbcSharedConfig>
+                <statement>UPDATE HFA_CASE_DATA SET INSTANCE_ID=? WHERE CASE_NUM=?</statement>
+                <Prepared_Param_DataType>
+                    <parameter>
+                        <parameterName>InstanceID</parameterName>
+                        <dataType>VARCHAR</dataType>
+                    </parameter>
+                    <parameter>
+                        <parameterName>CaseNum</parameterName>
+                        <dataType>VARCHAR</dataType>
+                    </parameter>
+                </Prepared_Param_DataType>
+            </config>
+            <pd:inputBindings>
+                <jdbcUpdateActivityInput>
+                    <InstanceID>
+                        <xsl:value-of select="$bpmGetWorkListItems/ns2:getWorkListItemsResponse/getWorkListItemsResponseDoc/ns1:getWorkListItemsResponse/workItems[1]/header/itemContext/appInstance"/>
+                    </InstanceID>
+                    <CaseNum>
+                        <xsl:choose>
+                            <xsl:when test="exists($el/Record/CASE_NUM)">
+                                <xsl:value-of select="$el/Record/CASE_NUM"/>
+                            </xsl:when>
+                            <xsl:otherwise>
+                                <xsl:attribute name="xsi:nil">true</xsl:attribute>
+                            </xsl:otherwise>
+                        </xsl:choose>
+                    </CaseNum>
+                </jdbcUpdateActivityInput>
+            </pd:inputBindings>
+        </pd:activity>
+        <pd:activity name="Sleep">
+            <pd:type>com.tibco.plugin.timer.SleepActivity</pd:type>
+            <pd:resourceType>ae.activities.sleep</pd:resourceType>
+            <pd:x>618</pd:x>
+            <pd:y>103</pd:y>
+            <config/>
+            <pd:inputBindings>
+                <ns0:SleepInputSchema xmlns:ns0="www.tibco.com/plugin/Sleep">
+                    <IntervalInMillisec>
+                        <xsl:value-of select="$_globalVariables/ns:GlobalVariables/Application/Timer_InstanceWait"/>
+                    </IntervalInMillisec>
+                </ns0:SleepInputSchema>
+            </pd:inputBindings>
+        </pd:activity>
+    </pd:group>
+    <pd:activity name="Log-1">
+        <pd:type>com.tibco.pe.core.CallProcessActivity</pd:type>
+        <pd:resourceType>ae.process.subprocess</pd:resourceType>
+        <pd:x>1122</pd:x>
+        <pd:y>106</pd:y>
+        <config>
+            <processName>/HFA/SubProcesses/Log.process</processName>
+        </config>
+        <pd:inputBindings>
+            <Input>
+                <LogLocation>
+                    <xsl:value-of select="&quot;UpdateInstanceIDEND&quot;"/>
+                </LogLocation>
+            </Input>
+        </pd:inputBindings>
+    </pd:activity>
+    <pd:activity name="Catch">
+        <pd:type>com.tibco.pe.core.CatchActivity</pd:type>
+        <pd:resourceType>ae.activities.catch</pd:resourceType>
+        <pd:x>869</pd:x>
+        <pd:y>253</pd:y>
+        <pd:handler>true</pd:handler>
+        <config>
+            <catchAll>true</catchAll>
+        </config>
+        <pd:inputBindings/>
+    </pd:activity>
+    <pd:activity name="Log-2">
+        <pd:type>com.tibco.pe.core.CallProcessActivity</pd:type>
+        <pd:resourceType>ae.process.subprocess</pd:resourceType>
+        <pd:x>1022</pd:x>
+        <pd:y>253</pd:y>
+        <config>
+            <processName>/HFA/SubProcesses/Log.process</processName>
+        </config>
+        <pd:inputBindings>
+            <Input>
+                <LogLocation>
+                    <xsl:value-of select="&quot;ERROR-UpdateInstanceID&quot;"/>
+                </LogLocation>
+                <Schema>
+                    <xsl:copy-of select="$Catch/exceptiondata/*"/>
+                </Schema>
+            </Input>
+        </pd:inputBindings>
+    </pd:activity>
+    <pd:activity name="Generate Error">
+        <pd:type>com.tibco.pe.core.GenerateErrorActivity</pd:type>
+        <pd:resourceType>ae.activities.throw</pd:resourceType>
+        <pd:x>1164</pd:x>
+        <pd:y>255</pd:y>
+        <config>
+            <faultName/>
+        </config>
+        <pd:inputBindings>
+            <pfx:ActivityInput>
+                <message>
+                    <xsl:value-of select="$Catch/exceptiondata/*"/>
+                </message>
+                <messageCode>
+                    <xsl:value-of select="&quot;Error-UpdateInstanceID&quot;"/>
+                </messageCode>
+            </pfx:ActivityInput>
+        </pd:inputBindings>
+    </pd:activity>
+    <pd:transition>
+        <pd:from>Start</pd:from>
+        <pd:to>Log</pd:to>
+        <pd:lineType>Default</pd:lineType>
+        <pd:lineColor>-16777216</pd:lineColor>
+        <pd:conditionType>always</pd:conditionType>
+    </pd:transition>
+    <pd:transition>
+        <pd:from>Log</pd:from>
+        <pd:to>GetCases</pd:to>
+        <pd:lineType>Default</pd:lineType>
+        <pd:lineColor>-16777216</pd:lineColor>
+        <pd:conditionType>always</pd:conditionType>
+    </pd:transition>
+    <pd:transition>
+        <pd:from>GetCases</pd:from>
+        <pd:to>Group</pd:to>
+        <pd:lineType>Default</pd:lineType>
+        <pd:lineColor>-16777216</pd:lineColor>
+        <pd:conditionType>always</pd:conditionType>
+    </pd:transition>
+    <pd:transition>
+        <pd:from>Group</pd:from>
+        <pd:to>Log-1</pd:to>
+        <pd:lineType>Default</pd:lineType>
+        <pd:lineColor>-16777216</pd:lineColor>
+        <pd:conditionType>always</pd:conditionType>
+    </pd:transition>
+    <pd:transition>
+        <pd:from>Log-1</pd:from>
+        <pd:to>End</pd:to>
+        <pd:lineType>Default</pd:lineType>
+        <pd:lineColor>-16777216</pd:lineColor>
+        <pd:conditionType>always</pd:conditionType>
+    </pd:transition>
+    <pd:transition>
+        <pd:from>Catch</pd:from>
+        <pd:to>Log-2</pd:to>
+        <pd:lineType>Default</pd:lineType>
+        <pd:lineColor>-16777216</pd:lineColor>
+        <pd:conditionType>always</pd:conditionType>
+    </pd:transition>
+    <pd:transition>
+        <pd:from>Log-2</pd:from>
+        <pd:to>Generate Error</pd:to>
+        <pd:lineType>Default</pd:lineType>
+        <pd:lineColor>-16777216</pd:lineColor>
+        <pd:conditionType>always</pd:conditionType>
+    </pd:transition>
+</pd:ProcessDefinition>

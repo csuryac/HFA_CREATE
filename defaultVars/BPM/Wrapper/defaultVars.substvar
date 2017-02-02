@@ -1,0 +1,37 @@
+<?xml version = "1.0" encoding = "UTF-8"?>
+<repository xmlns:xsi = "http://www.w3.org/2001/XMLSchema-instance" xmlns = "http://www.tibco.com/xmlns/repo/types/2002">
+	<globalVariables>
+		<globalVariable>
+			<name>URI</name>
+			<value>/BPMWrapperServices/AMXPortType</value>
+			<deploymentSettable>true</deploymentSettable>
+			<serviceSettable>false</serviceSettable>
+			<type>String</type>
+			<modTime>1453977752619</modTime>
+		</globalVariable>
+		<globalVariable>
+			<name>host</name>
+			<value>10.91.32.163</value>
+			<deploymentSettable>true</deploymentSettable>
+			<serviceSettable>false</serviceSettable>
+			<type>String</type>
+			<modTime>1458217791537</modTime>
+		</globalVariable>
+		<globalVariable>
+			<name>port</name>
+			<value>40000</value>
+			<deploymentSettable>true</deploymentSettable>
+			<serviceSettable>false</serviceSettable>
+			<type>String</type>
+			<modTime>1453977750829</modTime>
+		</globalVariable>
+		<globalVariable>
+			<name>timeout</name>
+			<value>60</value>
+			<deploymentSettable>true</deploymentSettable>
+			<serviceSettable>false</serviceSettable>
+			<type>String</type>
+			<modTime>1453977752296</modTime>
+		</globalVariable>
+	</globalVariables>
+</repository>

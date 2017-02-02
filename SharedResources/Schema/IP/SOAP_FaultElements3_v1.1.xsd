@@ -1,0 +1,72 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<!-- edited with XMLSpy v2007 rel. 3 sp1 (http://www.altova.com) by DBS BANK LIMITED (DBS BANK LIMITED) -->
+<!-- edited with XML Spy v4.4 U (http://www.xmlspy.com) by ITG-Business Management Office (DBS Bank) -->
+<!-- edited with XMLSPY v2004 rel. 3 U (http://www.xmlspy.com) by ADC (DBS Bank, ITG-AMG Integration CC (0519)) -->
+<xs:schema xmlns:ems="http://schemas.dbs.com/icc/ems"
+	 xmlns:xs="http://www.w3.org/2001/XMLSchema"
+	 elementFormDefault="qualified"
+	 attributeFormDefault="unqualified">
+	<xs:annotation>
+		<xs:documentation>Version 1.0 (2009-11-04): New release for IP message version 3.0</xs:documentation>
+	</xs:annotation>
+	<xs:annotation>
+		<xs:documentation>Version 1.0 (2009-11-24): Update annotation for faultcode, faultactor</xs:documentation>
+	</xs:annotation>
+	<xs:annotation>
+		<xs:documentation>Version 1.1 (2011-01-26): Import CommAggregate3_v1.1 </xs:documentation>
+	</xs:annotation>
+	<xs:import namespace="http://schemas.dbs.com/icc/ems" schemaLocation="CommAggregate3_v1.5.xsd"/>
+	<xs:element name="faultcode">
+		<xs:annotation>
+			<xs:documentation>Fault Code as defined in SOAP 1.1</xs:documentation>
+			<xs:documentation>‘Client’ class of errors indicate that the message was incorrectly formed or did not contain the appropriate information in order to succeed
+‘Server’ class of errors indicate that the message could not be processed for reasons not directly attributable to the contents of the message itself but rather to the processing of the message</xs:documentation>
+			<xs:documentation>Valid values are 'VersionMismatch', 'MustUnderstand', 'Client', 'Server'</xs:documentation>
+		</xs:annotation>
+		<xs:simpleType>
+			<xs:restriction base="xs:string">
+				<xs:enumeration value="VersionMismatch"/>
+				<xs:enumeration value="MustUnderstand"/>
+				<xs:enumeration value="Client"/>
+				<xs:enumeration value="Server"/>
+			</xs:restriction>
+		</xs:simpleType>
+	</xs:element>
+	<xs:element name="faultstring">
+		<xs:annotation>
+			<xs:documentation>Fault String as defined in SOAP 1.1</xs:documentation>
+			<xs:documentation>Human readable explanation of fault. 
+Fault explanation from Integration Platform is either the description of the first StatusCode in the DetailInfo aggregate or a general description of the error</xs:documentation>
+		</xs:annotation>
+		<xs:simpleType>
+			<xs:restriction base="xs:string">
+				<xs:maxLength value="255"/>
+			</xs:restriction>
+		</xs:simpleType>
+	</xs:element>
+	<xs:element name="faultactor">
+		<xs:annotation>
+			<xs:documentation>Fault Actor as defined in SOAP 1.1</xs:documentation>
+			<xs:documentation>Identifier of the party who caused the fault to happen within the message path.
+It is the system identifier of the Requesting Client, Integration Platform or the Service Provider depending on who detected the fault
+</xs:documentation>
+		</xs:annotation>
+		<xs:simpleType>
+			<xs:restriction base="xs:string">
+				<xs:maxLength value="255"/>
+			</xs:restriction>
+		</xs:simpleType>
+	</xs:element>
+	<xs:element name="detail">
+		<xs:annotation>
+			<xs:documentation>Detail element as defined in SOAP 1.1</xs:documentation>
+			<xs:documentation>Application-specific error information related to the Body element</xs:documentation>
+		</xs:annotation>
+		<xs:complexType>
+			<xs:sequence>
+				<xs:element ref="ems:DetailInfo" maxOccurs="unbounded"/>
+			</xs:sequence>
+		</xs:complexType>
+	</xs:element>
+</xs:schema>

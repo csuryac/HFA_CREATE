@@ -1,0 +1,92 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<pd:ProcessDefinition xmlns:pd="http://xmlns.tibco.com/bw/process/2003" xmlns:xsl="http://www.w3.org/1999/XSL/Transform" xmlns:ns="http://www.tibco.com/namespaces/tnt/plugins/file">
+    <pd:name>xUT/TestCreateCompressFile.process</pd:name>
+    <pd:startName>Start</pd:startName>
+    <pd:startX>37</pd:startX>
+    <pd:startY>226</pd:startY>
+    <pd:returnBindings/>
+    <pd:endName>End</pd:endName>
+    <pd:endX>794</pd:endX>
+    <pd:endY>229</pd:endY>
+    <pd:errorSchemas/>
+    <pd:processVariables/>
+    <pd:targetNamespace>http://xmlns.example.com/1459419894469</pd:targetNamespace>
+    <pd:activity name="Read File">
+        <pd:type>com.tibco.plugin.file.FileReadActivity</pd:type>
+        <pd:resourceType>ae.activities.FileReadActivity</pd:resourceType>
+        <pd:x>208</pd:x>
+        <pd:y>224</pd:y>
+        <config>
+            <encoding>binary</encoding>
+        </config>
+        <pd:inputBindings>
+            <ns:ReadActivityInputClass>
+                <fileName>
+                    <xsl:value-of select="'D:\Temp\testzip\windows.exe'"/>
+                </fileName>
+            </ns:ReadActivityInputClass>
+        </pd:inputBindings>
+    </pd:activity>
+    <pd:activity name="Create File">
+        <pd:type>com.tibco.plugin.file.FileCreateActivity</pd:type>
+        <pd:resourceType>ae.activities.FileCreateActivity</pd:resourceType>
+        <pd:x>388</pd:x>
+        <pd:y>228</pd:y>
+        <config/>
+        <pd:inputBindings>
+            <ns:CreateActivityInputClass>
+                <fileName>
+                    <xsl:value-of select="'D:\Temp\testzip\resultzip\windows.gz'"/>
+                </fileName>
+            </ns:CreateActivityInputClass>
+        </pd:inputBindings>
+    </pd:activity>
+    <pd:activity name="Write File">
+        <pd:type>com.tibco.plugin.file.FileWriteActivity</pd:type>
+        <pd:resourceType>ae.activities.FileWriteActivity</pd:resourceType>
+        <pd:x>603</pd:x>
+        <pd:y>230</pd:y>
+        <config>
+            <encoding>binary</encoding>
+            <compressFile>GZip</compressFile>
+        </config>
+        <pd:inputBindings>
+            <ns:WriteActivityInputBinaryClass>
+                <fileName>
+                    <xsl:value-of select="$Create-File/ns:CreateActivityOutputClass/fileInfo/fullName"/>
+                </fileName>
+                <binaryContent>
+                    <xsl:value-of select="$Read-File/ns:ReadActivityOutputBinaryClass/fileContent/binaryContent"/>
+                </binaryContent>
+            </ns:WriteActivityInputBinaryClass>
+        </pd:inputBindings>
+    </pd:activity>
+    <pd:transition>
+        <pd:from>Start</pd:from>
+        <pd:to>Read File</pd:to>
+        <pd:lineType>Default</pd:lineType>
+        <pd:lineColor>-16777216</pd:lineColor>
+        <pd:conditionType>always</pd:conditionType>
+    </pd:transition>
+    <pd:transition>
+        <pd:from>Read File</pd:from>
+        <pd:to>Create File</pd:to>
+        <pd:lineType>Default</pd:lineType>
+        <pd:lineColor>-16777216</pd:lineColor>
+        <pd:conditionType>always</pd:conditionType>
+    </pd:transition>
+    <pd:transition>
+        <pd:from>Create File</pd:from>
+        <pd:to>Write File</pd:to>
+        <pd:lineType>Default</pd:lineType>
+        <pd:lineColor>-16777216</pd:lineColor>
+        <pd:conditionType>always</pd:conditionType>
+    </pd:transition>
+    <pd:transition>
+        <pd:from>Write File</pd:from>
+        <pd:to>End</pd:to>
+        <pd:lineType>Default</pd:lineType>
+        <pd:lineColor>-16777216</pd:lineColor>
+        <pd:conditionType>always</pd:conditionType>
+    </pd:transition>
+</pd:ProcessDefinition>

@@ -1,0 +1,259 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<pd:ProcessDefinition xmlns:ns2="http://resolver.api.de.n2.tibco.com" xmlns:pd="http://xmlns.tibco.com/bw/process/2003" xmlns:xsl="http://www.w3.org/1999/XSL/Transform" xmlns:ns4="http://www.tibco.com/bx/2009/management/processManagerType" xmlns:ns="http://www.dbs.com/iwf/bpm/token" xmlns:ns3="http://api.brm.n2.tibco.com" xmlns:wsdl="http://schemas.xmlsoap.org/wsdl/" xmlns:xsd="http://www.w3.org/2001/XMLSchema" xmlns:pfx3="http://www.dbs.com/schema/header" xmlns:pfx2="http://www.dbs.com/iwf/bpm/services/token" xmlns:pfx="http://xmlns.example.com/1429342289226">
+    <wsdl:import namespace="http://www.dbs.com/iwf/bpm/services/token" location="/SharedResources/WSDL/Concrete/TokenService.wsdl"/>
+    <wsdl:import namespace="http://xmlns.example.com/1429342289226" location="/SharedResources/WSDL/Concrete/AMXBPMWrapper.wsdl"/>
+    <pd:name>xUT/TestCancelProcessInstance.process</pd:name>
+    <pd:startName>Start</pd:startName>
+    <pd:startType>
+        <xsd:element name="root">
+            <xsd:complexType>
+                <xsd:sequence>
+                    <xsd:element name="param" type="xsd:string"/>
+                </xsd:sequence>
+            </xsd:complexType>
+        </xsd:element>
+    </pd:startType>
+    <pd:startX>157</pd:startX>
+    <pd:startY>145</pd:startY>
+    <pd:returnBindings/>
+    <pd:endName>End</pd:endName>
+    <pd:endX>1142</pd:endX>
+    <pd:endY>154</pd:endY>
+    <pd:errorSchemas/>
+    <pd:processVariables/>
+    <pd:targetNamespace>http://xmlns.example.com/1458098561904</pd:targetNamespace>
+    <pd:activity name="CancelPI">
+        <pd:type>com.tibco.plugin.soap.SOAPSendReceiveActivity</pd:type>
+        <pd:resourceType>ae.activities.SOAPSendReceiveUI</pd:resourceType>
+        <pd:x>999</pd:x>
+        <pd:y>151</pd:y>
+        <config>
+            <timeout>0</timeout>
+            <soapAttachmentStyle>SwA</soapAttachmentStyle>
+            <timeoutType>Seconds</timeoutType>
+            <service>pfx:Service</service>
+            <servicePort>PortTypeEndpoint1</servicePort>
+            <operation>cancelProcessInstance</operation>
+            <soapAction>/SharedResources/WrapperService/Service.serviceagent//cancelProcessInstance</soapAction>
+            <endpointURL>http://10.91.35.169:40000/BPMWrapperServices/AMXPortType</endpointURL>
+            <authScheme>NONE</authScheme>
+        </config>
+        <pd:inputBindings>
+            <inputMessage>
+                <ns4:processID>
+                    <xsl:value-of select="$Start/root/param"/>
+                </ns4:processID>
+                <headers>
+                    <Header.reqHeader>
+                        <pfx3:RqHeader>
+                            <xsl:if test="$GetToken/outputMessage/ns:GetTokenRes/ns:SAMLToken">
+                                <pfx3:SamlTokenStringReq>
+                                    <xsl:value-of select="$GetToken/outputMessage/ns:GetTokenRes/ns:SAMLToken"/>
+                                </pfx3:SamlTokenStringReq>
+                            </xsl:if>
+                        </pfx3:RqHeader>
+                    </Header.reqHeader>
+                </headers>
+            </inputMessage>
+        </pd:inputBindings>
+    </pd:activity>
+    <pd:activity name="GetToken">
+        <pd:type>com.tibco.plugin.soap.SOAPSendReceiveActivity</pd:type>
+        <pd:resourceType>ae.activities.SOAPSendReceiveUI</pd:resourceType>
+        <pd:x>297</pd:x>
+        <pd:y>147</pd:y>
+        <config>
+            <timeout>0</timeout>
+            <soapAttachmentStyle>SwA</soapAttachmentStyle>
+            <timeoutType>Seconds</timeoutType>
+            <service>pfx2:TokenService</service>
+            <servicePort>HTTPEP</servicePort>
+            <operation>GetTokenOp</operation>
+            <soapAction>/iwf/bpm/services/token/GetTokenOp</soapAction>
+            <endpointURL>http://10.91.35.169:40002/iwf/bpm/services/token</endpointURL>
+            <authScheme>NONE</authScheme>
+        </config>
+        <pd:inputBindings>
+            <inputMessage>
+                <ns:GetTokenReq>
+                    <ns:ID>
+                        <xsl:value-of select="'tibco-admin'"/>
+                    </ns:ID>
+                </ns:GetTokenReq>
+            </inputMessage>
+        </pd:inputBindings>
+    </pd:activity>
+    <pd:activity name="Lookup">
+        <pd:type>com.tibco.plugin.soap.SOAPSendReceiveActivity</pd:type>
+        <pd:resourceType>ae.activities.SOAPSendReceiveUI</pd:resourceType>
+        <pd:x>482</pd:x>
+        <pd:y>270</pd:y>
+        <config>
+            <timeout>0</timeout>
+            <soapAttachmentStyle>SwA</soapAttachmentStyle>
+            <timeoutType>Seconds</timeoutType>
+            <service>pfx:Service</service>
+            <servicePort>PortTypeEndpoint1</servicePort>
+            <operation>lookupUser</operation>
+            <soapAction>/SharedResources/WrapperService/Service.serviceagent//lookupUser</soapAction>
+            <endpointURL>http://10.91.35.169:40000/BPMWrapperServices/AMXPortType</endpointURL>
+            <authScheme>NONE</authScheme>
+        </config>
+        <pd:inputBindings>
+            <inputMessage>
+                <ns2:lookupUser>
+                    <xsl:attribute name="name">
+                        <xsl:value-of select="'tibco-admin'"/>
+                    </xsl:attribute>
+                </ns2:lookupUser>
+                <headers>
+                    <Header.reqHeader>
+                        <pfx3:RqHeader>
+                            <xsl:if test="$GetToken/outputMessage/ns:GetTokenRes/ns:SAMLToken">
+                                <pfx3:SamlTokenStringReq>
+                                    <xsl:value-of select="$GetToken/outputMessage/ns:GetTokenRes/ns:SAMLToken"/>
+                                </pfx3:SamlTokenStringReq>
+                            </xsl:if>
+                        </pfx3:RqHeader>
+                    </Header.reqHeader>
+                </headers>
+            </inputMessage>
+        </pd:inputBindings>
+    </pd:activity>
+    <pd:activity name="getView">
+        <pd:type>com.tibco.plugin.soap.SOAPSendReceiveActivity</pd:type>
+        <pd:resourceType>ae.activities.SOAPSendReceiveUI</pd:resourceType>
+        <pd:x>653</pd:x>
+        <pd:y>271</pd:y>
+        <config>
+            <timeout>0</timeout>
+            <soapAttachmentStyle>SwA</soapAttachmentStyle>
+            <timeoutType>Seconds</timeoutType>
+            <service>pfx:Service</service>
+            <servicePort>PortTypeEndpoint1</servicePort>
+            <operation>getViewsForResource</operation>
+            <soapAction>/SharedResources/WrapperService/Service.serviceagent/PortTypeEndpoint1/getViewsForResource</soapAction>
+            <endpointURL>http://10.91.35.169:40000/BPMWrapperServices/AMXPortType</endpointURL>
+            <authScheme>NONE</authScheme>
+        </config>
+        <pd:inputBindings>
+            <inputMessage>
+                <ns3:getViewsForResource>
+                    <xsl:attribute name="numberOfItems">
+                        <xsl:value-of select="20"/>
+                    </xsl:attribute>
+                    <xsl:attribute name="startPosition">
+                        <xsl:value-of select="1"/>
+                    </xsl:attribute>
+                </ns3:getViewsForResource>
+                <headers>
+                    <Header.reqHeader>
+                        <pfx3:RqHeader>
+                            <xsl:if test="$GetToken/outputMessage/ns:GetTokenRes/ns:SAMLToken">
+                                <pfx3:SamlTokenStringReq>
+                                    <xsl:value-of select="$GetToken/outputMessage/ns:GetTokenRes/ns:SAMLToken"/>
+                                </pfx3:SamlTokenStringReq>
+                            </xsl:if>
+                        </pfx3:RqHeader>
+                    </Header.reqHeader>
+                </headers>
+            </inputMessage>
+        </pd:inputBindings>
+    </pd:activity>
+    <pd:activity name="GetWorkItemList">
+        <pd:type>com.tibco.plugin.soap.SOAPSendReceiveActivity</pd:type>
+        <pd:resourceType>ae.activities.SOAPSendReceiveUI</pd:resourceType>
+        <pd:x>837</pd:x>
+        <pd:y>272</pd:y>
+        <config>
+            <timeout>0</timeout>
+            <soapAttachmentStyle>SwA</soapAttachmentStyle>
+            <timeoutType>Seconds</timeoutType>
+            <service>pfx:Service</service>
+            <servicePort>PortTypeEndpoint1</servicePort>
+            <operation>getWorkListItemsForView</operation>
+            <soapAction>/SharedResources/WrapperService/Service.serviceagent/PortTypeEndpoint1/getWorkListItemsForView</soapAction>
+            <endpointURL>http://10.91.35.169:40000/BPMWrapperServices/AMXPortType</endpointURL>
+            <authScheme>NONE</authScheme>
+        </config>
+        <pd:inputBindings>
+            <inputMessage>
+                <headers>
+                    <Header.reqHeader>
+                        <pfx3:RqHeader>
+                            <xsl:if test="$GetToken/outputMessage/ns:GetTokenRes/ns:SAMLToken">
+                                <pfx3:SamlTokenStringReq>
+                                    <xsl:value-of select="$GetToken/outputMessage/ns:GetTokenRes/ns:SAMLToken"/>
+                                </pfx3:SamlTokenStringReq>
+                            </xsl:if>
+                        </pfx3:RqHeader>
+                    </Header.reqHeader>
+                </headers>
+                <ns3:getWorkListItemsForView>
+                    <xsl:attribute name="numberOfItems">
+                        <xsl:value-of select="10"/>
+                    </xsl:attribute>
+                    <xsl:attribute name="startPosition">
+                        <xsl:value-of select="0"/>
+                    </xsl:attribute>
+                    <xsl:attribute name="workListViewID">
+                        <xsl:value-of select="14"/>
+                    </xsl:attribute>
+                    <xsl:attribute name="getTotalCount">
+                        <xsl:value-of select="&quot;true&quot;"/>
+                    </xsl:attribute>
+                </ns3:getWorkListItemsForView>
+            </inputMessage>
+        </pd:inputBindings>
+    </pd:activity>
+    <pd:transition>
+        <pd:from>Start</pd:from>
+        <pd:to>GetToken</pd:to>
+        <pd:lineType>Default</pd:lineType>
+        <pd:lineColor>-16777216</pd:lineColor>
+        <pd:conditionType>always</pd:conditionType>
+    </pd:transition>
+    <pd:transition>
+        <pd:from>CancelPI</pd:from>
+        <pd:to>End</pd:to>
+        <pd:lineType>Default</pd:lineType>
+        <pd:lineColor>-16777216</pd:lineColor>
+        <pd:conditionType>always</pd:conditionType>
+    </pd:transition>
+    <pd:transition>
+        <pd:from>GetToken</pd:from>
+        <pd:to>CancelPI</pd:to>
+        <pd:lineType>Default</pd:lineType>
+        <pd:lineColor>-16777216</pd:lineColor>
+        <pd:conditionType>xpath</pd:conditionType>
+        <pd:xpath>1=1</pd:xpath>
+    </pd:transition>
+    <pd:transition>
+        <pd:from>Lookup</pd:from>
+        <pd:to>getView</pd:to>
+        <pd:lineType>Default</pd:lineType>
+        <pd:lineColor>-16777216</pd:lineColor>
+        <pd:conditionType>always</pd:conditionType>
+    </pd:transition>
+    <pd:transition>
+        <pd:from>getView</pd:from>
+        <pd:to>GetWorkItemList</pd:to>
+        <pd:lineType>Default</pd:lineType>
+        <pd:lineColor>-16777216</pd:lineColor>
+        <pd:conditionType>always</pd:conditionType>
+    </pd:transition>
+    <pd:transition>
+        <pd:from>GetWorkItemList</pd:from>
+        <pd:to>CancelPI</pd:to>
+        <pd:lineType>Default</pd:lineType>
+        <pd:lineColor>-16777216</pd:lineColor>
+        <pd:conditionType>always</pd:conditionType>
+    </pd:transition>
+    <pd:transition>
+        <pd:from>GetToken</pd:from>
+        <pd:to>Lookup</pd:to>
+        <pd:lineType>Default</pd:lineType>
+        <pd:lineColor>-16777216</pd:lineColor>
+        <pd:conditionType>otherwise</pd:conditionType>
+    </pd:transition>
+</pd:ProcessDefinition>

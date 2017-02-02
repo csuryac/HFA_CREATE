@@ -1,0 +1,421 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<pd:ProcessDefinition xmlns:pd="http://xmlns.tibco.com/bw/process/2003" xmlns:ns2="http://schemas.dbs.com/icc/ems" xmlns:xsl="http://www.w3.org/1999/XSL/Transform" xmlns:ns="http://www.dbs.com/iwf/bpm/token" xmlns:ns4="http://www.tibco.com/namespaces/tnt/plugins/jms" xmlns:ns3="http://schemas.dbs.com/icc/CustomerSvc" xmlns:wsdl="http://schemas.xmlsoap.org/wsdl/" xmlns:xsd="http://www.w3.org/2001/XMLSchema" xmlns:tib="http://www.tibco.com/bw/xslt/custom-functions" xmlns:pfx4="http://schemas.xmlsoap.org/soap/envelope/" xmlns:pfx3="http://schemas.dbs.com/icc/CardSvc" xmlns:pfx2="http://schemas.dbs.com/icc/BasicSvc" xmlns:pfx="http://www.dbs.com/iwf/bpm/services/token">
+    <xsd:import namespace="http://schemas.dbs.com/icc/BasicSvc" schemaLocation="/SharedResources/Schema/IP/CaseMgmtRqAddOp_v1.1.xsd"/>
+    <xsd:import namespace="http://schemas.xmlsoap.org/soap/envelope/" schemaLocation="/SharedResources/Schema/IP/HFASchema.xsd"/>
+    <wsdl:import namespace="http://www.dbs.com/iwf/bpm/services/token" location="/SharedResources/WSDL/Concrete/TokenService.wsdl"/>
+    <pd:name>xUT/TestCaseMerge.process</pd:name>
+    <pd:startName>Start</pd:startName>
+    <pd:startType>
+        <xsd:element name="Input">
+            <xsd:complexType>
+                <xsd:sequence>
+                    <xsd:element name="HKID" type="xsd:string" minOccurs="0"/>
+                </xsd:sequence>
+            </xsd:complexType>
+        </xsd:element>
+    </pd:startType>
+    <pd:startX>146</pd:startX>
+    <pd:startY>201</pd:startY>
+    <pd:returnBindings/>
+    <pd:endName>End</pd:endName>
+    <pd:endX>1091</pd:endX>
+    <pd:endY>202</pd:endY>
+    <pd:errorSchemas/>
+    <pd:processVariables/>
+    <pd:targetNamespace>http://xmlns.example.com/1458212519303</pd:targetNamespace>
+    <pd:activity name="GetToken">
+        <pd:type>com.tibco.plugin.soap.SOAPSendReceiveActivity</pd:type>
+        <pd:resourceType>ae.activities.SOAPSendReceiveUI</pd:resourceType>
+        <pd:x>332</pd:x>
+        <pd:y>203</pd:y>
+        <config>
+            <timeout>0</timeout>
+            <soapAttachmentStyle>SwA</soapAttachmentStyle>
+            <timeoutType>Seconds</timeoutType>
+            <service>pfx:TokenService</service>
+            <servicePort>HTTPEP</servicePort>
+            <operation>GetTokenOp</operation>
+            <soapAction>/iwf/bpm/services/token/GetTokenOp</soapAction>
+            <endpointURL>http://10.91.32.163:40002/iwf/bpm/services/token</endpointURL>
+            <authScheme>NONE</authScheme>
+        </config>
+        <pd:inputBindings>
+            <inputMessage>
+                <ns:GetTokenReq>
+                    <ns:ID>
+                        <xsl:value-of select="'tibco-admin'"/>
+                    </ns:ID>
+                </ns:GetTokenReq>
+            </inputMessage>
+        </pd:inputBindings>
+    </pd:activity>
+    <pd:activity name="ConstructATMRequestMessage">
+        <pd:type>com.tibco.plugin.xml.XMLRendererActivity</pd:type>
+        <pd:resourceType>ae.activities.XMLRendererActivity</pd:resourceType>
+        <pd:x>668</pd:x>
+        <pd:y>201</pd:y>
+        <config>
+            <renderAsText>text</renderAsText>
+            <validateInput>false</validateInput>
+            <term ref="pfx4:Envelope"/>
+        </config>
+        <pd:inputBindings>
+            <pfx4:Envelope>
+                <pfx4:Body>
+                    <xsl:copy-of select="$Map-Data/pfx2:CaseMgmtRqAdd"/>
+                </pfx4:Body>
+            </pfx4:Envelope>
+        </pd:inputBindings>
+    </pd:activity>
+    <pd:activity name="JMS Queue Requestor">
+        <pd:type>com.tibco.plugin.jms.JMSQueueRequestReplyActivity</pd:type>
+        <pd:resourceType>ae.activities.JMSQueueRequestReplyActivity</pd:resourceType>
+        <pd:x>810</pd:x>
+        <pd:y>209</pd:y>
+        <config>
+            <PermittedMessageType>Text</PermittedMessageType>
+            <SessionAttributes>
+                <transacted>false</transacted>
+                <acknowledgeMode>1</acknowledgeMode>
+                <maxSessions>1</maxSessions>
+                <destination>BPM.ONL.RQ.CEP.BW.HFA</destination>
+            </SessionAttributes>
+            <ConfigurableHeaders>
+                <JMSDeliveryMode>PERSISTENT</JMSDeliveryMode>
+                <JMSExpiration>0</JMSExpiration>
+                <JMSPriority>4</JMSPriority>
+            </ConfigurableHeaders>
+            <ConnectionReference>/SharedResources/Connections/JMS/HFAJMS.sharedjmscon</ConnectionReference>
+        </config>
+        <pd:inputBindings>
+            <ns4:ActivityInput>
+                <replyToQueue>
+                    <xsl:value-of select="'BPM.ONL.RS.CEP.BW.HFA'"/>
+                </replyToQueue>
+                <Body>
+                    <xsl:value-of select="$ConstructATMRequestMessage/xmlString"/>
+                </Body>
+            </ns4:ActivityInput>
+        </pd:inputBindings>
+    </pd:activity>
+    <pd:activity name="Map Data">
+        <pd:type>com.tibco.plugin.mapper.MapperActivity</pd:type>
+        <pd:resourceType>ae.activities.MapperActivity</pd:resourceType>
+        <pd:x>480</pd:x>
+        <pd:y>204</pd:y>
+        <config>
+            <element ref="pfx2:CaseMgmtRqAdd"/>
+        </config>
+        <pd:inputBindings>
+            <pfx2:CaseMgmtRqAdd>
+                <ns2:CommonRq>
+                    <ns2:OrgCode>
+                        <xsl:value-of select="'0001'"/>
+                    </ns2:OrgCode>
+                    <ns2:ChannelId>
+                        <xsl:value-of select="'01'"/>
+                    </ns2:ChannelId>
+                </ns2:CommonRq>
+                <pfx2:CaseType>
+                    <xsl:value-of select="'ALERT'"/>
+                </pfx2:CaseType>
+                <ns3:CustDoc>
+                    <ns3:DocType>
+                        <xsl:value-of select="'ID'"/>
+                    </ns3:DocType>
+                    <ns3:DocNum>
+                        <xsl:value-of select="$Start/Input/HKID"/>
+                    </ns3:DocNum>
+                </ns3:CustDoc>
+                <ns2:CustName>
+                    <ns2:FullName>
+                        <xsl:value-of select="'Customer Dummy'"/>
+                    </ns2:FullName>
+                </ns2:CustName>
+                <ns2:Phone>
+                    <ns2:PhoneType>
+                        <xsl:value-of select="'M'"/>
+                    </ns2:PhoneType>
+                    <ns2:PhoneNum>
+                        <xsl:value-of select="'67654321'"/>
+                    </ns2:PhoneNum>
+                </ns2:Phone>
+                <ns2:Card>
+                    <ns2:ProdType>
+                        <xsl:value-of select="'VISA'"/>
+                    </ns2:ProdType>
+                    <ns2:CardId>
+                        <xsl:value-of select="'12341234123412341234'"/>
+                    </ns2:CardId>
+                    <ns2:CardBrand>
+                        <xsl:value-of select="'VISA'"/>
+                    </ns2:CardBrand>
+                </ns2:Card>
+                <pfx2:TranDetl>
+                    <ns2:OrigClientId>
+                        <xsl:value-of select="'ABSP'"/>
+                    </ns2:OrigClientId>
+                    <ns2:OrigTermId>
+                        <xsl:value-of select="'2|XYZ1|00001'"/>
+                    </ns2:OrigTermId>
+                    <ns2:OrigTermLoc>
+                        <xsl:value-of select="'P70'"/>
+                    </ns2:OrigTermLoc>
+                    <ns2:OrigClientRef>
+                        <xsl:value-of select="'00001'"/>
+                    </ns2:OrigClientRef>
+                    <pfx3:TranCtry>
+                        <xsl:value-of select="'702'"/>
+                    </pfx3:TranCtry>
+                    <pfx2:TranType>
+                        <xsl:value-of select="'01'"/>
+                    </pfx2:TranType>
+                    <ns2:TranDate>
+                        <xsl:value-of select="'2016-01-01'"/>
+                    </ns2:TranDate>
+                    <ns2:TranTime>
+                        <xsl:value-of select="'00:00:00'"/>
+                    </ns2:TranTime>
+                    <ns2:Card>
+                        <ns2:ChipIndicator>
+                            <xsl:value-of select="'Y'"/>
+                        </ns2:ChipIndicator>
+                        <ns2:ProdType>
+                            <xsl:value-of select="'VISA'"/>
+                        </ns2:ProdType>
+                        <ns2:CardId>
+                            <xsl:value-of select="'12341234123412341234'"/>
+                        </ns2:CardId>
+                        <ns2:CardBrand>
+                            <xsl:value-of select="'VISA'"/>
+                        </ns2:CardBrand>
+                    </ns2:Card>
+                    <ns2:TranAmt>
+                        <ns2:Amt>
+                            <xsl:value-of select="50"/>
+                        </ns2:Amt>
+                        <ns2:Cur>
+                            <xsl:value-of select="'SGD'"/>
+                        </ns2:Cur>
+                    </ns2:TranAmt>
+                    <pfx2:RejectReason>
+                        <xsl:value-of select="'000'"/>
+                    </pfx2:RejectReason>
+                    <ns3:CustDoc>
+                        <ns3:DocType>
+                            <xsl:value-of select="'ID'"/>
+                        </ns3:DocType>
+                        <ns3:DocNum>
+                            <xsl:value-of select="$Start/Input/HKID"/>
+                        </ns3:DocNum>
+                    </ns3:CustDoc>
+                    <ns2:CustName>
+                        <ns2:FullName>
+                            <xsl:value-of select="'Customer Dummy'"/>
+                        </ns2:FullName>
+                    </ns2:CustName>
+                </pfx2:TranDetl>
+                <pfx2:TranDetl>
+                    <ns2:OrigClientId>
+                        <xsl:value-of select="'ABSP'"/>
+                    </ns2:OrigClientId>
+                    <ns2:OrigTermId>
+                        <xsl:value-of select="'2|XYZ1|00001'"/>
+                    </ns2:OrigTermId>
+                    <ns2:OrigTermLoc>
+                        <xsl:value-of select="'P70'"/>
+                    </ns2:OrigTermLoc>
+                    <ns2:OrigClientRef>
+                        <xsl:value-of select="'00001'"/>
+                    </ns2:OrigClientRef>
+                    <pfx3:TranCtry>
+                        <xsl:value-of select="'702'"/>
+                    </pfx3:TranCtry>
+                    <pfx2:TranType>
+                        <xsl:value-of select="'01'"/>
+                    </pfx2:TranType>
+                    <ns2:TranDate>
+                        <xsl:value-of select="'2016-01-01'"/>
+                    </ns2:TranDate>
+                    <ns2:TranTime>
+                        <xsl:value-of select="'00:00:00'"/>
+                    </ns2:TranTime>
+                    <ns2:Card>
+                        <ns2:ChipIndicator>
+                            <xsl:value-of select="'Y'"/>
+                        </ns2:ChipIndicator>
+                        <ns2:ProdType>
+                            <xsl:value-of select="'VISA'"/>
+                        </ns2:ProdType>
+                        <ns2:CardId>
+                            <xsl:value-of select="'12341234123412341234'"/>
+                        </ns2:CardId>
+                        <ns2:CardBrand>
+                            <xsl:value-of select="'VISA'"/>
+                        </ns2:CardBrand>
+                    </ns2:Card>
+                    <ns2:TranAmt>
+                        <ns2:Amt>
+                            <xsl:value-of select="50"/>
+                        </ns2:Amt>
+                        <ns2:Cur>
+                            <xsl:value-of select="'SGD'"/>
+                        </ns2:Cur>
+                    </ns2:TranAmt>
+                    <pfx2:RejectReason>
+                        <xsl:value-of select="'000'"/>
+                    </pfx2:RejectReason>
+                    <ns3:CustDoc>
+                        <ns3:DocType>
+                            <xsl:value-of select="'ID'"/>
+                        </ns3:DocType>
+                        <ns3:DocNum>
+                            <xsl:value-of select="$Start/Input/HKID"/>
+                        </ns3:DocNum>
+                    </ns3:CustDoc>
+                    <ns2:CustName>
+                        <ns2:FullName>
+                            <xsl:value-of select="'Customer Dummy'"/>
+                        </ns2:FullName>
+                    </ns2:CustName>
+                </pfx2:TranDetl>
+                <pfx2:TranDetl>
+                    <ns2:OrigClientId>
+                        <xsl:value-of select="'ABSP'"/>
+                    </ns2:OrigClientId>
+                    <ns2:OrigTermId>
+                        <xsl:value-of select="'2|XYZ1|00001'"/>
+                    </ns2:OrigTermId>
+                    <ns2:OrigTermLoc>
+                        <xsl:value-of select="'P70'"/>
+                    </ns2:OrigTermLoc>
+                    <ns2:OrigClientRef>
+                        <xsl:value-of select="'00001'"/>
+                    </ns2:OrigClientRef>
+                    <pfx3:TranCtry>
+                        <xsl:value-of select="'702'"/>
+                    </pfx3:TranCtry>
+                    <pfx2:TranType>
+                        <xsl:value-of select="'01'"/>
+                    </pfx2:TranType>
+                    <ns2:TranDate>
+                        <xsl:value-of select="'2016-01-01'"/>
+                    </ns2:TranDate>
+                    <ns2:TranTime>
+                        <xsl:value-of select="'00:00:00'"/>
+                    </ns2:TranTime>
+                    <ns2:Card>
+                        <ns2:ChipIndicator>
+                            <xsl:value-of select="'Y'"/>
+                        </ns2:ChipIndicator>
+                        <ns2:ProdType>
+                            <xsl:value-of select="'VISA'"/>
+                        </ns2:ProdType>
+                        <ns2:CardId>
+                            <xsl:value-of select="'12341234123412341234'"/>
+                        </ns2:CardId>
+                        <ns2:CardBrand>
+                            <xsl:value-of select="'VISA'"/>
+                        </ns2:CardBrand>
+                    </ns2:Card>
+                    <ns2:TranAmt>
+                        <ns2:Amt>
+                            <xsl:value-of select="50"/>
+                        </ns2:Amt>
+                        <ns2:Cur>
+                            <xsl:value-of select="'SGD'"/>
+                        </ns2:Cur>
+                    </ns2:TranAmt>
+                    <pfx2:RejectReason>
+                        <xsl:value-of select="'000'"/>
+                    </pfx2:RejectReason>
+                    <ns3:CustDoc>
+                        <ns3:DocType>
+                            <xsl:value-of select="'ID'"/>
+                        </ns3:DocType>
+                        <ns3:DocNum>
+                            <xsl:value-of select="$Start/Input/HKID"/>
+                        </ns3:DocNum>
+                    </ns3:CustDoc>
+                    <ns2:CustName>
+                        <ns2:FullName>
+                            <xsl:value-of select="'Customer Dummy'"/>
+                        </ns2:FullName>
+                    </ns2:CustName>
+                </pfx2:TranDetl>
+                <pfx2:AlertDetl>
+                    <pfx2:AlertId>
+                        <xsl:value-of select="concat('DUM',tib:timestamp())"/>
+                    </pfx2:AlertId>
+                    <pfx2:AlertRuleId>
+                        <xsl:value-of select="concat('RUL-', current-date())"/>
+                    </pfx2:AlertRuleId>
+                    <pfx2:AlertRuleDesc>
+                        <xsl:value-of select="concat('RULDESC-', current-date())"/>
+                    </pfx2:AlertRuleDesc>
+                    <pfx2:AlertRulePriority>
+                        <xsl:value-of select="50"/>
+                    </pfx2:AlertRulePriority>
+                    <pfx2:AlertDateTime>
+                        <xsl:value-of select="current-dateTime()"/>
+                    </pfx2:AlertDateTime>
+                    <pfx2:AlertSent>
+                        <xsl:value-of select="&quot;true&quot;"/>
+                    </pfx2:AlertSent>
+                    <pfx2:ContactMode>
+                        <xsl:value-of select="'SMS'"/>
+                    </pfx2:ContactMode>
+                    <ns2:CardId>
+                        <xsl:value-of select="'12341234123412341234'"/>
+                    </ns2:CardId>
+                    <ns2:Ctry>
+                        <xsl:value-of select="'HK'"/>
+                    </ns2:Ctry>
+                    <ns2:TranAmt>
+                        <ns2:Amt>
+                            <xsl:value-of select="50"/>
+                        </ns2:Amt>
+                        <ns2:Cur>
+                            <xsl:value-of select="'HKD'"/>
+                        </ns2:Cur>
+                    </ns2:TranAmt>
+                </pfx2:AlertDetl>
+            </pfx2:CaseMgmtRqAdd>
+        </pd:inputBindings>
+    </pd:activity>
+    <pd:transition>
+        <pd:from>Start</pd:from>
+        <pd:to>GetToken</pd:to>
+        <pd:lineType>Default</pd:lineType>
+        <pd:lineColor>-16777216</pd:lineColor>
+        <pd:conditionType>always</pd:conditionType>
+    </pd:transition>
+    <pd:transition>
+        <pd:from>GetToken</pd:from>
+        <pd:to>Map Data</pd:to>
+        <pd:lineType>Default</pd:lineType>
+        <pd:lineColor>-16777216</pd:lineColor>
+        <pd:conditionType>always</pd:conditionType>
+    </pd:transition>
+    <pd:transition>
+        <pd:from>ConstructATMRequestMessage</pd:from>
+        <pd:to>JMS Queue Requestor</pd:to>
+        <pd:lineType>Default</pd:lineType>
+        <pd:lineColor>-16777216</pd:lineColor>
+        <pd:conditionType>always</pd:conditionType>
+    </pd:transition>
+    <pd:transition>
+        <pd:from>JMS Queue Requestor</pd:from>
+        <pd:to>End</pd:to>
+        <pd:lineType>Default</pd:lineType>
+        <pd:lineColor>-16777216</pd:lineColor>
+        <pd:conditionType>always</pd:conditionType>
+    </pd:transition>
+    <pd:transition>
+        <pd:from>Map Data</pd:from>
+        <pd:to>ConstructATMRequestMessage</pd:to>
+        <pd:lineType>Default</pd:lineType>
+        <pd:lineColor>-16777216</pd:lineColor>
+        <pd:conditionType>always</pd:conditionType>
+    </pd:transition>
+</pd:ProcessDefinition>

@@ -1,0 +1,708 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<xsd:schema xmlns="http://www.dbs.com/sg/wis/hfa/xsd/hfaCaseDetails"
+	 xmlns:xsd="http://www.w3.org/2001/XMLSchema"
+	 targetNamespace="http://www.dbs.com/sg/wis/hfa/xsd/hfaCaseDetails"
+	 elementFormDefault="qualified"
+	 attributeFormDefault="unqualified">
+	<xsd:element name="PROJECTCODE" type="xsd:string"/>
+	<xsd:element name="CustName" type="xsd:string"/>
+	<xsd:element name="CustCIN" type="xsd:string"/>
+	<xsd:element name="CustSuffix" type="xsd:string"/>
+	<xsd:element name="CustSalutation" type="xsd:string"/>
+	<xsd:element name="CustNumPrimary" type="xsd:string"/>
+	<xsd:element name="CustNumSecondary" type="xsd:string"/>
+	<xsd:element name="CustCity" type="xsd:string"/>
+	<xsd:element name="CardNumber" type="xsd:string"/>
+	<xsd:element name="CardType" type="xsd:string"/>
+	<xsd:element name="AccountNumber" type="xsd:string"/>
+	<xsd:element name="AccountType" type="xsd:string"/>
+	<xsd:element name="StartIndex" type="xsd:string"/>
+	<xsd:element name="EndIndex" type="xsd:string"/>
+	<xsd:element name="CustomerDetailsInput">
+		<xsd:complexType>
+			<xsd:sequence>
+				<xsd:element ref="CustCIN" minOccurs="0"/>
+				<xsd:element ref="CustSuffix" minOccurs="0"/>
+				<xsd:element ref="CardNumber" minOccurs="0"/>
+			</xsd:sequence>
+		</xsd:complexType>
+	</xsd:element>
+	<xsd:element name="CustomerDetailsOutput">
+		<xsd:complexType>
+			<xsd:sequence>
+				<xsd:element ref="CustName" minOccurs="0"/>
+				<xsd:element ref="CustCIN" minOccurs="0"/>
+				<xsd:element ref="CustSuffix" minOccurs="0"/>
+				<xsd:element ref="CustSalutation" minOccurs="0"/>
+				<xsd:element ref="CustNumPrimary" minOccurs="0"/>
+				<xsd:element ref="CustNumSecondary" minOccurs="0"/>
+				<xsd:element ref="CardNumber" minOccurs="0"/>
+				<xsd:element ref="CardType" minOccurs="0"/>
+				<xsd:element ref="AccountNumber" minOccurs="0"/>
+				<xsd:element ref="AccountType" minOccurs="0"/>
+			</xsd:sequence>
+		</xsd:complexType>
+	</xsd:element>
+	<xsd:element name="TXNTerminalID" type="xsd:string"/>
+	<xsd:element name="TXNAmt" type="xsd:string"/>
+	<xsd:element name="TXNDate" type="xsd:string"/>
+	<xsd:element name="TXNTime" type="xsd:string"/>
+	<xsd:element name="Currency" type="xsd:string"/>
+	<xsd:element name="DenialCode" type="xsd:string"/>
+	<xsd:element name="TXNType" type="xsd:string"/>
+	<xsd:element name="TeminalCtryCode" type="xsd:string"/>
+	<xsd:element name="OrigTerminalID" type="xsd:string"/>
+	<xsd:element name="TerminalType" type="xsd:string"/>
+	<xsd:element name="TerminalLocation" type="xsd:string"/>
+	<xsd:element name="TXNDetailsOutput">
+		<xsd:complexType>
+			<xsd:sequence>
+				<xsd:element ref="TXNTerminalID" minOccurs="0"/>
+				<xsd:element ref="TXNAmt" minOccurs="0"/>
+				<xsd:element ref="TXNDate" minOccurs="0"/>
+				<xsd:element ref="TXNTime" minOccurs="0"/>
+				<xsd:element ref="Currency" minOccurs="0"/>
+				<xsd:element ref="DenialCode" minOccurs="0"/>
+				<xsd:element ref="TXNType" minOccurs="0"/>
+				<xsd:element ref="TeminalCtryCode" minOccurs="0"/>
+				<xsd:element ref="OrigTerminalID" minOccurs="0"/>
+				<xsd:element ref="TerminalType" minOccurs="0"/>
+				<xsd:element ref="TerminalLocation" minOccurs="0"/>
+				<xsd:element name="CardID" type="xsd:string" minOccurs="0"/>
+				<xsd:element name="CUST_NAME" type="xsd:string" minOccurs="0"/>
+				<xsd:element name="CARD_TYPE" type="xsd:string" minOccurs="0"/>
+				<xsd:element name="TELEPHONE1" type="xsd:string" minOccurs="0"/>
+				<xsd:element name="HKID" type="xsd:string" minOccurs="0"/>
+				<xsd:element ref="ChipIndicator" minOccurs="0"/>
+			</xsd:sequence>
+		</xsd:complexType>
+	</xsd:element>
+	<xsd:element name="ALERT_ID" type="xsd:string"/>
+	<xsd:element name="ALERT_RULE_ID" type="xsd:string"/>
+	<xsd:element name="ALERT_RULE_DESC" type="xsd:string"/>
+	<xsd:element name="ALERT_DATE_TIME" type="xsd:string"/>
+	<xsd:element name="CUST_ALERT_SENT" type="xsd:string"/>
+	<xsd:element name="ALERT_STATUS" type="xsd:string"/>
+	<xsd:element name="CONTACT_MODE" type="xsd:string"/>
+	<xsd:element name="PREVIOUS_ALERT" type="xsd:string"/>
+	<xsd:element name="CHANNEL_ID" type="xsd:string"/>
+	<xsd:element name="AlertDetails">
+		<xsd:complexType>
+			<xsd:sequence>
+				<xsd:element ref="ALERT_ID" minOccurs="0"/>
+				<xsd:element ref="ALERT_RULE_ID" minOccurs="0"/>
+				<xsd:element ref="ALERT_RULE_DESC" minOccurs="0"/>
+				<xsd:element ref="ALERT_DATE_TIME" minOccurs="0"/>
+				<xsd:element ref="CUST_ALERT_SENT" minOccurs="0"/>
+				<xsd:element ref="ALERT_STATUS" minOccurs="0"/>
+				<xsd:element ref="CONTACT_MODE" minOccurs="0"/>
+				<xsd:element ref="PREVIOUS_ALERT" minOccurs="0"/>
+				<xsd:element ref="CHANNEL_ID" minOccurs="0"/>
+			</xsd:sequence>
+		</xsd:complexType>
+	</xsd:element>
+	<xsd:element name="TXNDetails">
+		<xsd:complexType>
+			<xsd:sequence>
+				<xsd:element ref="TXNDetailsOutput" minOccurs="0" maxOccurs="unbounded"/>
+			</xsd:sequence>
+		</xsd:complexType>
+	</xsd:element>
+	<xsd:element name="CASE_NUM" type="xsd:string"/>
+	<xsd:element name="CASE_STATUS" type="xsd:string"/>
+	<xsd:element name="DATE_RECEIVED" type="xsd:string"/>
+	<xsd:element name="CaseInformation">
+		<xsd:complexType>
+			<xsd:sequence>
+				<xsd:element ref="CASE_NUM" minOccurs="0"/>
+				<xsd:element ref="CASE_STATUS" minOccurs="0"/>
+				<xsd:element ref="DATE_RECEIVED" minOccurs="0"/>
+				<xsd:element name="CASE_TYPE" type="xsd:string" minOccurs="0"/>
+				<xsd:element ref="instanceID" minOccurs="0"/>
+				<xsd:element ref="ALERT_RULE_PRIORITY" minOccurs="0"/>
+			</xsd:sequence>
+		</xsd:complexType>
+	</xsd:element>
+	<xsd:element name="CommentsHistory">
+		<xsd:complexType>
+			<xsd:sequence>
+				<xsd:element name="REMARK_TIME" type="xsd:string" minOccurs="0"/>
+				<xsd:element name="REMARK" type="xsd:string" minOccurs="0"/>
+				<xsd:element name="STEP_NAME" type="xsd:string" minOccurs="0"/>
+				<xsd:element name="USER_ID" type="xsd:string" minOccurs="0"/>
+			</xsd:sequence>
+		</xsd:complexType>
+	</xsd:element>
+	<xsd:element name="Remarks">
+		<xsd:complexType>
+			<xsd:sequence>
+				<xsd:element ref="CommentsHistory" minOccurs="0" maxOccurs="unbounded"/>
+			</xsd:sequence>
+		</xsd:complexType>
+	</xsd:element>
+	<xsd:element name="HFA_CaseDetails_output">
+		<xsd:complexType>
+			<xsd:sequence>
+				<xsd:element ref="CaseInformation" minOccurs="0"/>
+				<xsd:element ref="AlertDetails" minOccurs="0"/>
+				<xsd:element ref="TXNDetails" minOccurs="0"/>
+				<xsd:element name="CustomerDetails" minOccurs="0">
+					<xsd:complexType>
+						<xsd:sequence>
+							<xsd:element ref="CustomerDetailsOutput" minOccurs="0" maxOccurs="unbounded"/>
+						</xsd:sequence>
+					</xsd:complexType>
+				</xsd:element>
+				<xsd:element ref="Remarks" minOccurs="0"/>
+				<xsd:element ref="FAULT" minOccurs="0" maxOccurs="unbounded"/>
+				<xsd:element ref="Response" minOccurs="0"/>
+			</xsd:sequence>
+		</xsd:complexType>
+	</xsd:element>
+	<xsd:element name="ErrorMsg" type="xsd:string"/>
+	<xsd:element name="ErrorCode" type="xsd:string"/>
+	<xsd:element name="FAULT">
+		<xsd:complexType>
+			<xsd:sequence>
+				<xsd:element ref="ErrorCode" minOccurs="0"/>
+				<xsd:element ref="ErrorMsg" minOccurs="0"/>
+			</xsd:sequence>
+		</xsd:complexType>
+	</xsd:element>
+	<xsd:element name="HFA_CaseDetails_input">
+		<xsd:complexType>
+			<xsd:sequence>
+				<xsd:element ref="CASE_NUM" minOccurs="0"/>
+			</xsd:sequence>
+		</xsd:complexType>
+	</xsd:element>
+	<xsd:element name="CaseCreateStartDT" type="xsd:string"/>
+	<xsd:element name="CaseCreateEndDT" type="xsd:string"/>
+	<xsd:element name="HFA_CaseInquiry_input">
+		<xsd:complexType>
+			<xsd:sequence>
+				<xsd:element ref="CustCIN" minOccurs="0"/>
+				<xsd:element ref="CustSuffix" minOccurs="0"/>
+				<xsd:element ref="CASE_NUM" minOccurs="0"/>
+				<xsd:element ref="CardNumber" minOccurs="0"/>
+				<xsd:element ref="CaseCreateStartDT" minOccurs="0"/>
+				<xsd:element ref="CaseCreateEndDT" minOccurs="0"/>
+				<xsd:element ref="StartIndex" minOccurs="0"/>
+				<xsd:element ref="EndIndex" minOccurs="0"/>
+			</xsd:sequence>
+		</xsd:complexType>
+	</xsd:element>
+	<xsd:element name="HFA_CaseInquiry_response">
+		<xsd:complexType>
+			<xsd:sequence>
+				<xsd:element ref="CASE_NUM" minOccurs="0"/>
+				<xsd:element ref="CASE_STATUS" minOccurs="0"/>
+				<xsd:element ref="TXNDate" minOccurs="0"/>
+				<xsd:element ref="ALERT_ID" minOccurs="0"/>
+				<xsd:element ref="CardNumber" minOccurs="0"/>
+				<xsd:element ref="CustCIN" minOccurs="0"/>
+				<xsd:element ref="CustSuffix" minOccurs="0"/>
+				<xsd:element ref="CustName" minOccurs="0"/>
+				<xsd:element ref="ALERT_RULE_ID" minOccurs="0"/>
+				<xsd:element ref="ALERT_RULE_DESC" minOccurs="0"/>
+			</xsd:sequence>
+		</xsd:complexType>
+	</xsd:element>
+	<xsd:element name="TOTALRECCOUNT" type="xsd:string"/>
+	<xsd:element name="HFA_CaseInquiry_output">
+		<xsd:complexType>
+			<xsd:sequence>
+				<xsd:element ref="HFA_CaseInquiry_response" minOccurs="0" maxOccurs="unbounded"/>
+				<xsd:element ref="TOTALRECCOUNT" minOccurs="0"/>
+				<xsd:element ref="FAULT" minOccurs="0"/>
+				<xsd:element ref="Response" minOccurs="0"/>
+			</xsd:sequence>
+		</xsd:complexType>
+	</xsd:element>
+	<xsd:element name="HFA_SaveUpdate_input">
+		<xsd:complexType>
+			<xsd:sequence>
+				<xsd:element ref="CASE_NUM" minOccurs="0"/>
+				<xsd:element ref="CASE_STATUS" minOccurs="0"/>
+				<xsd:element ref="STEP_ACTION" minOccurs="0"/>
+				<xsd:element ref="ALERT_STATUS" minOccurs="0"/>
+				<xsd:element ref="CommentsHistory" minOccurs="0"/>
+			</xsd:sequence>
+		</xsd:complexType>
+	</xsd:element>
+	<xsd:element name="STEP_ACTION" type="xsd:string"/>
+	<xsd:element name="HFA_SaveUpdate_output">
+		<xsd:complexType>
+			<xsd:sequence>
+				<xsd:element ref="FAULT" minOccurs="0"/>
+				<xsd:element ref="Response" minOccurs="0"/>
+			</xsd:sequence>
+		</xsd:complexType>
+	</xsd:element>
+	<xsd:element name="HFA_CustAlertHist_input">
+		<xsd:complexType>
+			<xsd:sequence>
+				<xsd:element ref="CardNumber" minOccurs="0"/>
+			</xsd:sequence>
+		</xsd:complexType>
+	</xsd:element>
+	<xsd:element name="Owner" type="xsd:string"/>
+	<xsd:element name="HFA_CustAlertHist_result">
+		<xsd:complexType>
+			<xsd:sequence>
+				<xsd:element ref="CustCIN" minOccurs="0"/>
+				<xsd:element ref="CustSuffix" minOccurs="0"/>
+				<xsd:element ref="CardNumber" minOccurs="0"/>
+				<xsd:element ref="ALERT_ID" minOccurs="0"/>
+				<xsd:element ref="CASE_NUM" minOccurs="0"/>
+				<xsd:element ref="CASE_STATUS" minOccurs="0"/>
+				<xsd:element ref="ALERT_STATUS" minOccurs="0"/>
+				<xsd:element ref="DATE_RECEIVED" minOccurs="0"/>
+				<xsd:element ref="Owner" minOccurs="0"/>
+				<xsd:element ref="Remark" minOccurs="0"/>
+			</xsd:sequence>
+		</xsd:complexType>
+	</xsd:element>
+	<xsd:element name="HFA_CustAlertHist_output">
+		<xsd:complexType>
+			<xsd:sequence>
+				<xsd:element ref="HFA_CustAlertHist_result" minOccurs="0" maxOccurs="unbounded"/>
+				<xsd:element ref="Response" minOccurs="0"/>
+			</xsd:sequence>
+		</xsd:complexType>
+	</xsd:element>
+	<xsd:element name="Remark" type="xsd:string"/>
+	<xsd:element name="ChipIndicator" type="xsd:string"/>
+	<xsd:element name="Response">
+		<xsd:complexType>
+			<xsd:sequence>
+				<xsd:element ref="responseCode" minOccurs="0"/>
+				<xsd:element ref="responseMessage" minOccurs="0"/>
+				<xsd:element ref="severity" minOccurs="0"/>
+			</xsd:sequence>
+		</xsd:complexType>
+	</xsd:element>
+	<xsd:element name="responseCode" type="xsd:string"/>
+	<xsd:element name="responseMessage" type="xsd:string"/>
+	<xsd:element name="severity" type="xsd:string"/>
+	<xsd:element name="dataModel">
+		<xsd:complexType>
+			<xsd:sequence>
+				<xsd:element ref="inputs" minOccurs="0" maxOccurs="unbounded"/>
+				<xsd:element ref="outputs" minOccurs="0" maxOccurs="unbounded"/>
+				<xsd:element ref="inouts" minOccurs="0" maxOccurs="unbounded"/>
+			</xsd:sequence>
+		</xsd:complexType>
+	</xsd:element>
+	<xsd:element name="simpleSpec">
+		<xsd:complexType>
+			<xsd:sequence>
+				<xsd:element ref="value" minOccurs="0"/>
+			</xsd:sequence>
+		</xsd:complexType>
+	</xsd:element>
+	<xsd:element name="inputs">
+		<xsd:complexType>
+			<xsd:sequence>
+				<xsd:element ref="name"/>
+				<xsd:element ref="type"/>
+				<xsd:element ref="simpleSpec" minOccurs="0"/>
+			</xsd:sequence>
+		</xsd:complexType>
+	</xsd:element>
+	<xsd:element name="name" type="xsd:string"/>
+	<xsd:element name="outputs">
+		<xsd:complexType>
+			<xsd:sequence>
+				<xsd:element ref="name"/>
+				<xsd:element ref="type"/>
+				<xsd:element ref="simpleSpec" minOccurs="0"/>
+			</xsd:sequence>
+		</xsd:complexType>
+	</xsd:element>
+	<xsd:element name="inouts">
+		<xsd:complexType>
+			<xsd:sequence>
+				<xsd:element ref="name"/>
+				<xsd:element ref="type"/>
+				<xsd:element ref="simpleSpec" minOccurs="0"/>
+			</xsd:sequence>
+		</xsd:complexType>
+	</xsd:element>
+	<xsd:element name="param" type="xsd:string"/>
+	<xsd:element name="type" type="xsd:string"/>
+	<xsd:element name="value" type="xsd:string"/>
+	<xsd:element name="mode" type="xsd:string"/>
+	<xsd:element name="isGetNextItem" type="xsd:boolean"/>
+	<xsd:element name="workItemPayload">
+		<xsd:complexType>
+			<xsd:sequence>
+				<xsd:element ref="dataModel"/>
+				<xsd:element ref="isGetNextItem" minOccurs="0"/>
+			</xsd:sequence>
+		</xsd:complexType>
+	</xsd:element>
+	<xsd:complexType name="WorkItemAttributes">
+		<xsd:annotation>
+			<xsd:documentation>Custom data attributes that can be set for a work item.</xsd:documentation>
+		</xsd:annotation>
+		<xsd:attribute name="attribute1" type="xsd:long">
+			<xsd:annotation>
+				<xsd:documentation>The first custom data attribute.</xsd:documentation>
+			</xsd:annotation>
+		</xsd:attribute>
+		<xsd:attribute name="attribute10">
+			<xsd:annotation>
+				<xsd:documentation>The tenth custom data attribute.</xsd:documentation>
+			</xsd:annotation>
+			<xsd:simpleType>
+				<xsd:restriction base="xsd:string">
+					<xsd:maxLength value="20"/>
+				</xsd:restriction>
+			</xsd:simpleType>
+		</xsd:attribute>
+		<xsd:attribute name="attribute11">
+			<xsd:annotation>
+				<xsd:documentation>The eleventh custom data attribute.</xsd:documentation>
+			</xsd:annotation>
+			<xsd:simpleType>
+				<xsd:restriction base="xsd:string">
+					<xsd:maxLength value="20"/>
+				</xsd:restriction>
+			</xsd:simpleType>
+		</xsd:attribute>
+		<xsd:attribute name="attribute12">
+			<xsd:annotation>
+				<xsd:documentation>The twelfth custom data attribute.</xsd:documentation>
+			</xsd:annotation>
+			<xsd:simpleType>
+				<xsd:restriction base="xsd:string">
+					<xsd:maxLength value="20"/>
+				</xsd:restriction>
+			</xsd:simpleType>
+		</xsd:attribute>
+		<xsd:attribute name="attribute13">
+			<xsd:annotation>
+				<xsd:documentation>The thirteenth custom data attribute.</xsd:documentation>
+			</xsd:annotation>
+			<xsd:simpleType>
+				<xsd:restriction base="xsd:string">
+					<xsd:maxLength value="20"/>
+				</xsd:restriction>
+			</xsd:simpleType>
+		</xsd:attribute>
+		<xsd:attribute name="attribute14">
+			<xsd:annotation>
+				<xsd:documentation>The fourteenth custom data attribute.</xsd:documentation>
+			</xsd:annotation>
+			<xsd:simpleType>
+				<xsd:restriction base="xsd:string">
+					<xsd:maxLength value="20"/>
+				</xsd:restriction>
+			</xsd:simpleType>
+		</xsd:attribute>
+		<xsd:attribute name="attribute15" type="xsd:long">
+			<xsd:annotation>
+				<xsd:documentation>15th work item attribute</xsd:documentation>
+			</xsd:annotation>
+		</xsd:attribute>
+		<xsd:attribute name="attribute16" type="xsd:decimal">
+			<xsd:annotation>
+				<xsd:documentation>16th work item attribute</xsd:documentation>
+			</xsd:annotation>
+		</xsd:attribute>
+		<xsd:attribute name="attribute17" type="xsd:decimal">
+			<xsd:annotation>
+				<xsd:documentation>17th work item attribute</xsd:documentation>
+			</xsd:annotation>
+		</xsd:attribute>
+		<xsd:attribute name="attribute18" type="xsd:decimal">
+			<xsd:annotation>
+				<xsd:documentation>18th work item attribute</xsd:documentation>
+			</xsd:annotation>
+		</xsd:attribute>
+		<xsd:attribute name="attribute19" type="xsd:dateTime">
+			<xsd:annotation>
+				<xsd:documentation>19th work item attribute</xsd:documentation>
+			</xsd:annotation>
+		</xsd:attribute>
+		<xsd:attribute name="attribute2">
+			<xsd:annotation>
+				<xsd:documentation>The second custom data attribute.</xsd:documentation>
+			</xsd:annotation>
+			<xsd:simpleType>
+				<xsd:restriction base="xsd:string">
+					<xsd:maxLength value="64"/>
+				</xsd:restriction>
+			</xsd:simpleType>
+		</xsd:attribute>
+		<xsd:attribute name="attribute20" type="xsd:dateTime">
+			<xsd:annotation>
+				<xsd:documentation>20th work item attribute</xsd:documentation>
+			</xsd:annotation>
+		</xsd:attribute>
+		<xsd:attribute name="attribute21">
+			<xsd:annotation>
+				<xsd:documentation>21st work item attribute</xsd:documentation>
+			</xsd:annotation>
+			<xsd:simpleType>
+				<xsd:restriction base="xsd:string">
+					<xsd:maxLength value="20"/>
+				</xsd:restriction>
+			</xsd:simpleType>
+		</xsd:attribute>
+		<xsd:attribute name="attribute22">
+			<xsd:annotation>
+				<xsd:documentation>22nd work item attribute</xsd:documentation>
+			</xsd:annotation>
+			<xsd:simpleType>
+				<xsd:restriction base="xsd:string">
+					<xsd:maxLength value="20"/>
+				</xsd:restriction>
+			</xsd:simpleType>
+		</xsd:attribute>
+		<xsd:attribute name="attribute23">
+			<xsd:annotation>
+				<xsd:documentation>23rd work item attribute</xsd:documentation>
+			</xsd:annotation>
+			<xsd:simpleType>
+				<xsd:restriction base="xsd:string">
+					<xsd:maxLength value="20"/>
+				</xsd:restriction>
+			</xsd:simpleType>
+		</xsd:attribute>
+		<xsd:attribute name="attribute24">
+			<xsd:annotation>
+				<xsd:documentation>24th work item attribute</xsd:documentation>
+			</xsd:annotation>
+			<xsd:simpleType>
+				<xsd:restriction base="xsd:string">
+					<xsd:maxLength value="20"/>
+				</xsd:restriction>
+			</xsd:simpleType>
+		</xsd:attribute>
+		<xsd:attribute name="attribute25">
+			<xsd:annotation>
+				<xsd:documentation>25th work item attribute</xsd:documentation>
+			</xsd:annotation>
+			<xsd:simpleType>
+				<xsd:restriction base="xsd:string">
+					<xsd:maxLength value="20"/>
+				</xsd:restriction>
+			</xsd:simpleType>
+		</xsd:attribute>
+		<xsd:attribute name="attribute26">
+			<xsd:annotation>
+				<xsd:documentation>26th work item attribute</xsd:documentation>
+			</xsd:annotation>
+			<xsd:simpleType>
+				<xsd:restriction base="xsd:string">
+					<xsd:maxLength value="20"/>
+				</xsd:restriction>
+			</xsd:simpleType>
+		</xsd:attribute>
+		<xsd:attribute name="attribute27">
+			<xsd:annotation>
+				<xsd:documentation>27th work item attribute</xsd:documentation>
+			</xsd:annotation>
+			<xsd:simpleType>
+				<xsd:restriction base="xsd:string">
+					<xsd:maxLength value="64"/>
+				</xsd:restriction>
+			</xsd:simpleType>
+		</xsd:attribute>
+		<xsd:attribute name="attribute28">
+			<xsd:annotation>
+				<xsd:documentation>28th work item attribute</xsd:documentation>
+			</xsd:annotation>
+			<xsd:simpleType>
+				<xsd:restriction base="xsd:string">
+					<xsd:maxLength value="64"/>
+				</xsd:restriction>
+			</xsd:simpleType>
+		</xsd:attribute>
+		<xsd:attribute name="attribute29">
+			<xsd:annotation>
+				<xsd:documentation>29th work item attribute</xsd:documentation>
+			</xsd:annotation>
+			<xsd:simpleType>
+				<xsd:restriction base="xsd:string">
+					<xsd:maxLength value="64"/>
+				</xsd:restriction>
+			</xsd:simpleType>
+		</xsd:attribute>
+		<xsd:attribute name="attribute3">
+			<xsd:annotation>
+				<xsd:documentation>The third custom data attribute.</xsd:documentation>
+			</xsd:annotation>
+			<xsd:simpleType>
+				<xsd:restriction base="xsd:string">
+					<xsd:maxLength value="64"/>
+				</xsd:restriction>
+			</xsd:simpleType>
+		</xsd:attribute>
+		<xsd:attribute name="attribute30">
+			<xsd:annotation>
+				<xsd:documentation>30th work item attribute</xsd:documentation>
+			</xsd:annotation>
+			<xsd:simpleType>
+				<xsd:restriction base="xsd:string">
+					<xsd:maxLength value="64"/>
+				</xsd:restriction>
+			</xsd:simpleType>
+		</xsd:attribute>
+		<xsd:attribute name="attribute31">
+			<xsd:annotation>
+				<xsd:documentation>31st work item attribute</xsd:documentation>
+			</xsd:annotation>
+			<xsd:simpleType>
+				<xsd:restriction base="xsd:string">
+					<xsd:maxLength value="64"/>
+				</xsd:restriction>
+			</xsd:simpleType>
+		</xsd:attribute>
+		<xsd:attribute name="attribute32">
+			<xsd:annotation>
+				<xsd:documentation>32nd work item attribute</xsd:documentation>
+			</xsd:annotation>
+			<xsd:simpleType>
+				<xsd:restriction base="xsd:string">
+					<xsd:maxLength value="64"/>
+				</xsd:restriction>
+			</xsd:simpleType>
+		</xsd:attribute>
+		<xsd:attribute name="attribute33">
+			<xsd:annotation>
+				<xsd:documentation>33rd work item attribute</xsd:documentation>
+			</xsd:annotation>
+			<xsd:simpleType>
+				<xsd:restriction base="xsd:string">
+					<xsd:maxLength value="64"/>
+				</xsd:restriction>
+			</xsd:simpleType>
+		</xsd:attribute>
+		<xsd:attribute name="attribute34">
+			<xsd:annotation>
+				<xsd:documentation>34th work item attribute</xsd:documentation>
+			</xsd:annotation>
+			<xsd:simpleType>
+				<xsd:restriction base="xsd:string">
+					<xsd:maxLength value="64"/>
+				</xsd:restriction>
+			</xsd:simpleType>
+		</xsd:attribute>
+		<xsd:attribute name="attribute35">
+			<xsd:annotation>
+				<xsd:documentation>35th work item attribute</xsd:documentation>
+			</xsd:annotation>
+			<xsd:simpleType>
+				<xsd:restriction base="xsd:string">
+					<xsd:maxLength value="64"/>
+				</xsd:restriction>
+			</xsd:simpleType>
+		</xsd:attribute>
+		<xsd:attribute name="attribute36">
+			<xsd:annotation>
+				<xsd:documentation>36th work item attribute</xsd:documentation>
+			</xsd:annotation>
+			<xsd:simpleType>
+				<xsd:restriction base="xsd:string">
+					<xsd:maxLength value="64"/>
+				</xsd:restriction>
+			</xsd:simpleType>
+		</xsd:attribute>
+		<xsd:attribute name="attribute37">
+			<xsd:annotation>
+				<xsd:documentation>37th work item attribute</xsd:documentation>
+			</xsd:annotation>
+			<xsd:simpleType>
+				<xsd:restriction base="xsd:string">
+					<xsd:maxLength value="64"/>
+				</xsd:restriction>
+			</xsd:simpleType>
+		</xsd:attribute>
+		<xsd:attribute name="attribute38">
+			<xsd:annotation>
+				<xsd:documentation>38th work item attribute</xsd:documentation>
+			</xsd:annotation>
+			<xsd:simpleType>
+				<xsd:restriction base="xsd:string">
+					<xsd:maxLength value="64"/>
+				</xsd:restriction>
+			</xsd:simpleType>
+		</xsd:attribute>
+		<xsd:attribute name="attribute39">
+			<xsd:annotation>
+				<xsd:documentation>39th work item attribute</xsd:documentation>
+			</xsd:annotation>
+			<xsd:simpleType>
+				<xsd:restriction base="xsd:string">
+					<xsd:maxLength value="255"/>
+				</xsd:restriction>
+			</xsd:simpleType>
+		</xsd:attribute>
+		<xsd:attribute name="attribute4">
+			<xsd:annotation>
+				<xsd:documentation>The fourth custom data attribute.</xsd:documentation>
+			</xsd:annotation>
+			<xsd:simpleType>
+				<xsd:restriction base="xsd:string">
+					<xsd:maxLength value="64"/>
+				</xsd:restriction>
+			</xsd:simpleType>
+		</xsd:attribute>
+		<xsd:attribute name="attribute40">
+			<xsd:annotation>
+				<xsd:documentation>40th work item attribute</xsd:documentation>
+			</xsd:annotation>
+			<xsd:simpleType>
+				<xsd:restriction base="xsd:string">
+					<xsd:maxLength value="255"/>
+				</xsd:restriction>
+			</xsd:simpleType>
+		</xsd:attribute>
+		<xsd:attribute name="attribute5" type="xsd:decimal">
+			<xsd:annotation>
+				<xsd:documentation>The fifth custom data attribute.</xsd:documentation>
+			</xsd:annotation>
+		</xsd:attribute>
+		<xsd:attribute name="attribute6" type="xsd:dateTime">
+			<xsd:annotation>
+				<xsd:documentation>The sixth custom data attribute.</xsd:documentation>
+			</xsd:annotation>
+		</xsd:attribute>
+		<xsd:attribute name="attribute7" type="xsd:dateTime">
+			<xsd:annotation>
+				<xsd:documentation>The seventh custom data attribute.</xsd:documentation>
+			</xsd:annotation>
+		</xsd:attribute>
+		<xsd:attribute name="attribute8">
+			<xsd:annotation>
+				<xsd:documentation>The eighth custom data attribute.</xsd:documentation>
+			</xsd:annotation>
+			<xsd:simpleType>
+				<xsd:restriction base="xsd:string">
+					<xsd:maxLength value="20"/>
+				</xsd:restriction>
+			</xsd:simpleType>
+		</xsd:attribute>
+		<xsd:attribute name="attribute9">
+			<xsd:annotation>
+				<xsd:documentation>The ninth custom data attribute.</xsd:documentation>
+			</xsd:annotation>
+			<xsd:simpleType>
+				<xsd:restriction base="xsd:string">
+					<xsd:maxLength value="20"/>
+				</xsd:restriction>
+			</xsd:simpleType>
+		</xsd:attribute>
+	</xsd:complexType>
+	<xsd:element name="attributes" type="WorkItemAttributes">
+		<xsd:annotation>
+			<xsd:documentation>Data attributes that can be set on a work item.</xsd:documentation>
+		</xsd:annotation>
+	</xsd:element>
+	<xsd:element name="instanceID" type="xsd:string"/>
+	<xsd:element name="ALERT_RULE_PRIORITY" type="xsd:string"/>
+</xsd:schema>

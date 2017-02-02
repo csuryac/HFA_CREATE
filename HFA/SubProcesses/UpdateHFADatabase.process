@@ -1,0 +1,1048 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<pd:ProcessDefinition xmlns:ns2="http://xmlns.example.com/unique/default/namespace/1303354441086" xmlns:pd="http://xmlns.tibco.com/bw/process/2003" xmlns:ns1="http://www.tibco.com/pe/DeployedVarsType" xmlns:xsl="http://www.w3.org/1999/XSL/Transform" xmlns:ns="http://www.tibco.com/pe/EngineTypes" xmlns:tib="http://www.tibco.com/bw/xslt/custom-functions" xmlns:pfx2="http://www.dbs.com/sg/wis/hfa/xsd/hfaCaseDetails" xmlns:pfx="http://www.tibco.com/pe/WriteToLogActivitySchema" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance">
+    <xs:import xmlns:xs="http://www.w3.org/2001/XMLSchema" namespace="http://www.dbs.com/sg/wis/hfa/xsd/hfaCaseDetails" schemaLocation="/SharedResources/Schema/hfaSchemas/hfaCase.xsd"/>
+    <pd:name>HFA/SubProcesses/UpdateHFADatabase.process</pd:name>
+    <pd:startName>Start</pd:startName>
+    <pd:startType ref="pfx2:HFA_CaseDetails_output"/>
+    <pd:startX>28</pd:startX>
+    <pd:startY>157</pd:startY>
+    <pd:returnBindings/>
+    <pd:endName>End</pd:endName>
+    <pd:endX>1138</pd:endX>
+    <pd:endY>158</pd:endY>
+    <pd:errorSchemas/>
+    <pd:processVariables/>
+    <pd:targetNamespace>http://xmlns.example.com/1377744442811</pd:targetNamespace>
+    <pd:activity name="UpdateCaseData">
+        <pd:type>com.tibco.plugin.jdbc.JDBCUpdateActivity</pd:type>
+        <pd:resourceType>ae.activities.JDBCUpdateActivity</pd:resourceType>
+        <pd:x>336</pd:x>
+        <pd:y>158</pd:y>
+        <config>
+            <timeout>%%Connections/JDBC/QueryTimeout%%</timeout>
+            <commit>false</commit>
+            <emptyStrAsNil>false</emptyStrAsNil>
+            <jdbcSharedConfig>/SharedResources/Connections/JDBC/IWFDB.sharedjdbc</jdbcSharedConfig>
+            <statement>INSERT INTO HFA_CASE_DATA (REC_ID, CASE_NUM, CASE_STATUS, CASE_CREATE_DT, CURRENT_STEP, ALERT_ID, ALERT_RULE_ID, ALERT_RULE_DESC, 
+ALERT_DATE_TIME, CUST_ALERT_SENT, CONTACT_MODE, PREVIOUS_ALERTS, CHANNEL_ID,CUST_NAME,NRIC, NRIC_SUFIX, CARD_NUMBER, ALERT_STATUS,USER_ID, INSTANCE_ID, ALERTRULEPRIORITY ) VALUES
+(HFA_CASE_DATA_S.NEXTVAL, ?,?,SYSDATE,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?, ?)</statement>
+            <Prepared_Param_DataType>
+                <parameter>
+                    <parameterName>CASE_ID</parameterName>
+                    <dataType>VARCHAR</dataType>
+                </parameter>
+                <parameter>
+                    <parameterName>CASE_STATUS</parameterName>
+                    <dataType>VARCHAR</dataType>
+                </parameter>
+                <parameter>
+                    <parameterName>CURRENT_STEP</parameterName>
+                    <dataType>VARCHAR</dataType>
+                </parameter>
+                <parameter>
+                    <parameterName>ALERT_ID</parameterName>
+                    <dataType>VARCHAR</dataType>
+                </parameter>
+                <parameter>
+                    <parameterName>ALERT_RULE_ID</parameterName>
+                    <dataType>VARCHAR</dataType>
+                </parameter>
+                <parameter>
+                    <parameterName>ALERT_RULE_DESC</parameterName>
+                    <dataType>VARCHAR</dataType>
+                </parameter>
+                <parameter>
+                    <parameterName>ALERT_DATE_TIME</parameterName>
+                    <dataType>VARCHAR</dataType>
+                </parameter>
+                <parameter>
+                    <parameterName>CUST_ALERT_SENT</parameterName>
+                    <dataType>VARCHAR</dataType>
+                </parameter>
+                <parameter>
+                    <parameterName>CONTACT_MODE</parameterName>
+                    <dataType>VARCHAR</dataType>
+                </parameter>
+                <parameter>
+                    <parameterName>PREVIOUS_ALERTS</parameterName>
+                    <dataType>VARCHAR</dataType>
+                </parameter>
+                <parameter>
+                    <parameterName>CHANNEL_ID</parameterName>
+                    <dataType>VARCHAR</dataType>
+                </parameter>
+                <parameter>
+                    <parameterName>CUST_NAME</parameterName>
+                    <dataType>VARCHAR</dataType>
+                </parameter>
+                <parameter>
+                    <parameterName>NRIC</parameterName>
+                    <dataType>VARCHAR</dataType>
+                </parameter>
+                <parameter>
+                    <parameterName>NRIC_SUFIX</parameterName>
+                    <dataType>VARCHAR</dataType>
+                </parameter>
+                <parameter>
+                    <parameterName>CARD_NUMBER</parameterName>
+                    <dataType>VARCHAR</dataType>
+                </parameter>
+                <parameter>
+                    <parameterName>ALERT_STATUS</parameterName>
+                    <dataType>VARCHAR</dataType>
+                </parameter>
+                <parameter>
+                    <parameterName>USER_ID</parameterName>
+                    <dataType>VARCHAR</dataType>
+                </parameter>
+                <parameter>
+                    <parameterName>INSTANCE_ID</parameterName>
+                    <dataType>VARCHAR</dataType>
+                </parameter>
+                <parameter>
+                    <parameterName>PRIORITY</parameterName>
+                    <dataType>VARCHAR</dataType>
+                </parameter>
+            </Prepared_Param_DataType>
+        </config>
+        <pd:inputBindings>
+            <jdbcUpdateActivityInput>
+                <CASE_ID>
+                    <xsl:choose>
+                        <xsl:when test="exists($Start/pfx2:HFA_CaseDetails_output/pfx2:CaseInformation/pfx2:CASE_NUM)">
+                            <xsl:value-of select="$Start/pfx2:HFA_CaseDetails_output/pfx2:CaseInformation/pfx2:CASE_NUM"/>
+                        </xsl:when>
+                        <xsl:otherwise>
+                            <xsl:attribute name="xsi:nil">true</xsl:attribute>
+                        </xsl:otherwise>
+                    </xsl:choose>
+                </CASE_ID>
+                <CASE_STATUS>
+                    <xsl:choose>
+                        <xsl:when test="exists($Start/pfx2:HFA_CaseDetails_output/pfx2:CaseInformation/pfx2:CASE_STATUS)">
+                            <xsl:value-of select="$Start/pfx2:HFA_CaseDetails_output/pfx2:CaseInformation/pfx2:CASE_STATUS"/>
+                        </xsl:when>
+                        <xsl:otherwise>
+                            <xsl:attribute name="xsi:nil">true</xsl:attribute>
+                        </xsl:otherwise>
+                    </xsl:choose>
+                </CASE_STATUS>
+                <CURRENT_STEP>
+                    <xsl:value-of select="&quot;MONITOR&quot;"/>
+                </CURRENT_STEP>
+                <ALERT_ID>
+                    <xsl:choose>
+                        <xsl:when test="exists($Start/pfx2:HFA_CaseDetails_output/pfx2:AlertDetails/pfx2:ALERT_ID)">
+                            <xsl:value-of select="$Start/pfx2:HFA_CaseDetails_output/pfx2:AlertDetails/pfx2:ALERT_ID"/>
+                        </xsl:when>
+                        <xsl:otherwise>
+                            <xsl:attribute name="xsi:nil">true</xsl:attribute>
+                        </xsl:otherwise>
+                    </xsl:choose>
+                </ALERT_ID>
+                <ALERT_RULE_ID>
+                    <xsl:choose>
+                        <xsl:when test="exists($Start/pfx2:HFA_CaseDetails_output/pfx2:AlertDetails/pfx2:ALERT_RULE_ID)">
+                            <xsl:value-of select="$Start/pfx2:HFA_CaseDetails_output/pfx2:AlertDetails/pfx2:ALERT_RULE_ID"/>
+                        </xsl:when>
+                        <xsl:otherwise>
+                            <xsl:attribute name="xsi:nil">true</xsl:attribute>
+                        </xsl:otherwise>
+                    </xsl:choose>
+                </ALERT_RULE_ID>
+                <ALERT_RULE_DESC>
+                    <xsl:choose>
+                        <xsl:when test="exists($Start/pfx2:HFA_CaseDetails_output/pfx2:AlertDetails/pfx2:ALERT_RULE_DESC)">
+                            <xsl:value-of select="$Start/pfx2:HFA_CaseDetails_output/pfx2:AlertDetails/pfx2:ALERT_RULE_DESC"/>
+                        </xsl:when>
+                        <xsl:otherwise>
+                            <xsl:attribute name="xsi:nil">true</xsl:attribute>
+                        </xsl:otherwise>
+                    </xsl:choose>
+                </ALERT_RULE_DESC>
+                <ALERT_DATE_TIME>
+                    <xsl:choose>
+                        <xsl:when test="exists($Start/pfx2:HFA_CaseDetails_output/pfx2:AlertDetails/pfx2:ALERT_DATE_TIME)">
+                            <xsl:value-of select="$Start/pfx2:HFA_CaseDetails_output/pfx2:AlertDetails/pfx2:ALERT_DATE_TIME"/>
+                        </xsl:when>
+                        <xsl:otherwise>
+                            <xsl:attribute name="xsi:nil">true</xsl:attribute>
+                        </xsl:otherwise>
+                    </xsl:choose>
+                </ALERT_DATE_TIME>
+                <CUST_ALERT_SENT>
+                    <xsl:choose>
+                        <xsl:when test="exists($Start/pfx2:HFA_CaseDetails_output/pfx2:AlertDetails/pfx2:CUST_ALERT_SENT)">
+                            <xsl:value-of select="$Start/pfx2:HFA_CaseDetails_output/pfx2:AlertDetails/pfx2:CUST_ALERT_SENT"/>
+                        </xsl:when>
+                        <xsl:otherwise>
+                            <xsl:attribute name="xsi:nil">true</xsl:attribute>
+                        </xsl:otherwise>
+                    </xsl:choose>
+                </CUST_ALERT_SENT>
+                <CONTACT_MODE>
+                    <xsl:choose>
+                        <xsl:when test="exists($Start/pfx2:HFA_CaseDetails_output/pfx2:AlertDetails/pfx2:CONTACT_MODE)">
+                            <xsl:value-of select="$Start/pfx2:HFA_CaseDetails_output/pfx2:AlertDetails/pfx2:CONTACT_MODE"/>
+                        </xsl:when>
+                        <xsl:otherwise>
+                            <xsl:attribute name="xsi:nil">true</xsl:attribute>
+                        </xsl:otherwise>
+                    </xsl:choose>
+                </CONTACT_MODE>
+                <PREVIOUS_ALERTS>
+                    <xsl:choose>
+                        <xsl:when test="exists($Start/pfx2:HFA_CaseDetails_output/pfx2:AlertDetails/pfx2:PREVIOUS_ALERT)">
+                            <xsl:value-of select="$Start/pfx2:HFA_CaseDetails_output/pfx2:AlertDetails/pfx2:PREVIOUS_ALERT"/>
+                        </xsl:when>
+                        <xsl:otherwise>
+                            <xsl:attribute name="xsi:nil">true</xsl:attribute>
+                        </xsl:otherwise>
+                    </xsl:choose>
+                </PREVIOUS_ALERTS>
+                <CHANNEL_ID>
+                    <xsl:choose>
+                        <xsl:when test="exists($Start/pfx2:HFA_CaseDetails_output/pfx2:AlertDetails/pfx2:CHANNEL_ID)">
+                            <xsl:value-of select="$Start/pfx2:HFA_CaseDetails_output/pfx2:AlertDetails/pfx2:CHANNEL_ID"/>
+                        </xsl:when>
+                        <xsl:otherwise>
+                            <xsl:attribute name="xsi:nil">true</xsl:attribute>
+                        </xsl:otherwise>
+                    </xsl:choose>
+                </CHANNEL_ID>
+                <xsl:choose>
+                    <xsl:when test="$Start/pfx2:HFA_CaseDetails_output/pfx2:CaseInformation/pfx2:CASE_TYPE ='ATMALERT'">
+                        <CUST_NAME>
+                            <xsl:choose>
+                                <xsl:when test="exists($Start/pfx2:HFA_CaseDetails_output/pfx2:TXNDetails/pfx2:TXNDetailsOutput[1]/pfx2:CUST_NAME)">
+                                    <xsl:value-of select="$Start/pfx2:HFA_CaseDetails_output/pfx2:TXNDetails/pfx2:TXNDetailsOutput[1]/pfx2:CUST_NAME"/>
+                                </xsl:when>
+                                <xsl:otherwise>
+                                    <xsl:attribute name="xsi:nil">true</xsl:attribute>
+                                </xsl:otherwise>
+                            </xsl:choose>
+                        </CUST_NAME>
+                    </xsl:when>
+                    <xsl:otherwise>
+                        <CUST_NAME>
+                            <xsl:choose>
+                                <xsl:when test="exists($Start/pfx2:HFA_CaseDetails_output/pfx2:CustomerDetails/pfx2:CustomerDetailsOutput[1]/pfx2:CustName)">
+                                    <xsl:value-of select="$Start/pfx2:HFA_CaseDetails_output/pfx2:CustomerDetails/pfx2:CustomerDetailsOutput[1]/pfx2:CustName"/>
+                                </xsl:when>
+                                <xsl:otherwise>
+                                    <xsl:attribute name="xsi:nil">true</xsl:attribute>
+                                </xsl:otherwise>
+                            </xsl:choose>
+                        </CUST_NAME>
+                    </xsl:otherwise>
+                </xsl:choose>
+                <xsl:choose>
+                    <xsl:when test="$Start/pfx2:HFA_CaseDetails_output/pfx2:CaseInformation/pfx2:CASE_TYPE ='ATMALERT'">
+                        <NRIC>
+                            <xsl:choose>
+                                <xsl:when test="exists($Start/pfx2:HFA_CaseDetails_output/pfx2:TXNDetails/pfx2:TXNDetailsOutput[1]/pfx2:HKID)">
+                                    <xsl:value-of select="$Start/pfx2:HFA_CaseDetails_output/pfx2:TXNDetails/pfx2:TXNDetailsOutput[1]/pfx2:HKID"/>
+                                </xsl:when>
+                                <xsl:otherwise>
+                                    <xsl:attribute name="xsi:nil">true</xsl:attribute>
+                                </xsl:otherwise>
+                            </xsl:choose>
+                        </NRIC>
+                    </xsl:when>
+                    <xsl:otherwise>
+                        <NRIC>
+                            <xsl:choose>
+                                <xsl:when test="exists($Start/pfx2:HFA_CaseDetails_output/pfx2:CustomerDetails/pfx2:CustomerDetailsOutput[1]/pfx2:CustCIN)">
+                                    <xsl:value-of select="$Start/pfx2:HFA_CaseDetails_output/pfx2:CustomerDetails/pfx2:CustomerDetailsOutput[1]/pfx2:CustCIN"/>
+                                </xsl:when>
+                                <xsl:otherwise>
+                                    <xsl:attribute name="xsi:nil">true</xsl:attribute>
+                                </xsl:otherwise>
+                            </xsl:choose>
+                        </NRIC>
+                    </xsl:otherwise>
+                </xsl:choose>
+                <NRIC_SUFIX>
+                    <xsl:choose>
+                        <xsl:when test="exists(&quot;&quot;)">
+                            <xsl:value-of select="&quot;&quot;"/>
+                        </xsl:when>
+                        <xsl:otherwise>
+                            <xsl:attribute name="xsi:nil">true</xsl:attribute>
+                        </xsl:otherwise>
+                    </xsl:choose>
+                </NRIC_SUFIX>
+                <xsl:choose>
+                    <xsl:when test="$Start/pfx2:HFA_CaseDetails_output/pfx2:CaseInformation/pfx2:CASE_TYPE ='ATMALERT'">
+                        <CARD_NUMBER>
+                            <xsl:choose>
+                                <xsl:when test="exists($Start/pfx2:HFA_CaseDetails_output/pfx2:TXNDetails/pfx2:TXNDetailsOutput[1]/pfx2:CardID)">
+                                    <xsl:value-of select="$Start/pfx2:HFA_CaseDetails_output/pfx2:TXNDetails/pfx2:TXNDetailsOutput[1]/pfx2:CardID"/>
+                                </xsl:when>
+                                <xsl:otherwise>
+                                    <xsl:attribute name="xsi:nil">true</xsl:attribute>
+                                </xsl:otherwise>
+                            </xsl:choose>
+                        </CARD_NUMBER>
+                    </xsl:when>
+                    <xsl:otherwise>
+                        <CARD_NUMBER>
+                            <xsl:choose>
+                                <xsl:when test="exists($Start/pfx2:HFA_CaseDetails_output/pfx2:CustomerDetails/pfx2:CustomerDetailsOutput[1]/pfx2:CardNumber)">
+                                    <xsl:value-of select="$Start/pfx2:HFA_CaseDetails_output/pfx2:CustomerDetails/pfx2:CustomerDetailsOutput[1]/pfx2:CardNumber"/>
+                                </xsl:when>
+                                <xsl:otherwise>
+                                    <xsl:attribute name="xsi:nil">true</xsl:attribute>
+                                </xsl:otherwise>
+                            </xsl:choose>
+                        </CARD_NUMBER>
+                    </xsl:otherwise>
+                </xsl:choose>
+                <ALERT_STATUS>
+                    <xsl:value-of select="&quot;SUSPECTED&quot;"/>
+                </ALERT_STATUS>
+                <USER_ID>
+                    <xsl:value-of select="&quot;SYSTEM&quot;"/>
+                </USER_ID>
+                <INSTANCE_ID>
+                    <xsl:choose>
+                        <xsl:when test="exists($Start/pfx2:HFA_CaseDetails_output/pfx2:CaseInformation/pfx2:instanceID)">
+                            <xsl:value-of select="$Start/pfx2:HFA_CaseDetails_output/pfx2:CaseInformation/pfx2:instanceID"/>
+                        </xsl:when>
+                        <xsl:otherwise>
+                            <xsl:attribute name="xsi:nil">true</xsl:attribute>
+                        </xsl:otherwise>
+                    </xsl:choose>
+                </INSTANCE_ID>
+                <PRIORITY>
+                    <xsl:choose>
+                        <xsl:when test="exists($Start/pfx2:HFA_CaseDetails_output/pfx2:CaseInformation/pfx2:ALERT_RULE_PRIORITY)">
+                            <xsl:value-of select="$Start/pfx2:HFA_CaseDetails_output/pfx2:CaseInformation/pfx2:ALERT_RULE_PRIORITY"/>
+                        </xsl:when>
+                        <xsl:otherwise>
+                            <xsl:attribute name="xsi:nil">true</xsl:attribute>
+                        </xsl:otherwise>
+                    </xsl:choose>
+                </PRIORITY>
+            </jdbcUpdateActivityInput>
+        </pd:inputBindings>
+    </pd:activity>
+    <pd:activity name="LogStart">
+        <pd:type>com.tibco.pe.core.WriteToLogActivity</pd:type>
+        <pd:resourceType>ae.activities.log</pd:resourceType>
+        <pd:x>151</pd:x>
+        <pd:y>160</pd:y>
+        <config>
+            <role>User</role>
+        </config>
+        <pd:inputBindings>
+            <pfx:ActivityInput>
+                <message>
+                    <xsl:value-of select="concat(&quot;Update HFA Database Process Start. Case Number: &quot;, $Start/pfx2:HFA_CaseDetails_output/pfx2:CaseInformation/pfx2:CASE_NUM)"/>
+                </message>
+            </pfx:ActivityInput>
+        </pd:inputBindings>
+    </pd:activity>
+    <pd:activity name="LogEnd">
+        <pd:type>com.tibco.pe.core.WriteToLogActivity</pd:type>
+        <pd:resourceType>ae.activities.log</pd:resourceType>
+        <pd:x>992</pd:x>
+        <pd:y>160</pd:y>
+        <config>
+            <role>User</role>
+        </config>
+        <pd:inputBindings>
+            <pfx:ActivityInput>
+                <message>
+                    <xsl:value-of select="concat(&quot;Update HFA Database Process End. Case Number: &quot;, $Start/pfx2:HFA_CaseDetails_output/pfx2:CaseInformation/pfx2:CASE_NUM)"/>
+                </message>
+            </pfx:ActivityInput>
+        </pd:inputBindings>
+    </pd:activity>
+    <pd:activity name="Catch">
+        <pd:type>com.tibco.pe.core.CatchActivity</pd:type>
+        <pd:resourceType>ae.activities.catch</pd:resourceType>
+        <pd:x>414</pd:x>
+        <pd:y>436</pd:y>
+        <pd:handler>true</pd:handler>
+        <config>
+            <catchAll>true</catchAll>
+        </config>
+        <pd:inputBindings/>
+    </pd:activity>
+    <pd:activity name="Log">
+        <pd:type>com.tibco.pe.core.WriteToLogActivity</pd:type>
+        <pd:resourceType>ae.activities.log</pd:resourceType>
+        <pd:x>550</pd:x>
+        <pd:y>435</pd:y>
+        <config>
+            <role>User</role>
+        </config>
+        <pd:inputBindings>
+            <pfx:ActivityInput>
+                <message>
+                    <xsl:value-of select="concat(&quot;Error in update HFA Database Process. Error report:&quot;, tib:render-xml($_error/ns:ErrorReport, 1, 1))"/>
+                </message>
+            </pfx:ActivityInput>
+        </pd:inputBindings>
+    </pd:activity>
+    <pd:activity name="UpdateHeaderData">
+        <pd:type>com.tibco.plugin.jdbc.JDBCUpdateActivity</pd:type>
+        <pd:resourceType>ae.activities.JDBCUpdateActivity</pd:resourceType>
+        <pd:x>669</pd:x>
+        <pd:y>159</pd:y>
+        <config>
+            <timeout>%%Connections/JDBC/QueryTimeout%%</timeout>
+            <commit>false</commit>
+            <emptyStrAsNil>false</emptyStrAsNil>
+            <jdbcSharedConfig>/SharedResources/Connections/JDBC/IWFDB.sharedjdbc</jdbcSharedConfig>
+            <statement>UPDATE HFA_ALERT_HEADER SET CASE_ID = ?, CASE_STATUS = ? WHERE ALERT_ID = ?</statement>
+            <Prepared_Param_DataType>
+                <parameter>
+                    <parameterName>CASE_ID</parameterName>
+                    <dataType>VARCHAR</dataType>
+                </parameter>
+                <parameter>
+                    <parameterName>CASE_STATUS</parameterName>
+                    <dataType>VARCHAR</dataType>
+                </parameter>
+                <parameter>
+                    <parameterName>ALERT_ID</parameterName>
+                    <dataType>VARCHAR</dataType>
+                </parameter>
+            </Prepared_Param_DataType>
+        </config>
+        <pd:inputBindings>
+            <jdbcUpdateActivityInput>
+                <CASE_ID>
+                    <xsl:choose>
+                        <xsl:when test="exists($Start/pfx2:HFA_CaseDetails_output/pfx2:CaseInformation/pfx2:CASE_NUM)">
+                            <xsl:value-of select="$Start/pfx2:HFA_CaseDetails_output/pfx2:CaseInformation/pfx2:CASE_NUM"/>
+                        </xsl:when>
+                        <xsl:otherwise>
+                            <xsl:attribute name="xsi:nil">true</xsl:attribute>
+                        </xsl:otherwise>
+                    </xsl:choose>
+                </CASE_ID>
+                <CASE_STATUS>
+                    <xsl:choose>
+                        <xsl:when test="exists($Start/pfx2:HFA_CaseDetails_output/pfx2:CaseInformation/pfx2:CASE_STATUS)">
+                            <xsl:value-of select="$Start/pfx2:HFA_CaseDetails_output/pfx2:CaseInformation/pfx2:CASE_STATUS"/>
+                        </xsl:when>
+                        <xsl:otherwise>
+                            <xsl:attribute name="xsi:nil">true</xsl:attribute>
+                        </xsl:otherwise>
+                    </xsl:choose>
+                </CASE_STATUS>
+                <ALERT_ID>
+                    <xsl:choose>
+                        <xsl:when test="exists($Start/pfx2:HFA_CaseDetails_output/pfx2:AlertDetails/pfx2:ALERT_ID)">
+                            <xsl:value-of select="$Start/pfx2:HFA_CaseDetails_output/pfx2:AlertDetails/pfx2:ALERT_ID"/>
+                        </xsl:when>
+                        <xsl:otherwise>
+                            <xsl:attribute name="xsi:nil">true</xsl:attribute>
+                        </xsl:otherwise>
+                    </xsl:choose>
+                </ALERT_ID>
+            </jdbcUpdateActivityInput>
+        </pd:inputBindings>
+    </pd:activity>
+    <pd:activity name="UpdateRmkHistoryDB">
+        <pd:type>com.tibco.pe.core.CallProcessActivity</pd:type>
+        <pd:resourceType>ae.process.subprocess</pd:resourceType>
+        <pd:x>815</pd:x>
+        <pd:y>158</pd:y>
+        <config>
+            <processName>/HFA/SubProcesses/UpdateCaseData.process</processName>
+            <spawn>true</spawn>
+        </config>
+        <pd:inputBindings>
+            <ns2:UpdateCaseDataRequest>
+                <ns2:PROJ_CODE>
+                    <xsl:value-of select="$_globalVariables/ns1:GlobalVariables/Application/ProjectCode"/>
+                </ns2:PROJ_CODE>
+                <ns2:ACTED_BY>
+                    <xsl:value-of select="&quot;SYSTEM&quot;"/>
+                </ns2:ACTED_BY>
+                <ns2:ACTED_DT>
+                    <xsl:value-of select="tib:format-dateTime(&quot;dd/MM/yyyy HH:mm&quot;, current-dateTime())"/>
+                </ns2:ACTED_DT>
+                <ns2:Case_Status>
+                    <xsl:value-of select="&quot;NEW&quot;"/>
+                </ns2:Case_Status>
+                <ns2:STEP_ACTION>
+                    <xsl:value-of select="&quot;Create New Case&quot;"/>
+                </ns2:STEP_ACTION>
+                <ns2:USER_ID>
+                    <xsl:value-of select="&quot;SYSTEM&quot;"/>
+                </ns2:USER_ID>
+                <xsl:if test="$Start/pfx2:HFA_CaseDetails_output/pfx2:CaseInformation/pfx2:CASE_NUM">
+                    <ns2:CaseNumber>
+                        <xsl:value-of select="$Start/pfx2:HFA_CaseDetails_output/pfx2:CaseInformation/pfx2:CASE_NUM"/>
+                    </ns2:CaseNumber>
+                </xsl:if>
+                <ns2:STEP_NAME_RMK>
+                    <xsl:value-of select="&quot;HFA00101&quot;"/>
+                </ns2:STEP_NAME_RMK>
+                <ns2:STEP_DESC_RMK>
+                    <xsl:value-of select="&quot;MONITOR&quot;"/>
+                </ns2:STEP_DESC_RMK>
+                <ns2:REMARK>
+                    <xsl:value-of select="&quot;Alert Case Created&quot;"/>
+                </ns2:REMARK>
+                <ns2:IS_RMK_REQ>
+                    <xsl:value-of select="&quot;YES&quot;"/>
+                </ns2:IS_RMK_REQ>
+                <ns2:IS_HIST_REQ>
+                    <xsl:value-of select="&quot;YES&quot;"/>
+                </ns2:IS_HIST_REQ>
+                <ns2:IS_STATUS_REQ>
+                    <xsl:value-of select="&quot;NO&quot;"/>
+                </ns2:IS_STATUS_REQ>
+                <ns2:IS_FROM_BW>
+                    <xsl:value-of select="&quot;YES&quot;"/>
+                </ns2:IS_FROM_BW>
+                <ns2:STEP_NAME_HIST>
+                    <xsl:value-of select="&quot;HFA00101&quot;"/>
+                </ns2:STEP_NAME_HIST>
+                <ns2:STEP_DESC_HIST>
+                    <xsl:value-of select="&quot;MONITOR&quot;"/>
+                </ns2:STEP_DESC_HIST>
+            </ns2:UpdateCaseDataRequest>
+        </pd:inputBindings>
+    </pd:activity>
+    <pd:activity name="NoCustData">
+        <pd:type>com.tibco.plugin.timer.NullActivity</pd:type>
+        <pd:resourceType>ae.activities.null</pd:resourceType>
+        <pd:x>333</pd:x>
+        <pd:y>59</pd:y>
+        <config/>
+        <pd:inputBindings/>
+    </pd:activity>
+    <pd:activity name="LogInfo">
+        <pd:type>com.tibco.pe.core.WriteToLogActivity</pd:type>
+        <pd:resourceType>ae.activities.log</pd:resourceType>
+        <pd:x>456</pd:x>
+        <pd:y>61</pd:y>
+        <config>
+            <role>User</role>
+        </config>
+        <pd:inputBindings>
+            <pfx:ActivityInput>
+                <message>
+                    <xsl:value-of select="concat(&quot;Unable to add customer data as no CIN Suffix retrieved from IPServices. Alert ID: &quot;, $Start/pfx2:HFA_CaseDetails_output/pfx2:AlertDetails/pfx2:ALERT_ID)"/>
+                </message>
+            </pfx:ActivityInput>
+        </pd:inputBindings>
+    </pd:activity>
+    <pd:activity name="Null">
+        <pd:type>com.tibco.plugin.timer.NullActivity</pd:type>
+        <pd:resourceType>ae.activities.null</pd:resourceType>
+        <pd:x>440</pd:x>
+        <pd:y>157</pd:y>
+        <config/>
+        <pd:inputBindings/>
+    </pd:activity>
+    <pd:activity name="UpdateCustomerData-1">
+        <pd:type>com.tibco.plugin.jdbc.JDBCUpdateActivity</pd:type>
+        <pd:resourceType>ae.activities.JDBCUpdateActivity</pd:resourceType>
+        <pd:x>539</pd:x>
+        <pd:y>122</pd:y>
+        <config>
+            <timeout>%%Connections/JDBC/QueryTimeout%%</timeout>
+            <commit>false</commit>
+            <emptyStrAsNil>false</emptyStrAsNil>
+            <jdbcSharedConfig>/SharedResources/Connections/JDBC/IWFDB.sharedjdbc</jdbcSharedConfig>
+            <statement>INSERT INTO HFA_CUST_DATA (REC_ID, NRIC, NRIC_SUFFIX, CUST_NAME, CUST_SALUTATION, ACCOUNT_NUMBER, ACCOUNT_TYPE, CARD_NUMBER,
+CARD_TYPE,  TELEPHONE1, TELEPHONE2, CASE_ID, DOC_TYPE) VALUES
+(HFA_CUST_DATA_S.NEXTVAL,?,?,?,?,?,?,?,?,?,?,?, ?)</statement>
+            <Prepared_Param_DataType>
+                <parameter>
+                    <parameterName>NRIC</parameterName>
+                    <dataType>VARCHAR</dataType>
+                </parameter>
+                <parameter>
+                    <parameterName>NRIC_SUFFIX</parameterName>
+                    <dataType>VARCHAR</dataType>
+                </parameter>
+                <parameter>
+                    <parameterName>CUST_NAME</parameterName>
+                    <dataType>VARCHAR</dataType>
+                </parameter>
+                <parameter>
+                    <parameterName>CUST_SALUTATION</parameterName>
+                    <dataType>VARCHAR</dataType>
+                </parameter>
+                <parameter>
+                    <parameterName>ACCOUNT_NUMBER</parameterName>
+                    <dataType>VARCHAR</dataType>
+                </parameter>
+                <parameter>
+                    <parameterName>ACCOUNT_TYPE</parameterName>
+                    <dataType>VARCHAR</dataType>
+                </parameter>
+                <parameter>
+                    <parameterName>CARD_NUMBER</parameterName>
+                    <dataType>VARCHAR</dataType>
+                </parameter>
+                <parameter>
+                    <parameterName>CARD_TYPE</parameterName>
+                    <dataType>VARCHAR</dataType>
+                </parameter>
+                <parameter>
+                    <parameterName>TELEPHONE1</parameterName>
+                    <dataType>VARCHAR</dataType>
+                </parameter>
+                <parameter>
+                    <parameterName>TELEPHONE2</parameterName>
+                    <dataType>VARCHAR</dataType>
+                </parameter>
+                <parameter>
+                    <parameterName>CASE_ID</parameterName>
+                    <dataType>VARCHAR</dataType>
+                </parameter>
+                <parameter>
+                    <parameterName>DOC_TYPE</parameterName>
+                    <dataType>VARCHAR</dataType>
+                </parameter>
+            </Prepared_Param_DataType>
+        </config>
+        <pd:inputBindings>
+            <jdbcUpdateActivityInput>
+                <NRIC>
+                    <xsl:choose>
+                        <xsl:when test="exists($Start/pfx2:HFA_CaseDetails_output/pfx2:CustomerDetails/pfx2:CustomerDetailsOutput[1]/pfx2:CustCIN)">
+                            <xsl:value-of select="$Start/pfx2:HFA_CaseDetails_output/pfx2:CustomerDetails/pfx2:CustomerDetailsOutput[1]/pfx2:CustCIN"/>
+                        </xsl:when>
+                        <xsl:otherwise>
+                            <xsl:attribute name="xsi:nil">true</xsl:attribute>
+                        </xsl:otherwise>
+                    </xsl:choose>
+                </NRIC>
+                <NRIC_SUFFIX>
+                    <xsl:choose>
+                        <xsl:when test="exists(&quot;&quot;)">
+                            <xsl:value-of select="&quot;&quot;"/>
+                        </xsl:when>
+                        <xsl:otherwise>
+                            <xsl:attribute name="xsi:nil">true</xsl:attribute>
+                        </xsl:otherwise>
+                    </xsl:choose>
+                </NRIC_SUFFIX>
+                <CUST_NAME>
+                    <xsl:choose>
+                        <xsl:when test="exists($Start/pfx2:HFA_CaseDetails_output/pfx2:CustomerDetails/pfx2:CustomerDetailsOutput[1]/pfx2:CustName)">
+                            <xsl:value-of select="$Start/pfx2:HFA_CaseDetails_output/pfx2:CustomerDetails/pfx2:CustomerDetailsOutput[1]/pfx2:CustName"/>
+                        </xsl:when>
+                        <xsl:otherwise>
+                            <xsl:attribute name="xsi:nil">true</xsl:attribute>
+                        </xsl:otherwise>
+                    </xsl:choose>
+                </CUST_NAME>
+                <CUST_SALUTATION>
+                    <xsl:choose>
+                        <xsl:when test="exists($Start/pfx2:HFA_CaseDetails_output/pfx2:CustomerDetails/pfx2:CustomerDetailsOutput[1]/pfx2:CustSalutation)">
+                            <xsl:value-of select="$Start/pfx2:HFA_CaseDetails_output/pfx2:CustomerDetails/pfx2:CustomerDetailsOutput[1]/pfx2:CustSalutation"/>
+                        </xsl:when>
+                        <xsl:otherwise>
+                            <xsl:attribute name="xsi:nil">true</xsl:attribute>
+                        </xsl:otherwise>
+                    </xsl:choose>
+                </CUST_SALUTATION>
+                <ACCOUNT_NUMBER>
+                    <xsl:value-of select="&quot;&quot;"/>
+                </ACCOUNT_NUMBER>
+                <ACCOUNT_TYPE>
+                    <xsl:choose>
+                        <xsl:when test="exists(&quot;&quot;)">
+                            <xsl:value-of select="&quot;&quot;"/>
+                        </xsl:when>
+                        <xsl:otherwise>
+                            <xsl:attribute name="xsi:nil">true</xsl:attribute>
+                        </xsl:otherwise>
+                    </xsl:choose>
+                </ACCOUNT_TYPE>
+                <CARD_NUMBER>
+                    <xsl:choose>
+                        <xsl:when test="exists($Start/pfx2:HFA_CaseDetails_output/pfx2:CustomerDetails/pfx2:CustomerDetailsOutput[1]/pfx2:CardNumber)">
+                            <xsl:value-of select="$Start/pfx2:HFA_CaseDetails_output/pfx2:CustomerDetails/pfx2:CustomerDetailsOutput[1]/pfx2:CardNumber"/>
+                        </xsl:when>
+                        <xsl:otherwise>
+                            <xsl:attribute name="xsi:nil">true</xsl:attribute>
+                        </xsl:otherwise>
+                    </xsl:choose>
+                </CARD_NUMBER>
+                <CARD_TYPE>
+                    <xsl:choose>
+                        <xsl:when test="exists($Start/pfx2:HFA_CaseDetails_output/pfx2:CustomerDetails/pfx2:CustomerDetailsOutput[1]/pfx2:CardType)">
+                            <xsl:value-of select="$Start/pfx2:HFA_CaseDetails_output/pfx2:CustomerDetails/pfx2:CustomerDetailsOutput[1]/pfx2:CardType"/>
+                        </xsl:when>
+                        <xsl:otherwise>
+                            <xsl:attribute name="xsi:nil">true</xsl:attribute>
+                        </xsl:otherwise>
+                    </xsl:choose>
+                </CARD_TYPE>
+                <TELEPHONE1>
+                    <xsl:choose>
+                        <xsl:when test="exists($Start/pfx2:HFA_CaseDetails_output/pfx2:CustomerDetails/pfx2:CustomerDetailsOutput[1]/pfx2:CustNumPrimary)">
+                            <xsl:value-of select="$Start/pfx2:HFA_CaseDetails_output/pfx2:CustomerDetails/pfx2:CustomerDetailsOutput[1]/pfx2:CustNumPrimary"/>
+                        </xsl:when>
+                        <xsl:otherwise>
+                            <xsl:attribute name="xsi:nil">true</xsl:attribute>
+                        </xsl:otherwise>
+                    </xsl:choose>
+                </TELEPHONE1>
+                <TELEPHONE2>
+                    <xsl:value-of select="&quot;&quot;"/>
+                </TELEPHONE2>
+                <CASE_ID>
+                    <xsl:choose>
+                        <xsl:when test="exists($Start/pfx2:HFA_CaseDetails_output/pfx2:CaseInformation/pfx2:CASE_NUM)">
+                            <xsl:value-of select="$Start/pfx2:HFA_CaseDetails_output/pfx2:CaseInformation/pfx2:CASE_NUM"/>
+                        </xsl:when>
+                        <xsl:otherwise>
+                            <xsl:attribute name="xsi:nil">true</xsl:attribute>
+                        </xsl:otherwise>
+                    </xsl:choose>
+                </CASE_ID>
+                <DOC_TYPE>
+                    <xsl:choose>
+                        <xsl:when test="exists($Start/pfx2:HFA_CaseDetails_output/pfx2:CustomerDetails/pfx2:CustomerDetailsOutput[1]/pfx2:AccountType)">
+                            <xsl:value-of select="$Start/pfx2:HFA_CaseDetails_output/pfx2:CustomerDetails/pfx2:CustomerDetailsOutput[1]/pfx2:AccountType"/>
+                        </xsl:when>
+                        <xsl:otherwise>
+                            <xsl:attribute name="xsi:nil">true</xsl:attribute>
+                        </xsl:otherwise>
+                    </xsl:choose>
+                </DOC_TYPE>
+            </jdbcUpdateActivityInput>
+        </pd:inputBindings>
+    </pd:activity>
+    <pd:group name="Group">
+        <pd:type>com.tibco.pe.core.LoopGroup</pd:type>
+        <pd:resourceType>ae.process.group</pd:resourceType>
+        <pd:x>460</pd:x>
+        <pd:y>261</pd:y>
+        <pd:width>195</pd:width>
+        <pd:height>140</pd:height>
+        <pd:collapsedWidth>57</pd:collapsedWidth>
+        <pd:collapsedHeight>70</pd:collapsedHeight>
+        <pd:groupVariables/>
+        <pd:joinToggle>inherit</pd:joinToggle>
+        <config>
+            <pd:groupType>inputLoop</pd:groupType>
+            <pd:serializable>false</pd:serializable>
+            <pd:over>$Start/pfx2:HFA_CaseDetails_output/pfx2:TXNDetails/pfx2:TXNDetailsOutput</pd:over>
+            <pd:iterationElementSlot>eachTxnDetails</pd:iterationElementSlot>
+            <pd:indexSlot>i</pd:indexSlot>
+            <pd:activityOutputName/>
+            <pd:accumulateOutput>false</pd:accumulateOutput>
+        </config>
+        <pd:inputBindings/>
+        <pd:expanded>true</pd:expanded>
+        <pd:transition>
+            <pd:from>start</pd:from>
+            <pd:to>UpdateCustomerData</pd:to>
+            <pd:lineType>Default</pd:lineType>
+            <pd:lineColor>-16777216</pd:lineColor>
+            <pd:conditionType>always</pd:conditionType>
+        </pd:transition>
+        <pd:transition>
+            <pd:from>UpdateCustomerData</pd:from>
+            <pd:to>end</pd:to>
+            <pd:lineType>Default</pd:lineType>
+            <pd:lineColor>-16777216</pd:lineColor>
+            <pd:conditionType>always</pd:conditionType>
+        </pd:transition>
+        <pd:activity name="UpdateCustomerData">
+            <pd:type>com.tibco.plugin.jdbc.JDBCUpdateActivity</pd:type>
+            <pd:resourceType>ae.activities.JDBCUpdateActivity</pd:resourceType>
+            <pd:x>549</pd:x>
+            <pd:y>333</pd:y>
+            <config>
+                <timeout>%%Connections/JDBC/QueryTimeout%%</timeout>
+                <commit>false</commit>
+                <emptyStrAsNil>false</emptyStrAsNil>
+                <jdbcSharedConfig>/SharedResources/Connections/JDBC/IWFDB.sharedjdbc</jdbcSharedConfig>
+                <statement>INSERT INTO HFA_CUST_DATA (REC_ID, NRIC, NRIC_SUFFIX, CUST_NAME, CUST_SALUTATION, ACCOUNT_NUMBER, ACCOUNT_TYPE, CARD_NUMBER,
+CARD_TYPE,  TELEPHONE1, TELEPHONE2, CASE_ID, DOC_TYPE) VALUES
+(HFA_CUST_DATA_S.NEXTVAL,?,?,?,?,?,?,?,?,?,?,?,?)</statement>
+                <Prepared_Param_DataType>
+                    <parameter>
+                        <parameterName>NRIC</parameterName>
+                        <dataType>VARCHAR</dataType>
+                    </parameter>
+                    <parameter>
+                        <parameterName>NRIC_SUFFIX</parameterName>
+                        <dataType>VARCHAR</dataType>
+                    </parameter>
+                    <parameter>
+                        <parameterName>CUST_NAME</parameterName>
+                        <dataType>VARCHAR</dataType>
+                    </parameter>
+                    <parameter>
+                        <parameterName>CUST_SALUTATION</parameterName>
+                        <dataType>VARCHAR</dataType>
+                    </parameter>
+                    <parameter>
+                        <parameterName>ACCOUNT_NUMBER</parameterName>
+                        <dataType>VARCHAR</dataType>
+                    </parameter>
+                    <parameter>
+                        <parameterName>ACCOUNT_TYPE</parameterName>
+                        <dataType>VARCHAR</dataType>
+                    </parameter>
+                    <parameter>
+                        <parameterName>CARD_NUMBER</parameterName>
+                        <dataType>VARCHAR</dataType>
+                    </parameter>
+                    <parameter>
+                        <parameterName>CARD_TYPE</parameterName>
+                        <dataType>VARCHAR</dataType>
+                    </parameter>
+                    <parameter>
+                        <parameterName>TELEPHONE1</parameterName>
+                        <dataType>VARCHAR</dataType>
+                    </parameter>
+                    <parameter>
+                        <parameterName>TELEPHONE2</parameterName>
+                        <dataType>VARCHAR</dataType>
+                    </parameter>
+                    <parameter>
+                        <parameterName>CASE_ID</parameterName>
+                        <dataType>VARCHAR</dataType>
+                    </parameter>
+                    <parameter>
+                        <parameterName>DOC_TYPE</parameterName>
+                        <dataType>VARCHAR</dataType>
+                    </parameter>
+                </Prepared_Param_DataType>
+            </config>
+            <pd:inputBindings>
+                <jdbcUpdateActivityInput>
+                    <NRIC>
+                        <xsl:choose>
+                            <xsl:when test="exists($eachTxnDetails/pfx2:TXNDetailsOutput/pfx2:HKID)">
+                                <xsl:value-of select="$eachTxnDetails/pfx2:TXNDetailsOutput/pfx2:HKID"/>
+                            </xsl:when>
+                            <xsl:otherwise>
+                                <xsl:attribute name="xsi:nil">true</xsl:attribute>
+                            </xsl:otherwise>
+                        </xsl:choose>
+                    </NRIC>
+                    <NRIC_SUFFIX>
+                        <xsl:choose>
+                            <xsl:when test="exists(&quot;&quot;)">
+                                <xsl:value-of select="&quot;&quot;"/>
+                            </xsl:when>
+                            <xsl:otherwise>
+                                <xsl:attribute name="xsi:nil">true</xsl:attribute>
+                            </xsl:otherwise>
+                        </xsl:choose>
+                    </NRIC_SUFFIX>
+                    <CUST_NAME>
+                        <xsl:choose>
+                            <xsl:when test="exists($eachTxnDetails/pfx2:TXNDetailsOutput/pfx2:CUST_NAME)">
+                                <xsl:value-of select="$eachTxnDetails/pfx2:TXNDetailsOutput/pfx2:CUST_NAME"/>
+                            </xsl:when>
+                            <xsl:otherwise>
+                                <xsl:attribute name="xsi:nil">true</xsl:attribute>
+                            </xsl:otherwise>
+                        </xsl:choose>
+                    </CUST_NAME>
+                    <CUST_SALUTATION>
+                        <xsl:choose>
+                            <xsl:when test="exists(&quot;&quot;)">
+                                <xsl:value-of select="&quot;&quot;"/>
+                            </xsl:when>
+                            <xsl:otherwise>
+                                <xsl:attribute name="xsi:nil">true</xsl:attribute>
+                            </xsl:otherwise>
+                        </xsl:choose>
+                    </CUST_SALUTATION>
+                    <ACCOUNT_NUMBER>
+                        <xsl:value-of select="&quot;&quot;"/>
+                    </ACCOUNT_NUMBER>
+                    <ACCOUNT_TYPE>
+                        <xsl:value-of select="&quot;&quot;"/>
+                    </ACCOUNT_TYPE>
+                    <CARD_NUMBER>
+                        <xsl:choose>
+                            <xsl:when test="exists($eachTxnDetails/pfx2:TXNDetailsOutput/pfx2:CardID)">
+                                <xsl:value-of select="$eachTxnDetails/pfx2:TXNDetailsOutput/pfx2:CardID"/>
+                            </xsl:when>
+                            <xsl:otherwise>
+                                <xsl:attribute name="xsi:nil">true</xsl:attribute>
+                            </xsl:otherwise>
+                        </xsl:choose>
+                    </CARD_NUMBER>
+                    <CARD_TYPE>
+                        <xsl:choose>
+                            <xsl:when test="exists($eachTxnDetails/pfx2:TXNDetailsOutput/pfx2:CARD_TYPE)">
+                                <xsl:value-of select="$eachTxnDetails/pfx2:TXNDetailsOutput/pfx2:CARD_TYPE"/>
+                            </xsl:when>
+                            <xsl:otherwise>
+                                <xsl:attribute name="xsi:nil">true</xsl:attribute>
+                            </xsl:otherwise>
+                        </xsl:choose>
+                    </CARD_TYPE>
+                    <TELEPHONE1>
+                        <xsl:choose>
+                            <xsl:when test="exists($eachTxnDetails/pfx2:TXNDetailsOutput/pfx2:TELEPHONE1)">
+                                <xsl:value-of select="$eachTxnDetails/pfx2:TXNDetailsOutput/pfx2:TELEPHONE1"/>
+                            </xsl:when>
+                            <xsl:otherwise>
+                                <xsl:attribute name="xsi:nil">true</xsl:attribute>
+                            </xsl:otherwise>
+                        </xsl:choose>
+                    </TELEPHONE1>
+                    <TELEPHONE2>
+                        <xsl:value-of select="&quot;&quot;"/>
+                    </TELEPHONE2>
+                    <CASE_ID>
+                        <xsl:choose>
+                            <xsl:when test="exists($Start/pfx2:HFA_CaseDetails_output/pfx2:CaseInformation/pfx2:CASE_NUM)">
+                                <xsl:value-of select="$Start/pfx2:HFA_CaseDetails_output/pfx2:CaseInformation/pfx2:CASE_NUM"/>
+                            </xsl:when>
+                            <xsl:otherwise>
+                                <xsl:attribute name="xsi:nil">true</xsl:attribute>
+                            </xsl:otherwise>
+                        </xsl:choose>
+                    </CASE_ID>
+                    <DOC_TYPE>
+                        <xsl:choose>
+                            <xsl:when test="exists($Start/pfx2:HFA_CaseDetails_output/pfx2:CustomerDetails/pfx2:CustomerDetailsOutput[1]/pfx2:AccountType)">
+                                <xsl:value-of select="$Start/pfx2:HFA_CaseDetails_output/pfx2:CustomerDetails/pfx2:CustomerDetailsOutput[1]/pfx2:AccountType"/>
+                            </xsl:when>
+                            <xsl:otherwise>
+                                <xsl:attribute name="xsi:nil">true</xsl:attribute>
+                            </xsl:otherwise>
+                        </xsl:choose>
+                    </DOC_TYPE>
+                </jdbcUpdateActivityInput>
+            </pd:inputBindings>
+        </pd:activity>
+    </pd:group>
+    <pd:transition>
+        <pd:from>Start</pd:from>
+        <pd:to>LogStart</pd:to>
+        <pd:lineType>Default</pd:lineType>
+        <pd:lineColor>-16777216</pd:lineColor>
+        <pd:conditionType>always</pd:conditionType>
+    </pd:transition>
+    <pd:transition>
+        <pd:from>UpdateCaseData</pd:from>
+        <pd:to>Null</pd:to>
+        <pd:xpathDescription>NRIC exists</pd:xpathDescription>
+        <pd:lineType>Default</pd:lineType>
+        <pd:lineColor>-16777216</pd:lineColor>
+        <pd:conditionType>otherwise</pd:conditionType>
+    </pd:transition>
+    <pd:transition>
+        <pd:from>LogEnd</pd:from>
+        <pd:to>End</pd:to>
+        <pd:lineType>Default</pd:lineType>
+        <pd:lineColor>-16777216</pd:lineColor>
+        <pd:conditionType>always</pd:conditionType>
+    </pd:transition>
+    <pd:transition>
+        <pd:from>Catch</pd:from>
+        <pd:to>Log</pd:to>
+        <pd:lineType>Default</pd:lineType>
+        <pd:lineColor>-16777216</pd:lineColor>
+        <pd:conditionType>always</pd:conditionType>
+    </pd:transition>
+    <pd:transition>
+        <pd:from>Log</pd:from>
+        <pd:to>End</pd:to>
+        <pd:lineType>One Bend</pd:lineType>
+        <pd:lineColor>-16777216</pd:lineColor>
+        <pd:conditionType>always</pd:conditionType>
+    </pd:transition>
+    <pd:transition>
+        <pd:from>UpdateHeaderData</pd:from>
+        <pd:to>UpdateRmkHistoryDB</pd:to>
+        <pd:lineType>Default</pd:lineType>
+        <pd:lineColor>-16777216</pd:lineColor>
+        <pd:conditionType>always</pd:conditionType>
+    </pd:transition>
+    <pd:transition>
+        <pd:from>UpdateRmkHistoryDB</pd:from>
+        <pd:to>LogEnd</pd:to>
+        <pd:lineType>Default</pd:lineType>
+        <pd:lineColor>-16777216</pd:lineColor>
+        <pd:conditionType>always</pd:conditionType>
+    </pd:transition>
+    <pd:transition>
+        <pd:from>UpdateCaseData</pd:from>
+        <pd:to>NoCustData</pd:to>
+        <pd:xpathDescription>NRIC is null</pd:xpathDescription>
+        <pd:lineType>Default</pd:lineType>
+        <pd:lineColor>-16777216</pd:lineColor>
+        <pd:conditionType>xpath</pd:conditionType>
+        <pd:xpath>string-length($Start/pfx2:HFA_CaseDetails_output/pfx2:CustomerDetails/pfx2:CustomerDetailsOutput[1]/pfx2:CustCIN)=0
+and
+exists($Start/pfx2:HFA_CaseDetails_output/pfx2:TXNDetails/pfx2:TXNDetailsOutput[1]/pfx2:HKID) and string-length($Start/pfx2:HFA_CaseDetails_output/pfx2:TXNDetails/pfx2:TXNDetailsOutput[1]/pfx2:HKID) = 0</pd:xpath>
+    </pd:transition>
+    <pd:transition>
+        <pd:from>NoCustData</pd:from>
+        <pd:to>LogInfo</pd:to>
+        <pd:lineType>Default</pd:lineType>
+        <pd:lineColor>-16777216</pd:lineColor>
+        <pd:conditionType>always</pd:conditionType>
+    </pd:transition>
+    <pd:transition>
+        <pd:from>LogInfo</pd:from>
+        <pd:to>UpdateHeaderData</pd:to>
+        <pd:lineType>One Bend</pd:lineType>
+        <pd:lineColor>-16777216</pd:lineColor>
+        <pd:conditionType>otherwise</pd:conditionType>
+    </pd:transition>
+    <pd:transition>
+        <pd:from>LogInfo</pd:from>
+        <pd:to>Null</pd:to>
+        <pd:xpathDescription>CIN Input exists</pd:xpathDescription>
+        <pd:lineType>One Bend</pd:lineType>
+        <pd:lineColor>-16777216</pd:lineColor>
+        <pd:conditionType>xpath</pd:conditionType>
+        <pd:xpath>string-length($Start/pfx2:HFA_CaseDetails_output/pfx2:CustomerDetails/pfx2:CustomerDetailsOutput[1]/pfx2:CustCIN)!=0</pd:xpath>
+    </pd:transition>
+    <pd:transition>
+        <pd:from>Null</pd:from>
+        <pd:to>UpdateCustomerData-1</pd:to>
+        <pd:xpathDescription>otherwise</pd:xpathDescription>
+        <pd:lineType>Default</pd:lineType>
+        <pd:lineColor>-16777216</pd:lineColor>
+        <pd:conditionType>otherwise</pd:conditionType>
+    </pd:transition>
+    <pd:transition>
+        <pd:from>UpdateCustomerData-1</pd:from>
+        <pd:to>UpdateHeaderData</pd:to>
+        <pd:lineType>Default</pd:lineType>
+        <pd:lineColor>-16777216</pd:lineColor>
+        <pd:conditionType>always</pd:conditionType>
+    </pd:transition>
+    <pd:transition>
+        <pd:from>Group</pd:from>
+        <pd:to>UpdateHeaderData</pd:to>
+        <pd:lineType>Default</pd:lineType>
+        <pd:lineColor>-16777216</pd:lineColor>
+        <pd:conditionType>always</pd:conditionType>
+    </pd:transition>
+    <pd:transition>
+        <pd:from>Null</pd:from>
+        <pd:to>Group</pd:to>
+        <pd:xpathDescription>ATMALERT-AGG</pd:xpathDescription>
+        <pd:lineType>Default</pd:lineType>
+        <pd:lineColor>-16777216</pd:lineColor>
+        <pd:conditionType>xpath</pd:conditionType>
+        <pd:xpath>$Start/pfx2:HFA_CaseDetails_output/pfx2:CaseInformation/pfx2:CASE_TYPE='ATMALERT'</pd:xpath>
+    </pd:transition>
+    <pd:transition>
+        <pd:from>LogStart</pd:from>
+        <pd:to>UpdateCaseData</pd:to>
+        <pd:lineType>Default</pd:lineType>
+        <pd:lineColor>-16777216</pd:lineColor>
+        <pd:conditionType>always</pd:conditionType>
+    </pd:transition>
+</pd:ProcessDefinition>

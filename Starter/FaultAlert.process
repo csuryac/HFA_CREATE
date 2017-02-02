@@ -1,0 +1,1158 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<pd:ProcessDefinition xmlns:ns2="http://schemas.dbs.com/icc/ems" xmlns:pd="http://xmlns.tibco.com/bw/process/2003" xmlns:xsl="http://www.w3.org/1999/XSL/Transform" xmlns:ns1="http://www.tibco.com/pe/DeployedVarsType" xmlns:ns4="http://schemas.dbs.com/icc/CardSvc" xmlns:ns="www.tibco.com/plugin/Timer" xmlns:ns3="http://schemas.dbs.com/icc/CustomerSvc" xmlns:tib="http://www.tibco.com/bw/xslt/custom-functions" xmlns:pfx2="http://schemas.xmlsoap.org/soap/envelope/" xmlns:ns5="http://www.tibco.com/pe/EngineTypes" xmlns:pfx="http://schemas.dbs.com/icc/BasicSvc" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance">
+    <xs:import xmlns:xs="http://www.w3.org/2001/XMLSchema" namespace="http://schemas.xmlsoap.org/soap/envelope/" schemaLocation="/SharedResources/Schema/IP/HFASchema.xsd"/>
+    <xs:import xmlns:xs="http://www.w3.org/2001/XMLSchema" namespace="http://schemas.dbs.com/icc/BasicSvc" schemaLocation="/SharedResources/Schema/IP/CaseMgmtRqAddOp_v1.1.xsd"/>
+    <pd:name>Starter/FaultAlert.process</pd:name>
+    <pd:startName>Timer</pd:startName>
+    <pd:startX>0</pd:startX>
+    <pd:startY>0</pd:startY>
+    <pd:returnBindings/>
+    <pd:starter name="Timer">
+        <pd:type>com.tibco.plugin.timer.TimerEventSource</pd:type>
+        <pd:resourceType>ae.activities.timer</pd:resourceType>
+        <pd:x>27</pd:x>
+        <pd:y>161</pd:y>
+        <config>
+            <StartTime>1454664456000</StartTime>
+            <Frequency>false</Frequency>
+            <TimeInterval>%%Application/BatchFault/IntervalMs%%</TimeInterval>
+            <FrequencyIndex>Millisecond</FrequencyIndex>
+        </config>
+        <pd:inputBindings/>
+    </pd:starter>
+    <pd:endName>End</pd:endName>
+    <pd:endX>2563</pd:endX>
+    <pd:endY>263</pd:endY>
+    <pd:errorSchemas/>
+    <pd:processVariables/>
+    <pd:targetNamespace>http://xmlns.example.com/1454664390208</pd:targetNamespace>
+    <pd:activity name="StartLog">
+        <pd:type>com.tibco.pe.core.CallProcessActivity</pd:type>
+        <pd:resourceType>ae.process.subprocess</pd:resourceType>
+        <pd:x>167</pd:x>
+        <pd:y>160</pd:y>
+        <config>
+            <processName>/HFA/SubProcesses/Log.process</processName>
+        </config>
+        <pd:inputBindings>
+            <Input>
+                <LogLocation>
+                    <xsl:value-of select="'FaultAlert'"/>
+                </LogLocation>
+                <ServiceName>
+                    <xsl:value-of select="'HFA'"/>
+                </ServiceName>
+                <InputType>
+                    <xsl:value-of select="'BATCH START'"/>
+                </InputType>
+                <Schema>
+                    <xsl:copy-of select="$Timer/ns:TimerOutputSchema"/>
+                </Schema>
+            </Input>
+        </pd:inputBindings>
+    </pd:activity>
+    <pd:activity name="QueryFault">
+        <pd:type>com.tibco.plugin.jdbc.JDBCQueryActivity</pd:type>
+        <pd:resourceType>ae.activities.JDBCQueryActivity</pd:resourceType>
+        <pd:x>341</pd:x>
+        <pd:y>159</pd:y>
+        <config>
+            <timeout>%%Connections/JDBC/QueryTimeout%%</timeout>
+            <commit>false</commit>
+            <maxRows>%%Connections/JDBC/MaxRow%%</maxRows>
+            <emptyStrAsNil>false</emptyStrAsNil>
+            <jdbcSharedConfig>/SharedResources/Connections/JDBC/IWFDB.sharedjdbc</jdbcSharedConfig>
+            <statement>select ID,
+CONTENT,
+RETRY,
+STATUS,
+ERR_MESSAGE
+from HFA_ALERT_FAULT
+where STATUS &lt; ?
+order by CREATED_DATE</statement>
+            <Prepared_Param_DataType>
+                <parameter>
+                    <parameterName>STATUS</parameterName>
+                    <dataType>VARCHAR</dataType>
+                </parameter>
+            </Prepared_Param_DataType>
+            <oraObjects/>
+            <oraTables/>
+            <QueryOutputCachedSchemaColumns>ID</QueryOutputCachedSchemaColumns>
+            <QueryOutputCachedSchemaDataTypes>2</QueryOutputCachedSchemaDataTypes>
+            <QueryOutputCachedSchemaDataTypesName>NUMBER</QueryOutputCachedSchemaDataTypesName>
+            <QueryOutputCachedSchemaStatus>RequiredElement</QueryOutputCachedSchemaStatus>
+            <QueryOutputCachedSchemaColumns>CONTENT</QueryOutputCachedSchemaColumns>
+            <QueryOutputCachedSchemaDataTypes>2004</QueryOutputCachedSchemaDataTypes>
+            <QueryOutputCachedSchemaDataTypesName>BLOB</QueryOutputCachedSchemaDataTypesName>
+            <QueryOutputCachedSchemaStatus>OptionalElement</QueryOutputCachedSchemaStatus>
+            <QueryOutputCachedSchemaColumns>RETRY</QueryOutputCachedSchemaColumns>
+            <QueryOutputCachedSchemaDataTypes>2</QueryOutputCachedSchemaDataTypes>
+            <QueryOutputCachedSchemaDataTypesName>NUMBER</QueryOutputCachedSchemaDataTypesName>
+            <QueryOutputCachedSchemaStatus>OptionalElement</QueryOutputCachedSchemaStatus>
+            <QueryOutputCachedSchemaColumns>STATUS</QueryOutputCachedSchemaColumns>
+            <QueryOutputCachedSchemaDataTypes>12</QueryOutputCachedSchemaDataTypes>
+            <QueryOutputCachedSchemaDataTypesName>VARCHAR2</QueryOutputCachedSchemaDataTypesName>
+            <QueryOutputCachedSchemaStatus>OptionalElement</QueryOutputCachedSchemaStatus>
+            <QueryOutputCachedSchemaColumns>ERR_MESSAGE</QueryOutputCachedSchemaColumns>
+            <QueryOutputCachedSchemaDataTypes>12</QueryOutputCachedSchemaDataTypes>
+            <QueryOutputCachedSchemaDataTypesName>VARCHAR2</QueryOutputCachedSchemaDataTypesName>
+            <QueryOutputCachedSchemaStatus>OptionalElement</QueryOutputCachedSchemaStatus>
+        </config>
+        <pd:inputBindings>
+            <jdbcQueryActivityInput>
+                <STATUS>
+                    <xsl:value-of select="&quot;2&quot;"/>
+                </STATUS>
+            </jdbcQueryActivityInput>
+        </pd:inputBindings>
+    </pd:activity>
+    <pd:activity name="EndLog">
+        <pd:type>com.tibco.pe.core.CallProcessActivity</pd:type>
+        <pd:resourceType>ae.process.subprocess</pd:resourceType>
+        <pd:x>2380</pd:x>
+        <pd:y>261</pd:y>
+        <config>
+            <processName>/HFA/SubProcesses/Log.process</processName>
+            <spawn>true</spawn>
+        </config>
+        <pd:inputBindings>
+            <Input>
+                <LogLocation>
+                    <xsl:value-of select="'FaultAlert'"/>
+                </LogLocation>
+                <ServiceName>
+                    <xsl:value-of select="'HFA'"/>
+                </ServiceName>
+                <InputType>
+                    <xsl:value-of select="concat('BATCH END ', count($QueryFault/resultSet/Record))"/>
+                </InputType>
+            </Input>
+        </pd:inputBindings>
+    </pd:activity>
+    <pd:group name="Group (2)">
+        <pd:type>com.tibco.pe.core.LoopGroup</pd:type>
+        <pd:resourceType>ae.process.group</pd:resourceType>
+        <pd:x>457</pd:x>
+        <pd:y>1</pd:y>
+        <pd:width>1751</pd:width>
+        <pd:height>498</pd:height>
+        <pd:collapsedWidth>62</pd:collapsedWidth>
+        <pd:collapsedHeight>69</pd:collapsedHeight>
+        <pd:groupVariables/>
+        <config>
+            <pd:groupType>inputLoop</pd:groupType>
+            <pd:serializable>false</pd:serializable>
+            <pd:over>$QueryFault/resultSet/Record</pd:over>
+            <pd:iterationElementSlot>record</pd:iterationElementSlot>
+            <pd:indexSlot>iter</pd:indexSlot>
+            <pd:activityOutputName/>
+            <pd:accumulateOutput>false</pd:accumulateOutput>
+        </config>
+        <pd:inputBindings/>
+        <pd:expanded>true</pd:expanded>
+        <pd:transition>
+            <pd:from>start</pd:from>
+            <pd:to>UpdateFaultStatus-2</pd:to>
+            <pd:xpathDescription/>
+            <pd:lineType>Default</pd:lineType>
+            <pd:lineColor>-16777216</pd:lineColor>
+            <pd:conditionType>always</pd:conditionType>
+        </pd:transition>
+        <pd:transition>
+            <pd:from>Log</pd:from>
+            <pd:to>end</pd:to>
+            <pd:lineType>Default</pd:lineType>
+            <pd:lineColor>-16777216</pd:lineColor>
+            <pd:conditionType>always</pd:conditionType>
+        </pd:transition>
+        <pd:transition>
+            <pd:from>Log-3</pd:from>
+            <pd:to>end</pd:to>
+            <pd:lineType>Default</pd:lineType>
+            <pd:lineColor>-16777216</pd:lineColor>
+            <pd:conditionType>always</pd:conditionType>
+        </pd:transition>
+        <pd:transition>
+            <pd:from>Log-2</pd:from>
+            <pd:to>end</pd:to>
+            <pd:lineType>Default</pd:lineType>
+            <pd:lineColor>-16777216</pd:lineColor>
+            <pd:conditionType>always</pd:conditionType>
+        </pd:transition>
+        <pd:transition>
+            <pd:from>Log-1</pd:from>
+            <pd:to>end</pd:to>
+            <pd:lineType>Default</pd:lineType>
+            <pd:lineColor>-16777216</pd:lineColor>
+            <pd:conditionType>always</pd:conditionType>
+        </pd:transition>
+        <pd:transition>
+            <pd:from>Parse XML</pd:from>
+            <pd:to>Render XML</pd:to>
+            <pd:lineType>Default</pd:lineType>
+            <pd:lineColor>-16777216</pd:lineColor>
+            <pd:conditionType>always</pd:conditionType>
+        </pd:transition>
+        <pd:transition>
+            <pd:from>Render XML</pd:from>
+            <pd:to>ParseAlertReq</pd:to>
+            <pd:lineType>Default</pd:lineType>
+            <pd:lineColor>-16777216</pd:lineColor>
+            <pd:conditionType>always</pd:conditionType>
+        </pd:transition>
+        <pd:transition>
+            <pd:from>ParseAlertReq</pd:from>
+            <pd:to>ValidateAlertRequest</pd:to>
+            <pd:lineType>Default</pd:lineType>
+            <pd:lineColor>-16777216</pd:lineColor>
+            <pd:conditionType>always</pd:conditionType>
+        </pd:transition>
+        <pd:transition>
+            <pd:from>ValidateAlertRequest</pd:from>
+            <pd:to>Group (1)</pd:to>
+            <pd:xpathDescription/>
+            <pd:lineType>Default</pd:lineType>
+            <pd:lineColor>-16777216</pd:lineColor>
+            <pd:conditionType>always</pd:conditionType>
+        </pd:transition>
+        <pd:transition>
+            <pd:from>Group (1)</pd:from>
+            <pd:to>UpdateFaultStatus</pd:to>
+            <pd:lineType>Default</pd:lineType>
+            <pd:lineColor>-16777216</pd:lineColor>
+            <pd:conditionType>always</pd:conditionType>
+        </pd:transition>
+        <pd:transition>
+            <pd:from>Catch</pd:from>
+            <pd:to>UpdateFaultStatus-1</pd:to>
+            <pd:lineType>One Bend</pd:lineType>
+            <pd:lineColor>-16777216</pd:lineColor>
+            <pd:conditionType>always</pd:conditionType>
+        </pd:transition>
+        <pd:transition>
+            <pd:from>RetryExceed</pd:from>
+            <pd:to>UpdateFaultStatus-1-1</pd:to>
+            <pd:lineType>Default</pd:lineType>
+            <pd:lineColor>-16777216</pd:lineColor>
+            <pd:conditionType>always</pd:conditionType>
+        </pd:transition>
+        <pd:transition>
+            <pd:from>UpdateFaultStatus-1</pd:from>
+            <pd:to>Log-1</pd:to>
+            <pd:lineType>Default</pd:lineType>
+            <pd:lineColor>-16777216</pd:lineColor>
+            <pd:conditionType>always</pd:conditionType>
+        </pd:transition>
+        <pd:transition>
+            <pd:from>UpdateFaultStatus-1</pd:from>
+            <pd:to>Log-2</pd:to>
+            <pd:lineType>Default</pd:lineType>
+            <pd:lineColor>-16777216</pd:lineColor>
+            <pd:conditionType>error</pd:conditionType>
+        </pd:transition>
+        <pd:transition>
+            <pd:from>UpdateFaultStatus-2</pd:from>
+            <pd:to>Parse XML</pd:to>
+            <pd:xpathDescription>retry</pd:xpathDescription>
+            <pd:lineType>Default</pd:lineType>
+            <pd:lineColor>-16777216</pd:lineColor>
+            <pd:conditionType>xpath</pd:conditionType>
+            <pd:xpath>$record/Record/RETRY &lt;= $_globalVariables/ns1:GlobalVariables/Application/BatchFault/MaxRetry</pd:xpath>
+        </pd:transition>
+        <pd:transition>
+            <pd:from>UpdateFaultStatus-2</pd:from>
+            <pd:to>RetryExceed</pd:to>
+            <pd:lineType>Default</pd:lineType>
+            <pd:lineColor>-16777216</pd:lineColor>
+            <pd:conditionType>otherwise</pd:conditionType>
+        </pd:transition>
+        <pd:transition>
+            <pd:from>UpdateFaultStatus-1-1</pd:from>
+            <pd:to>Log</pd:to>
+            <pd:lineType>Default</pd:lineType>
+            <pd:lineColor>-16777216</pd:lineColor>
+            <pd:conditionType>always</pd:conditionType>
+        </pd:transition>
+        <pd:transition>
+            <pd:from>UpdateFaultStatus</pd:from>
+            <pd:to>Log-3</pd:to>
+            <pd:lineType>Default</pd:lineType>
+            <pd:lineColor>-16777216</pd:lineColor>
+            <pd:conditionType>always</pd:conditionType>
+        </pd:transition>
+        <pd:activity name="Parse XML">
+            <pd:type>com.tibco.plugin.xml.XMLParseActivity</pd:type>
+            <pd:resourceType>ae.activities.XMLParseActivity</pd:resourceType>
+            <pd:x>690</pd:x>
+            <pd:y>116</pd:y>
+            <config>
+                <inputStyle>binary</inputStyle>
+                <xsdVersion>default</xsdVersion>
+                <validateOutput>true</validateOutput>
+                <term ref="pfx2:Envelope"/>
+            </config>
+            <pd:inputBindings>
+                <xmlBinary>
+                    <bytes>
+                        <xsl:value-of select="$record/Record/CONTENT"/>
+                    </bytes>
+                </xmlBinary>
+            </pd:inputBindings>
+        </pd:activity>
+        <pd:activity name="Render XML">
+            <pd:type>com.tibco.plugin.xml.XMLRendererActivity</pd:type>
+            <pd:resourceType>ae.activities.XMLRendererActivity</pd:resourceType>
+            <pd:x>808</pd:x>
+            <pd:y>115</pd:y>
+            <config>
+                <renderAsText>text</renderAsText>
+                <validateInput>false</validateInput>
+                <term ref="pfx:CaseMgmtRqAdd"/>
+            </config>
+            <pd:coercions>
+                <pd:coercion xpath="$Parse-XML/pfx2:Envelope/pfx2:Body/*" element="pfx:CaseMgmtRqAdd"/>
+            </pd:coercions>
+            <pd:inputBindings>
+                <xsl:copy-of select="$Parse-XML/pfx2:Envelope/pfx2:Body/pfx:CaseMgmtRqAdd"/>
+            </pd:inputBindings>
+        </pd:activity>
+        <pd:activity name="ParseAlertReq">
+            <pd:type>com.tibco.plugin.xml.XMLParseActivity</pd:type>
+            <pd:resourceType>ae.activities.XMLParseActivity</pd:resourceType>
+            <pd:x>901</pd:x>
+            <pd:y>119</pd:y>
+            <config>
+                <inputStyle>text</inputStyle>
+                <xsdVersion>default</xsdVersion>
+                <validateOutput>true</validateOutput>
+                <term ref="pfx:CaseMgmtRqAdd"/>
+            </config>
+            <pd:inputBindings>
+                <xmlString>
+                    <xsl:value-of select="$Render-XML/xmlString"/>
+                </xmlString>
+            </pd:inputBindings>
+        </pd:activity>
+        <pd:activity name="ValidateAlertRequest">
+            <pd:type>com.tibco.pe.core.CallProcessActivity</pd:type>
+            <pd:resourceType>ae.process.subprocess</pd:resourceType>
+            <pd:x>1108</pd:x>
+            <pd:y>121</pd:y>
+            <config>
+                <processName>/HFA/SubProcesses/ValidateAlertRequest.process</processName>
+            </config>
+            <pd:inputBindings>
+                <xsl:copy-of select="$ParseAlertReq/pfx:CaseMgmtRqAdd"/>
+            </pd:inputBindings>
+        </pd:activity>
+        <pd:activity name="UpdateFaultStatus">
+            <pd:type>com.tibco.plugin.jdbc.JDBCUpdateActivity</pd:type>
+            <pd:resourceType>ae.activities.JDBCUpdateActivity</pd:resourceType>
+            <pd:x>1964</pd:x>
+            <pd:y>161</pd:y>
+            <config>
+                <timeout>%%Connections/JDBC/QueryTimeout%%</timeout>
+                <commit>false</commit>
+                <emptyStrAsNil>false</emptyStrAsNil>
+                <jdbcSharedConfig>/SharedResources/Connections/JDBC/IWFDB.sharedjdbc</jdbcSharedConfig>
+                <statement>update HFA_ALERT_FAULT
+set status = ?,
+LAST_RETRY_DATE = systimestamp
+where ID = ?</statement>
+                <Prepared_Param_DataType>
+                    <parameter>
+                        <parameterName>STATUS</parameterName>
+                        <dataType>VARCHAR</dataType>
+                    </parameter>
+                    <parameter>
+                        <parameterName>ID</parameterName>
+                        <dataType>VARCHAR</dataType>
+                    </parameter>
+                </Prepared_Param_DataType>
+            </config>
+            <pd:inputBindings>
+                <jdbcUpdateActivityInput>
+                    <STATUS>
+                        <xsl:value-of select="&quot;2&quot;"/>
+                    </STATUS>
+                    <ID>
+                        <xsl:value-of select="$record/Record/ID"/>
+                    </ID>
+                </jdbcUpdateActivityInput>
+            </pd:inputBindings>
+        </pd:activity>
+        <pd:group name="Group (1)">
+            <pd:type>com.tibco.pe.core.LoopGroup</pd:type>
+            <pd:resourceType>ae.process.group</pd:resourceType>
+            <pd:x>1271</pd:x>
+            <pd:y>46</pd:y>
+            <pd:width>578</pd:width>
+            <pd:height>211</pd:height>
+            <pd:collapsedWidth>62</pd:collapsedWidth>
+            <pd:collapsedHeight>69</pd:collapsedHeight>
+            <pd:groupVariables/>
+            <config>
+                <pd:groupType>simpleGroup</pd:groupType>
+                <pd:serializable>false</pd:serializable>
+            </config>
+            <pd:inputBindings/>
+            <pd:expanded>true</pd:expanded>
+            <pd:transition>
+                <pd:from>start</pd:from>
+                <pd:to>UpdateAlertHeader</pd:to>
+                <pd:lineType>Default</pd:lineType>
+                <pd:lineColor>-16777216</pd:lineColor>
+                <pd:conditionType>always</pd:conditionType>
+            </pd:transition>
+            <pd:transition>
+                <pd:from>StartAlertCase</pd:from>
+                <pd:to>end</pd:to>
+                <pd:lineType>Default</pd:lineType>
+                <pd:lineColor>-16777216</pd:lineColor>
+                <pd:conditionType>always</pd:conditionType>
+            </pd:transition>
+            <pd:transition>
+                <pd:from>UpdateAlertHeader</pd:from>
+                <pd:to>Group</pd:to>
+                <pd:lineType>Default</pd:lineType>
+                <pd:lineColor>-16777216</pd:lineColor>
+                <pd:conditionType>always</pd:conditionType>
+            </pd:transition>
+            <pd:transition>
+                <pd:from>Group</pd:from>
+                <pd:to>StartAlertCase</pd:to>
+                <pd:lineType>Default</pd:lineType>
+                <pd:lineColor>-16777216</pd:lineColor>
+                <pd:conditionType>always</pd:conditionType>
+            </pd:transition>
+            <pd:activity name="UpdateAlertHeader">
+                <pd:type>com.tibco.plugin.jdbc.JDBCUpdateActivity</pd:type>
+                <pd:resourceType>ae.activities.JDBCUpdateActivity</pd:resourceType>
+                <pd:x>1380</pd:x>
+                <pd:y>178</pd:y>
+                <config>
+                    <timeout>%%Connections/JDBC/QueryTimeout%%</timeout>
+                    <commit>false</commit>
+                    <emptyStrAsNil>false</emptyStrAsNil>
+                    <jdbcSharedConfig>/SharedResources/Connections/JDBC/IWFDB.sharedjdbc</jdbcSharedConfig>
+                    <statement>INSERT INTO HFA_ALERT_HEADER (REC_ID, ALERT_ID, CARD_NUMBER, CUST_CIN, CUST_NAME, ALERT_RULE_ID, ALERT_RULE_DESC, ALERT_DATE_TIME,
+CUST_ALERT_SENT, CONTACT_MODE, CHANNEL_ID,  ORG_CODE, CUST_SUFFIX) VALUES
+(HFA_TXN_HEADER_S.nextval,?,?,?,?,?,?,?,?,?,?,?,?)</statement>
+                    <Prepared_Param_DataType>
+                        <parameter>
+                            <parameterName>ALERT_ID</parameterName>
+                            <dataType>VARCHAR</dataType>
+                        </parameter>
+                        <parameter>
+                            <parameterName>CARD_NUMBER</parameterName>
+                            <dataType>VARCHAR</dataType>
+                        </parameter>
+                        <parameter>
+                            <parameterName>CUST_CIN</parameterName>
+                            <dataType>VARCHAR</dataType>
+                        </parameter>
+                        <parameter>
+                            <parameterName>CUST_NAME</parameterName>
+                            <dataType>VARCHAR</dataType>
+                        </parameter>
+                        <parameter>
+                            <parameterName>ALERT_RULE_ID</parameterName>
+                            <dataType>VARCHAR</dataType>
+                        </parameter>
+                        <parameter>
+                            <parameterName>ALERT_RULE_ID_DESC</parameterName>
+                            <dataType>VARCHAR</dataType>
+                        </parameter>
+                        <parameter>
+                            <parameterName>ALERT_DATE_TIME</parameterName>
+                            <dataType>VARCHAR</dataType>
+                        </parameter>
+                        <parameter>
+                            <parameterName>CUST_ALERT_SENT</parameterName>
+                            <dataType>VARCHAR</dataType>
+                        </parameter>
+                        <parameter>
+                            <parameterName>CONTACT_MODE</parameterName>
+                            <dataType>VARCHAR</dataType>
+                        </parameter>
+                        <parameter>
+                            <parameterName>CHANNEL_ID</parameterName>
+                            <dataType>VARCHAR</dataType>
+                        </parameter>
+                        <parameter>
+                            <parameterName>ORG_CODE</parameterName>
+                            <dataType>VARCHAR</dataType>
+                        </parameter>
+                        <parameter>
+                            <parameterName>CUST_SUFFIX</parameterName>
+                            <dataType>VARCHAR</dataType>
+                        </parameter>
+                    </Prepared_Param_DataType>
+                </config>
+                <pd:inputBindings>
+                    <jdbcUpdateActivityInput>
+                        <ALERT_ID>
+                            <xsl:choose>
+                                <xsl:when test="exists($ParseAlertReq/pfx:CaseMgmtRqAdd/pfx:AlertDetl/pfx:AlertId)">
+                                    <xsl:value-of select="$ParseAlertReq/pfx:CaseMgmtRqAdd/pfx:AlertDetl/pfx:AlertId"/>
+                                </xsl:when>
+                                <xsl:otherwise>
+                                    <xsl:attribute name="xsi:nil">true</xsl:attribute>
+                                </xsl:otherwise>
+                            </xsl:choose>
+                        </ALERT_ID>
+                        <CARD_NUMBER>
+                            <xsl:value-of select="$ParseAlertReq/pfx:CaseMgmtRqAdd/ns2:Card/ns2:CardId"/>
+                        </CARD_NUMBER>
+                        <CUST_CIN>
+                            <xsl:value-of select="$ParseAlertReq/pfx:CaseMgmtRqAdd/ns2:CISInternalId/ns2:CISCIN"/>
+                        </CUST_CIN>
+                        <CUST_NAME>
+                            <xsl:value-of select="$ParseAlertReq/pfx:CaseMgmtRqAdd/ns2:CustName/ns2:FullName"/>
+                        </CUST_NAME>
+                        <ALERT_RULE_ID>
+                            <xsl:value-of select="$ParseAlertReq/pfx:CaseMgmtRqAdd/pfx:AlertDetl/pfx:AlertRuleId"/>
+                        </ALERT_RULE_ID>
+                        <ALERT_RULE_ID_DESC>
+                            <xsl:choose>
+                                <xsl:when test="exists($ParseAlertReq/pfx:CaseMgmtRqAdd/pfx:AlertDetl/pfx:AlertRuleDesc)">
+                                    <xsl:value-of select="$ParseAlertReq/pfx:CaseMgmtRqAdd/pfx:AlertDetl/pfx:AlertRuleDesc"/>
+                                </xsl:when>
+                                <xsl:otherwise>
+                                    <xsl:attribute name="xsi:nil">true</xsl:attribute>
+                                </xsl:otherwise>
+                            </xsl:choose>
+                        </ALERT_RULE_ID_DESC>
+                        <ALERT_DATE_TIME>
+                            <xsl:choose>
+                                <xsl:when test="exists($ParseAlertReq/pfx:CaseMgmtRqAdd/pfx:AlertDetl/pfx:AlertDateTime)">
+                                    <xsl:value-of select="$ParseAlertReq/pfx:CaseMgmtRqAdd/pfx:AlertDetl/pfx:AlertDateTime"/>
+                                </xsl:when>
+                                <xsl:otherwise>
+                                    <xsl:attribute name="xsi:nil">true</xsl:attribute>
+                                </xsl:otherwise>
+                            </xsl:choose>
+                        </ALERT_DATE_TIME>
+                        <CUST_ALERT_SENT>
+                            <xsl:choose>
+                                <xsl:when test="exists($ParseAlertReq/pfx:CaseMgmtRqAdd/pfx:AlertDetl/pfx:AlertSent)">
+                                    <xsl:value-of select="$ParseAlertReq/pfx:CaseMgmtRqAdd/pfx:AlertDetl/pfx:AlertSent"/>
+                                </xsl:when>
+                                <xsl:otherwise>
+                                    <xsl:attribute name="xsi:nil">true</xsl:attribute>
+                                </xsl:otherwise>
+                            </xsl:choose>
+                        </CUST_ALERT_SENT>
+                        <CONTACT_MODE>
+                            <xsl:value-of select="tib:concat-sequence-format($ParseAlertReq/pfx:CaseMgmtRqAdd/pfx:AlertDetl/pfx:ContactMode, ', ',1)"/>
+                        </CONTACT_MODE>
+                        <CHANNEL_ID>
+                            <xsl:choose>
+                                <xsl:when test="exists($ParseAlertReq/pfx:CaseMgmtRqAdd/ns2:CommonRq/ns2:ChannelId)">
+                                    <xsl:value-of select="$ParseAlertReq/pfx:CaseMgmtRqAdd/ns2:CommonRq/ns2:ChannelId"/>
+                                </xsl:when>
+                                <xsl:otherwise>
+                                    <xsl:attribute name="xsi:nil">true</xsl:attribute>
+                                </xsl:otherwise>
+                            </xsl:choose>
+                        </CHANNEL_ID>
+                        <ORG_CODE>
+                            <xsl:value-of select="$ParseAlertReq/pfx:CaseMgmtRqAdd/ns2:CommonRq/ns2:OrgCode"/>
+                        </ORG_CODE>
+                        <CUST_SUFFIX>
+                            <xsl:value-of select="&quot;&quot;"/>
+                        </CUST_SUFFIX>
+                    </jdbcUpdateActivityInput>
+                </pd:inputBindings>
+            </pd:activity>
+            <pd:activity name="StartAlertCase">
+                <pd:type>com.tibco.pe.core.CallProcessActivity</pd:type>
+                <pd:resourceType>ae.process.subprocess</pd:resourceType>
+                <pd:x>1728</pd:x>
+                <pd:y>155</pd:y>
+                <config>
+                    <processName>/HFA/StartAlertCase.process</processName>
+                </config>
+                <pd:inputBindings>
+                    <xsl:copy-of select="$ParseAlertReq/pfx:CaseMgmtRqAdd"/>
+                </pd:inputBindings>
+            </pd:activity>
+            <pd:group name="Group">
+                <pd:type>com.tibco.pe.core.LoopGroup</pd:type>
+                <pd:resourceType>ae.process.group</pd:resourceType>
+                <pd:x>1458</pd:x>
+                <pd:y>86</pd:y>
+                <pd:width>162</pd:width>
+                <pd:height>140</pd:height>
+                <pd:collapsedWidth>52</pd:collapsedWidth>
+                <pd:collapsedHeight>69</pd:collapsedHeight>
+                <pd:groupVariables/>
+                <config>
+                    <pd:groupType>inputLoop</pd:groupType>
+                    <pd:serializable>false</pd:serializable>
+                    <pd:over>$ParseAlertReq/pfx:CaseMgmtRqAdd/pfx:TranDetl</pd:over>
+                    <pd:iterationElementSlot>updaterecord</pd:iterationElementSlot>
+                    <pd:indexSlot>iupdate</pd:indexSlot>
+                    <pd:activityOutputName/>
+                    <pd:accumulateOutput>false</pd:accumulateOutput>
+                </config>
+                <pd:inputBindings/>
+                <pd:expanded>true</pd:expanded>
+                <pd:transition>
+                    <pd:from>start</pd:from>
+                    <pd:to>UpdateTXNData</pd:to>
+                    <pd:lineType>Default</pd:lineType>
+                    <pd:lineColor>-16777216</pd:lineColor>
+                    <pd:conditionType>always</pd:conditionType>
+                </pd:transition>
+                <pd:transition>
+                    <pd:from>UpdateTXNData</pd:from>
+                    <pd:to>end</pd:to>
+                    <pd:lineType>Default</pd:lineType>
+                    <pd:lineColor>-16777216</pd:lineColor>
+                    <pd:conditionType>always</pd:conditionType>
+                </pd:transition>
+                <pd:activity name="UpdateTXNData">
+                    <pd:type>com.tibco.plugin.jdbc.JDBCUpdateActivity</pd:type>
+                    <pd:resourceType>ae.activities.JDBCUpdateActivity</pd:resourceType>
+                    <pd:x>1528</pd:x>
+                    <pd:y>150</pd:y>
+                    <config>
+                        <timeout>%%Connections/JDBC/QueryTimeout%%</timeout>
+                        <commit>false</commit>
+                        <emptyStrAsNil>false</emptyStrAsNil>
+                        <jdbcSharedConfig>/SharedResources/Connections/JDBC/IWFDB.sharedjdbc</jdbcSharedConfig>
+                        <statement>INSERT INTO HFA_TXN_DATA (REC_ID, ALERT_ID, TXN_AMT, TXN_TIME, TXN_DATE, 
+TERMINAL_ID, ORIG_CLIENT_ID, ORIG_CLIENT_REF, CURRENCY,DENIAL_CODE, TXN_TYPE, 
+TERM_CTRY_CODE, TXN_TERMINAL_ID, TERMINAL_TYPE, TERMINAL_LOCATION,CARD_NUMBER,CHANNEL,CHIP_INDICATOR)
+ VALUES (HFA_TXN_DATA_S.nextval, ?,?,?,to_date(?,'yyyy-mm-dd'),?,?,?,?,?,?,?,?,?,?,?,?,?)</statement>
+                        <Prepared_Param_DataType>
+                            <parameter>
+                                <parameterName>ALERT_ID</parameterName>
+                                <dataType>VARCHAR</dataType>
+                            </parameter>
+                            <parameter>
+                                <parameterName>TXN_AMT</parameterName>
+                                <dataType>VARCHAR</dataType>
+                            </parameter>
+                            <parameter>
+                                <parameterName>TXN_TIME</parameterName>
+                                <dataType>VARCHAR</dataType>
+                            </parameter>
+                            <parameter>
+                                <parameterName>TXN_DATE</parameterName>
+                                <dataType>VARCHAR</dataType>
+                            </parameter>
+                            <parameter>
+                                <parameterName>TERMINAL_ID</parameterName>
+                                <dataType>VARCHAR</dataType>
+                            </parameter>
+                            <parameter>
+                                <parameterName>ORIG_CLIENT_ID</parameterName>
+                                <dataType>VARCHAR</dataType>
+                            </parameter>
+                            <parameter>
+                                <parameterName>ORIG_CLIENT_REF</parameterName>
+                                <dataType>VARCHAR</dataType>
+                            </parameter>
+                            <parameter>
+                                <parameterName>CURRENCY</parameterName>
+                                <dataType>VARCHAR</dataType>
+                            </parameter>
+                            <parameter>
+                                <parameterName>DENIAL_CODE</parameterName>
+                                <dataType>VARCHAR</dataType>
+                            </parameter>
+                            <parameter>
+                                <parameterName>TXN_TYPE</parameterName>
+                                <dataType>VARCHAR</dataType>
+                            </parameter>
+                            <parameter>
+                                <parameterName>TERM_CTRY_CODE</parameterName>
+                                <dataType>VARCHAR</dataType>
+                            </parameter>
+                            <parameter>
+                                <parameterName>TXN_TERMINAL_ID</parameterName>
+                                <dataType>VARCHAR</dataType>
+                            </parameter>
+                            <parameter>
+                                <parameterName>TERMINAL_TYPE</parameterName>
+                                <dataType>VARCHAR</dataType>
+                            </parameter>
+                            <parameter>
+                                <parameterName>TERMINAL_LOCATION</parameterName>
+                                <dataType>VARCHAR</dataType>
+                            </parameter>
+                            <parameter>
+                                <parameterName>CARD_NUMBER</parameterName>
+                                <dataType>VARCHAR</dataType>
+                            </parameter>
+                            <parameter>
+                                <parameterName>CHANNEL</parameterName>
+                                <dataType>VARCHAR</dataType>
+                            </parameter>
+                            <parameter>
+                                <parameterName>CHIP_INDICATOR</parameterName>
+                                <dataType>VARCHAR</dataType>
+                            </parameter>
+                        </Prepared_Param_DataType>
+                    </config>
+                    <pd:inputBindings>
+                        <jdbcUpdateActivityInput>
+                            <xsl:variable name="TerminalIdToken" select="tib:tokenize-allow-empty($updaterecord/pfx:TranDetl/ns2:OrigTermId, &quot;|&quot;)"/>
+                            <xsl:variable name="TerminalId" select="$TerminalIdToken[2]"/>
+                            <xsl:variable name="TerminalType" select="$TerminalIdToken[1]"/>
+                            <ALERT_ID>
+                                <xsl:choose>
+                                    <xsl:when test="exists($ParseAlertReq/pfx:CaseMgmtRqAdd/pfx:AlertDetl/pfx:AlertId)">
+                                        <xsl:value-of select="$ParseAlertReq/pfx:CaseMgmtRqAdd/pfx:AlertDetl/pfx:AlertId"/>
+                                    </xsl:when>
+                                    <xsl:otherwise>
+                                        <xsl:attribute name="xsi:nil">true</xsl:attribute>
+                                    </xsl:otherwise>
+                                </xsl:choose>
+                            </ALERT_ID>
+                            <TXN_AMT>
+                                <xsl:choose>
+                                    <xsl:when test="exists($updaterecord/pfx:TranDetl/ns2:TranAmt/ns2:Amt)">
+                                        <xsl:value-of select="$updaterecord/pfx:TranDetl/ns2:TranAmt/ns2:Amt"/>
+                                    </xsl:when>
+                                    <xsl:otherwise>
+                                        <xsl:attribute name="xsi:nil">true</xsl:attribute>
+                                    </xsl:otherwise>
+                                </xsl:choose>
+                            </TXN_AMT>
+                            <TXN_TIME>
+                                <xsl:choose>
+                                    <xsl:when test="exists($updaterecord/pfx:TranDetl/ns2:TranTime)">
+                                        <xsl:value-of select="$updaterecord/pfx:TranDetl/ns2:TranTime"/>
+                                    </xsl:when>
+                                    <xsl:otherwise>
+                                        <xsl:attribute name="xsi:nil">true</xsl:attribute>
+                                    </xsl:otherwise>
+                                </xsl:choose>
+                            </TXN_TIME>
+                            <TXN_DATE>
+                                <xsl:value-of select="$updaterecord/pfx:TranDetl/ns2:TranDate"/>
+                            </TXN_DATE>
+                            <TERMINAL_ID>
+                                <xsl:choose>
+                                    <xsl:when test="exists($updaterecord/pfx:TranDetl/ns2:OrigTermId)">
+                                        <xsl:value-of select="$updaterecord/pfx:TranDetl/ns2:OrigTermId"/>
+                                    </xsl:when>
+                                    <xsl:otherwise>
+                                        <xsl:attribute name="xsi:nil">true</xsl:attribute>
+                                    </xsl:otherwise>
+                                </xsl:choose>
+                            </TERMINAL_ID>
+                            <ORIG_CLIENT_ID>
+                                <xsl:choose>
+                                    <xsl:when test="exists($updaterecord/pfx:TranDetl/ns2:OrigClientId)">
+                                        <xsl:value-of select="$updaterecord/pfx:TranDetl/ns2:OrigClientId"/>
+                                    </xsl:when>
+                                    <xsl:otherwise>
+                                        <xsl:attribute name="xsi:nil">true</xsl:attribute>
+                                    </xsl:otherwise>
+                                </xsl:choose>
+                            </ORIG_CLIENT_ID>
+                            <ORIG_CLIENT_REF>
+                                <xsl:choose>
+                                    <xsl:when test="exists($updaterecord/pfx:TranDetl/ns2:OrigClientRef)">
+                                        <xsl:value-of select="$updaterecord/pfx:TranDetl/ns2:OrigClientRef"/>
+                                    </xsl:when>
+                                    <xsl:otherwise>
+                                        <xsl:attribute name="xsi:nil">true</xsl:attribute>
+                                    </xsl:otherwise>
+                                </xsl:choose>
+                            </ORIG_CLIENT_REF>
+                            <CURRENCY>
+                                <xsl:choose>
+                                    <xsl:when test="exists($updaterecord/pfx:TranDetl/ns2:TranAmt/ns2:Cur)">
+                                        <xsl:value-of select="$updaterecord/pfx:TranDetl/ns2:TranAmt/ns2:Cur"/>
+                                    </xsl:when>
+                                    <xsl:otherwise>
+                                        <xsl:attribute name="xsi:nil">true</xsl:attribute>
+                                    </xsl:otherwise>
+                                </xsl:choose>
+                            </CURRENCY>
+                            <DENIAL_CODE>
+                                <xsl:choose>
+                                    <xsl:when test="exists($updaterecord/pfx:TranDetl/pfx:RejectReason)">
+                                        <xsl:value-of select="$updaterecord/pfx:TranDetl/pfx:RejectReason"/>
+                                    </xsl:when>
+                                    <xsl:otherwise>
+                                        <xsl:attribute name="xsi:nil">true</xsl:attribute>
+                                    </xsl:otherwise>
+                                </xsl:choose>
+                            </DENIAL_CODE>
+                            <TXN_TYPE>
+                                <xsl:choose>
+                                    <xsl:when test="exists($updaterecord/pfx:TranDetl/pfx:TranType)">
+                                        <xsl:value-of select="$updaterecord/pfx:TranDetl/pfx:TranType"/>
+                                    </xsl:when>
+                                    <xsl:otherwise>
+                                        <xsl:attribute name="xsi:nil">true</xsl:attribute>
+                                    </xsl:otherwise>
+                                </xsl:choose>
+                            </TXN_TYPE>
+                            <TERM_CTRY_CODE>
+                                <xsl:choose>
+                                    <xsl:when test="exists($updaterecord/pfx:TranDetl/ns4:TranCtry)">
+                                        <xsl:value-of select="$updaterecord/pfx:TranDetl/ns4:TranCtry"/>
+                                    </xsl:when>
+                                    <xsl:otherwise>
+                                        <xsl:attribute name="xsi:nil">true</xsl:attribute>
+                                    </xsl:otherwise>
+                                </xsl:choose>
+                            </TERM_CTRY_CODE>
+                            <xsl:choose>
+                                <xsl:when test="string-length(tib:trim($TerminalId))!=0">
+                                    <TXN_TERMINAL_ID>
+                                        <xsl:value-of select="$TerminalId"/>
+                                    </TXN_TERMINAL_ID>
+                                </xsl:when>
+                                <xsl:otherwise>
+                                    <TXN_TERMINAL_ID>
+                                        <xsl:choose>
+                                            <xsl:when test="exists($updaterecord/pfx:TranDetl/ns2:OrigTermId)">
+                                                <xsl:value-of select="$updaterecord/pfx:TranDetl/ns2:OrigTermId"/>
+                                            </xsl:when>
+                                            <xsl:otherwise>
+                                                <xsl:attribute name="xsi:nil">true</xsl:attribute>
+                                            </xsl:otherwise>
+                                        </xsl:choose>
+                                    </TXN_TERMINAL_ID>
+                                </xsl:otherwise>
+                            </xsl:choose>
+                            <TERMINAL_TYPE>
+                                <xsl:value-of select="$TerminalType"/>
+                            </TERMINAL_TYPE>
+                            <TERMINAL_LOCATION>
+                                <xsl:choose>
+                                    <xsl:when test="exists($updaterecord/pfx:TranDetl/ns2:OrigTermLoc)">
+                                        <xsl:value-of select="$updaterecord/pfx:TranDetl/ns2:OrigTermLoc"/>
+                                    </xsl:when>
+                                    <xsl:otherwise>
+                                        <xsl:attribute name="xsi:nil">true</xsl:attribute>
+                                    </xsl:otherwise>
+                                </xsl:choose>
+                            </TERMINAL_LOCATION>
+                            <xsl:choose>
+                                <xsl:when test="$ParseAlertReq/pfx:CaseMgmtRqAdd/pfx:CaseType = 'ATMALERT'">
+                                    <CARD_NUMBER>
+                                        <xsl:choose>
+                                            <xsl:when test="exists($updaterecord/pfx:TranDetl/ns2:Card/ns2:CardId)">
+                                                <xsl:value-of select="$updaterecord/pfx:TranDetl/ns2:Card/ns2:CardId"/>
+                                            </xsl:when>
+                                            <xsl:otherwise>
+                                                <xsl:attribute name="xsi:nil">true</xsl:attribute>
+                                            </xsl:otherwise>
+                                        </xsl:choose>
+                                    </CARD_NUMBER>
+                                </xsl:when>
+                                <xsl:otherwise>
+                                    <CARD_NUMBER>
+                                        <xsl:choose>
+                                            <xsl:when test="exists($ParseAlertReq/pfx:CaseMgmtRqAdd/ns2:Card/ns2:CardId)">
+                                                <xsl:value-of select="$ParseAlertReq/pfx:CaseMgmtRqAdd/ns2:Card/ns2:CardId"/>
+                                            </xsl:when>
+                                            <xsl:otherwise>
+                                                <xsl:attribute name="xsi:nil">true</xsl:attribute>
+                                            </xsl:otherwise>
+                                        </xsl:choose>
+                                    </CARD_NUMBER>
+                                </xsl:otherwise>
+                            </xsl:choose>
+                            <CHANNEL>
+                                <xsl:choose>
+                                    <xsl:when test="exists($updaterecord/pfx:TranDetl/ns2:Channel)">
+                                        <xsl:value-of select="$updaterecord/pfx:TranDetl/ns2:Channel"/>
+                                    </xsl:when>
+                                    <xsl:otherwise>
+                                        <xsl:attribute name="xsi:nil">true</xsl:attribute>
+                                    </xsl:otherwise>
+                                </xsl:choose>
+                            </CHANNEL>
+                            <CHIP_INDICATOR>
+                                <xsl:choose>
+                                    <xsl:when test="exists($updaterecord/pfx:TranDetl/ns2:Card/ns2:ChipIndicator)">
+                                        <xsl:value-of select="$updaterecord/pfx:TranDetl/ns2:Card/ns2:ChipIndicator"/>
+                                    </xsl:when>
+                                    <xsl:otherwise>
+                                        <xsl:attribute name="xsi:nil">true</xsl:attribute>
+                                    </xsl:otherwise>
+                                </xsl:choose>
+                            </CHIP_INDICATOR>
+                        </jdbcUpdateActivityInput>
+                    </pd:inputBindings>
+                </pd:activity>
+            </pd:group>
+        </pd:group>
+        <pd:activity name="RetryExceed">
+            <pd:type>com.tibco.plugin.timer.NullActivity</pd:type>
+            <pd:resourceType>ae.activities.null</pd:resourceType>
+            <pd:x>722</pd:x>
+            <pd:y>294</pd:y>
+            <config/>
+            <pd:inputBindings/>
+        </pd:activity>
+        <pd:activity name="Catch">
+            <pd:type>com.tibco.pe.core.CatchActivity</pd:type>
+            <pd:resourceType>ae.activities.catch</pd:resourceType>
+            <pd:x>1556</pd:x>
+            <pd:y>352</pd:y>
+            <pd:handler>true</pd:handler>
+            <config>
+                <catchAll>true</catchAll>
+            </config>
+            <pd:inputBindings/>
+        </pd:activity>
+        <pd:activity name="UpdateFaultStatus-1">
+            <pd:type>com.tibco.plugin.jdbc.JDBCUpdateActivity</pd:type>
+            <pd:resourceType>ae.activities.JDBCUpdateActivity</pd:resourceType>
+            <pd:x>1894</pd:x>
+            <pd:y>350</pd:y>
+            <config>
+                <timeout>%%Connections/JDBC/QueryTimeout%%</timeout>
+                <commit>false</commit>
+                <emptyStrAsNil>false</emptyStrAsNil>
+                <jdbcSharedConfig>/SharedResources/Connections/JDBC/IWFDB.sharedjdbc</jdbcSharedConfig>
+                <statement>update HFA_ALERT_FAULT
+set status = ?,
+LAST_RETRY_DATE = systimestamp,
+ERR_MESSAGE = ?
+where ID = ?</statement>
+                <Prepared_Param_DataType>
+                    <parameter>
+                        <parameterName>STATUS</parameterName>
+                        <dataType>VARCHAR</dataType>
+                    </parameter>
+                    <parameter>
+                        <parameterName>ERR_MESSAGE</parameterName>
+                        <dataType>VARCHAR</dataType>
+                    </parameter>
+                    <parameter>
+                        <parameterName>ID</parameterName>
+                        <dataType>VARCHAR</dataType>
+                    </parameter>
+                </Prepared_Param_DataType>
+            </config>
+            <pd:inputBindings>
+                <jdbcUpdateActivityInput>
+                    <STATUS>
+                        <xsl:value-of select="&quot;1&quot;"/>
+                    </STATUS>
+                    <ERR_MESSAGE>
+                        <xsl:value-of select="substring(tib:render-xml($_error/ns5:ErrorReport), 1, 249)"/>
+                    </ERR_MESSAGE>
+                    <ID>
+                        <xsl:value-of select="$record/Record/ID"/>
+                    </ID>
+                </jdbcUpdateActivityInput>
+            </pd:inputBindings>
+        </pd:activity>
+        <pd:activity name="Log">
+            <pd:type>com.tibco.pe.core.CallProcessActivity</pd:type>
+            <pd:resourceType>ae.process.subprocess</pd:resourceType>
+            <pd:x>2004</pd:x>
+            <pd:y>296</pd:y>
+            <config>
+                <processName>/HFA/SubProcesses/Log.process</processName>
+            </config>
+            <pd:inputBindings>
+                <Input>
+                    <LogLocation>
+                        <xsl:value-of select="'FaultAlert'"/>
+                    </LogLocation>
+                    <ServiceName>
+                        <xsl:value-of select="'HFA'"/>
+                    </ServiceName>
+                    <InputType>
+                        <xsl:value-of select="concat(&quot;Retry Exceeded: &quot;, $record/Record/ID, &quot;  &quot;, $record/Record/RETRY, &quot; times.&quot;)"/>
+                    </InputType>
+                </Input>
+            </pd:inputBindings>
+        </pd:activity>
+        <pd:activity name="Log-1">
+            <pd:type>com.tibco.pe.core.CallProcessActivity</pd:type>
+            <pd:resourceType>ae.process.subprocess</pd:resourceType>
+            <pd:x>2052</pd:x>
+            <pd:y>350</pd:y>
+            <config>
+                <processName>/HFA/SubProcesses/Log.process</processName>
+            </config>
+            <pd:inputBindings>
+                <Input>
+                    <LogLocation>
+                        <xsl:value-of select="&quot;FaultAlert&quot;"/>
+                    </LogLocation>
+                    <ServiceName>
+                        <xsl:value-of select="'HFA'"/>
+                    </ServiceName>
+                    <InputType>
+                        <xsl:value-of select="concat(&quot;Alert Retry Fault: &quot;, $record/Record/ID)"/>
+                    </InputType>
+                    <Schema>
+                        <xsl:copy-of select="$_error/ns5:ErrorReport"/>
+                    </Schema>
+                </Input>
+            </pd:inputBindings>
+        </pd:activity>
+        <pd:activity name="Log-2">
+            <pd:type>com.tibco.pe.core.CallProcessActivity</pd:type>
+            <pd:resourceType>ae.process.subprocess</pd:resourceType>
+            <pd:x>2060</pd:x>
+            <pd:y>433</pd:y>
+            <config>
+                <processName>/HFA/SubProcesses/Log.process</processName>
+            </config>
+            <pd:inputBindings>
+                <Input>
+                    <LogLocation>
+                        <xsl:value-of select="'FaultAlert'"/>
+                    </LogLocation>
+                    <ServiceName>
+                        <xsl:value-of select="'HFA'"/>
+                    </ServiceName>
+                    <InputType>
+                        <xsl:value-of select="concat(&quot;Alert Retry Fault ERROR: &quot;, $record/Record/ID)"/>
+                    </InputType>
+                    <Schema>
+                        <xsl:copy-of select="$_error/ns5:ErrorReport"/>
+                    </Schema>
+                </Input>
+            </pd:inputBindings>
+        </pd:activity>
+        <pd:activity name="UpdateFaultStatus-2">
+            <pd:type>com.tibco.plugin.jdbc.JDBCUpdateActivity</pd:type>
+            <pd:resourceType>ae.activities.JDBCUpdateActivity</pd:resourceType>
+            <pd:x>575</pd:x>
+            <pd:y>217</pd:y>
+            <config>
+                <timeout>%%Connections/JDBC/QueryTimeout%%</timeout>
+                <commit>false</commit>
+                <emptyStrAsNil>false</emptyStrAsNil>
+                <jdbcSharedConfig>/SharedResources/Connections/JDBC/IWFDB.sharedjdbc</jdbcSharedConfig>
+                <statement>update HFA_ALERT_FAULT
+set status = ?,
+LAST_RETRY_DATE = systimestamp,
+RETRY = RETRY +1
+where ID = ?</statement>
+                <Prepared_Param_DataType>
+                    <parameter>
+                        <parameterName>STATUS</parameterName>
+                        <dataType>VARCHAR</dataType>
+                    </parameter>
+                    <parameter>
+                        <parameterName>ID</parameterName>
+                        <dataType>VARCHAR</dataType>
+                    </parameter>
+                </Prepared_Param_DataType>
+            </config>
+            <pd:inputBindings>
+                <jdbcUpdateActivityInput>
+                    <STATUS>
+                        <xsl:value-of xmlns:xsl="http://www.w3.org/1999/XSL/Transform" select="&quot;1&quot;"/>
+                    </STATUS>
+                    <ID>
+                        <xsl:value-of xmlns:xsl="http://www.w3.org/1999/XSL/Transform" select="$record/Record/ID"/>
+                    </ID>
+                </jdbcUpdateActivityInput>
+            </pd:inputBindings>
+        </pd:activity>
+        <pd:activity name="UpdateFaultStatus-1-1">
+            <pd:type>com.tibco.plugin.jdbc.JDBCUpdateActivity</pd:type>
+            <pd:resourceType>ae.activities.JDBCUpdateActivity</pd:resourceType>
+            <pd:x>1783</pd:x>
+            <pd:y>294</pd:y>
+            <config>
+                <timeout>%%Connections/JDBC/QueryTimeout%%</timeout>
+                <commit>false</commit>
+                <emptyStrAsNil>false</emptyStrAsNil>
+                <jdbcSharedConfig>/SharedResources/Connections/JDBC/IWFDB.sharedjdbc</jdbcSharedConfig>
+                <statement>update HFA_ALERT_FAULT
+set status = ?,
+LAST_RETRY_DATE = systimestamp
+where ID = ?</statement>
+                <Prepared_Param_DataType>
+                    <parameter>
+                        <parameterName>STATUS</parameterName>
+                        <dataType>VARCHAR</dataType>
+                    </parameter>
+                    <parameter>
+                        <parameterName>ID</parameterName>
+                        <dataType>VARCHAR</dataType>
+                    </parameter>
+                </Prepared_Param_DataType>
+            </config>
+            <pd:inputBindings>
+                <jdbcUpdateActivityInput>
+                    <STATUS>
+                        <xsl:value-of select="&quot;3&quot;"/>
+                    </STATUS>
+                    <ID>
+                        <xsl:value-of select="$record/Record/ID"/>
+                    </ID>
+                </jdbcUpdateActivityInput>
+            </pd:inputBindings>
+        </pd:activity>
+        <pd:activity name="Log-3">
+            <pd:type>com.tibco.pe.core.CallProcessActivity</pd:type>
+            <pd:resourceType>ae.process.subprocess</pd:resourceType>
+            <pd:x>2101</pd:x>
+            <pd:y>162</pd:y>
+            <config>
+                <processName>/HFA/SubProcesses/Log.process</processName>
+            </config>
+            <pd:inputBindings>
+                <Input>
+                    <LogLocation>
+                        <xsl:value-of select="'FaultAlert'"/>
+                    </LogLocation>
+                    <ServiceName>
+                        <xsl:value-of select="'HFA'"/>
+                    </ServiceName>
+                    <InputType>
+                        <xsl:value-of select="concat(&quot;Retry Success: &quot;, $record/Record/ID, &quot;  &quot;, $record/Record/RETRY+1, &quot; times.&quot;)"/>
+                    </InputType>
+                </Input>
+            </pd:inputBindings>
+        </pd:activity>
+    </pd:group>
+    <pd:transition>
+        <pd:from>Timer</pd:from>
+        <pd:to>StartLog</pd:to>
+        <pd:lineType>Default</pd:lineType>
+        <pd:lineColor>-16777216</pd:lineColor>
+        <pd:conditionType>always</pd:conditionType>
+    </pd:transition>
+    <pd:transition>
+        <pd:from>StartLog</pd:from>
+        <pd:to>QueryFault</pd:to>
+        <pd:lineType>Default</pd:lineType>
+        <pd:lineColor>-16777216</pd:lineColor>
+        <pd:conditionType>always</pd:conditionType>
+    </pd:transition>
+    <pd:transition>
+        <pd:from>EndLog</pd:from>
+        <pd:to>End</pd:to>
+        <pd:lineType>Default</pd:lineType>
+        <pd:lineColor>-16777216</pd:lineColor>
+        <pd:conditionType>always</pd:conditionType>
+    </pd:transition>
+    <pd:transition>
+        <pd:from>QueryFault</pd:from>
+        <pd:to>Group (2)</pd:to>
+        <pd:lineType>Default</pd:lineType>
+        <pd:lineColor>-16777216</pd:lineColor>
+        <pd:conditionType>always</pd:conditionType>
+    </pd:transition>
+    <pd:transition>
+        <pd:from>Group (2)</pd:from>
+        <pd:to>EndLog</pd:to>
+        <pd:lineType>Default</pd:lineType>
+        <pd:lineColor>-16777216</pd:lineColor>
+        <pd:conditionType>always</pd:conditionType>
+    </pd:transition>
+</pd:ProcessDefinition>

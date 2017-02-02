@@ -1,0 +1,337 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<pd:ProcessDefinition xmlns:xsl="http://www.w3.org/1999/XSL/Transform" xmlns:ns="http://www.tibco.com/pe/DeployedVarsType" xmlns:wsdl="http://schemas.xmlsoap.org/wsdl/" xmlns:ns5="http://schemas.dbs.com/icc/CardSvc" xmlns:ns6="http://docs.oasis-open.org/wss/2004/01/oasis-200401-wss-wssecurity-secext-1.0.xsd" xmlns:ns7="http://www.dbs.com.sg/iwf_hfa_process_start_contract/" xmlns:pfx="http://schemas.dbs.com/icc/BasicSvc" xmlns:pd="http://xmlns.tibco.com/bw/process/2003" xmlns:ns2="http://xmlns.tibco.com/encodings/mime" xmlns:ns1="http://www.dbs.com/iwf/bpm/token" xmlns:ns4="http://schemas.dbs.com/icc/CustomerSvc" xmlns:ns3="http://schemas.dbs.com/icc/ems" xmlns:pfx5="http://www.dbs.com.sg/iwf_hfa_process_start_contract/iwf_hfa_process_start_contract_wsp" xmlns:tib="http://www.tibco.com/bw/xslt/custom-functions" xmlns:pfx4="http://www.tibco.com/bs3.0/_i3L3QN8sEeSkQqj1-ZOMvA/iwf_atm_fraudsalert_process_ws" xmlns:pfx3="urn:oasis:names:tc:SAML:2.0:assertion" xmlns:pfx2="http://www.dbs.com/sg/wis/hfa/xsd/hfaCaseDetails" xmlns:pfx8="http://www.dbs.com/iwf/bpm/services/token" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance">
+    <xs:import xmlns:xs="http://www.w3.org/2001/XMLSchema" namespace="http://schemas.dbs.com/icc/BasicSvc" schemaLocation="/SharedResources/Schema/IP/CaseMgmtRqAddOp_v1.1.xsd"/>
+    <xs:import xmlns:xs="http://www.w3.org/2001/XMLSchema" namespace="http://www.dbs.com/sg/wis/hfa/xsd/hfaCaseDetails" schemaLocation="/SharedResources/Schema/hfaSchemas/hfaCase.xsd"/>
+    <xs:import xmlns:xs="http://www.w3.org/2001/XMLSchema" namespace="urn:oasis:names:tc:SAML:2.0:assertion" schemaLocation="/SharedResources/Schema/saml/saml-schema-assertion-2.0.xsd"/>
+    <wsdl:import namespace="http://www.dbs.com/iwf/bpm/services/token" location="/SharedResources/WSDL/Concrete/TokenService.wsdl"/>
+    <wsdl:import namespace="http://www.tibco.com/bs3.0/_i3L3QN8sEeSkQqj1-ZOMvA/iwf_atm_fraudsalert_process_ws" location="/SharedResources/wsdl/concrete/AFA-ATM-ProcessStart.wsdl"/>
+    <wsdl:import namespace="http://www.dbs.com.sg/iwf_hfa_process_start_contract/iwf_hfa_process_start_contract_wsp" location="/SharedResources/WSDL/Concrete/HFACaseStart.wsdl"/>
+    <pd:name>bck/StartAlertCaseNew.process</pd:name>
+    <pd:startName>Start</pd:startName>
+    <pd:startType ref="pfx:CaseMgmtRqAdd"/>
+    <pd:startX>45</pd:startX>
+    <pd:startY>248</pd:startY>
+    <pd:returnBindings>
+        <pfx2:HFA_CaseDetails_output>
+            <pfx2:Response>
+                <pfx2:responseCode>
+                    <xsl:value-of select="'00'"/>
+                </pfx2:responseCode>
+            </pfx2:Response>
+        </pfx2:HFA_CaseDetails_output>
+    </pd:returnBindings>
+    <pd:endName>End</pd:endName>
+    <pd:endType ref="pfx2:HFA_CaseDetails_output"/>
+    <pd:endX>1539</pd:endX>
+    <pd:endY>253</pd:endY>
+    <pd:errorSchemas/>
+    <pd:processVariables/>
+    <pd:targetNamespace>http://xmlns.example.com/1454496511062</pd:targetNamespace>
+    <pd:activity name="RequestLog">
+        <pd:type>com.tibco.pe.core.CallProcessActivity</pd:type>
+        <pd:resourceType>ae.process.subprocess</pd:resourceType>
+        <pd:x>175</pd:x>
+        <pd:y>246</pd:y>
+        <config>
+            <processName>/HFA/SubProcesses/Log.process</processName>
+            <spawn>true</spawn>
+        </config>
+        <pd:inputBindings>
+            <Input>
+                <LogLocation>
+                    <xsl:value-of select="'StartAlertCase'"/>
+                </LogLocation>
+                <ServiceName>
+                    <xsl:value-of select="'HFA'"/>
+                </ServiceName>
+                <InputType>
+                    <xsl:value-of select="'RQST'"/>
+                </InputType>
+                <Schema>
+                    <xsl:copy-of select="$Start/pfx:CaseMgmtRqAdd"/>
+                </Schema>
+            </Input>
+        </pd:inputBindings>
+    </pd:activity>
+    <pd:activity name="ResponseLog">
+        <pd:type>com.tibco.pe.core.CallProcessActivity</pd:type>
+        <pd:resourceType>ae.process.subprocess</pd:resourceType>
+        <pd:x>1392</pd:x>
+        <pd:y>252</pd:y>
+        <config>
+            <processName>/HFA/SubProcesses/Log.process</processName>
+            <spawn>true</spawn>
+        </config>
+        <pd:inputBindings>
+            <Input>
+                <LogLocation>
+                    <xsl:value-of select="'StartAlertCase'"/>
+                </LogLocation>
+                <ServiceName>
+                    <xsl:value-of select="'HFA'"/>
+                </ServiceName>
+                <InputType>
+                    <xsl:value-of select="'RSPN'"/>
+                </InputType>
+                <Schema>
+                    <xsl:copy-of select="$CallAMXBPMHFA/outputMessage"/>
+                </Schema>
+            </Input>
+        </pd:inputBindings>
+    </pd:activity>
+    <pd:activity name="FetchRuleDesc">
+        <pd:type>com.tibco.plugin.jdbc.JDBCQueryActivity</pd:type>
+        <pd:resourceType>ae.activities.JDBCQueryActivity</pd:resourceType>
+        <pd:x>331</pd:x>
+        <pd:y>247</pd:y>
+        <config>
+            <timeout>%%Connections/JDBC/QueryTimeout%%</timeout>
+            <commit>false</commit>
+            <maxRows>%%Connections/JDBC/MaxRow%%</maxRows>
+            <emptyStrAsNil>false</emptyStrAsNil>
+            <jdbcSharedConfig>/SharedResources/Connections/JDBC/IWFDB.sharedjdbc</jdbcSharedConfig>
+            <statement>SELECT LIST_NAME, LIST_CODE, LIST_DESC FROM IWF_CODE_LIST WHERE PROJECT_CODE = 'HFA' AND LIST_NAME ='RULE_DESC'</statement>
+            <oraObjects/>
+            <oraTables/>
+            <QueryOutputCachedSchemaColumns>LIST_NAME</QueryOutputCachedSchemaColumns>
+            <QueryOutputCachedSchemaDataTypes>12</QueryOutputCachedSchemaDataTypes>
+            <QueryOutputCachedSchemaDataTypesName>VARCHAR2</QueryOutputCachedSchemaDataTypesName>
+            <QueryOutputCachedSchemaStatus>RequiredElement</QueryOutputCachedSchemaStatus>
+            <QueryOutputCachedSchemaColumns>LIST_CODE</QueryOutputCachedSchemaColumns>
+            <QueryOutputCachedSchemaDataTypes>12</QueryOutputCachedSchemaDataTypes>
+            <QueryOutputCachedSchemaDataTypesName>VARCHAR2</QueryOutputCachedSchemaDataTypesName>
+            <QueryOutputCachedSchemaStatus>RequiredElement</QueryOutputCachedSchemaStatus>
+            <QueryOutputCachedSchemaColumns>LIST_DESC</QueryOutputCachedSchemaColumns>
+            <QueryOutputCachedSchemaDataTypes>12</QueryOutputCachedSchemaDataTypes>
+            <QueryOutputCachedSchemaDataTypesName>VARCHAR2</QueryOutputCachedSchemaDataTypesName>
+            <QueryOutputCachedSchemaStatus>OptionalElement</QueryOutputCachedSchemaStatus>
+        </config>
+        <pd:inputBindings>
+            <jdbcQueryActivityInput/>
+        </pd:inputBindings>
+    </pd:activity>
+    <pd:activity name="GetToken">
+        <pd:type>com.tibco.plugin.soap.SOAPSendReceiveActivity</pd:type>
+        <pd:resourceType>ae.activities.SOAPSendReceiveUI</pd:resourceType>
+        <pd:x>505</pd:x>
+        <pd:y>249</pd:y>
+        <config>
+            <timeout>%%BPM/Token/timeout%%</timeout>
+            <soapAttachmentStyle>SwA</soapAttachmentStyle>
+            <timeoutType>Seconds</timeoutType>
+            <service>pfx8:TokenService</service>
+            <servicePort>HTTPEP</servicePort>
+            <operation>GetTokenOp</operation>
+            <soapAction>/iwf/bpm/services/token/GetTokenOp</soapAction>
+            <endpointURL>http://%%BPM/Token/host%%:%%BPM/Token/port%%/iwf/bpm/services/token</endpointURL>
+            <authScheme>NONE</authScheme>
+        </config>
+        <pd:inputBindings>
+            <inputMessage>
+                <ns1:GetTokenReq>
+                    <ns1:ID>
+                        <xsl:value-of select="$_globalVariables/ns:GlobalVariables/SAML/User"/>
+                    </ns1:ID>
+                </ns1:GetTokenReq>
+            </inputMessage>
+        </pd:inputBindings>
+    </pd:activity>
+    <pd:activity name="Parse XML">
+        <pd:type>com.tibco.plugin.xml.XMLParseActivity</pd:type>
+        <pd:resourceType>ae.activities.XMLParseActivity</pd:resourceType>
+        <pd:x>674</pd:x>
+        <pd:y>250</pd:y>
+        <config>
+            <inputStyle>text</inputStyle>
+            <xsdVersion>default</xsdVersion>
+            <validateOutput>false</validateOutput>
+            <term ref="pfx3:Assertion"/>
+        </config>
+        <pd:inputBindings>
+            <xmlString>
+                <xsl:value-of select="$GetToken/outputMessage/ns1:GetTokenRes/ns1:SAMLToken"/>
+            </xmlString>
+        </pd:inputBindings>
+    </pd:activity>
+    <pd:activity name="Get CaseNum">
+        <pd:type>com.tibco.plugin.jdbc.JDBCCallActivity</pd:type>
+        <pd:resourceType>ae.activities.JDBCCallActivity</pd:resourceType>
+        <pd:x>849</pd:x>
+        <pd:y>249</pd:y>
+        <config>
+            <timeout>%%Connections/JDBC/QueryTimeout%%</timeout>
+            <maxRows>%%Connections/JDBC/MaxRow%%</maxRows>
+            <emptyStrAsNil>false</emptyStrAsNil>
+            <jdbcSharedConfig>/SharedResources/Connections/JDBC/IWFDB.sharedjdbc</jdbcSharedConfig>
+            <schema>IWFDB</schema>
+            <catalog>IWF_BPM</catalog>
+            <ProcedureName>GENERATE_CASENUMBER</ProcedureName>
+            <oraObjects/>
+            <oraTables/>
+            <parameterTypes>
+                <parameter>
+                    <colName>P_RESULT</colName>
+                    <colType>4</colType>
+                    <dataType>2</dataType>
+                    <typeName>NUMBER</typeName>
+                </parameter>
+            </parameterTypes>
+        </config>
+        <pd:inputBindings>
+            <inputs/>
+        </pd:inputBindings>
+    </pd:activity>
+    <pd:activity name="CallAMXBPMHFA">
+        <pd:type>com.tibco.plugin.soap.SOAPSendReceiveActivity</pd:type>
+        <pd:resourceType>ae.activities.SOAPSendReceiveUI</pd:resourceType>
+        <pd:x>1032</pd:x>
+        <pd:y>249</pd:y>
+        <config>
+            <timeout>%%BPM/AMX/timeout%%</timeout>
+            <soapAttachmentStyle>SwA</soapAttachmentStyle>
+            <timeoutType>Seconds</timeoutType>
+            <service>pfx5:iwf_hfa_process_start_contract_wsp</service>
+            <servicePort>iwf_hfa_process_start_contract_EP</servicePort>
+            <operation>StartHFACase</operation>
+            <soapAction>StartHFACase</soapAction>
+            <endpointURL>http://%%BPM/AMX/host%%:%%BPM/AMX/port%%/iwf_hfa_process_start_contract/iwf_hfa_process_start_contractSOAP</endpointURL>
+            <authScheme>NONE</authScheme>
+        </config>
+        <pd:inputBindings>
+            <inputMessage>
+                <headers>
+                    <Header.SAMLHeader>
+                        <ns6:Security>
+                            <xsl:copy-of select="$Parse-XML/pfx3:Assertion"/>
+                        </ns6:Security>
+                    </Header.SAMLHeader>
+                </headers>
+                <ns7:StartHFACase>
+                    <ALERT_ID>
+                        <xsl:value-of select="''"/>
+                    </ALERT_ID>
+                    <ALERT_STATUS>
+                        <xsl:value-of select="''"/>
+                    </ALERT_STATUS>
+                    <ARRIVAL_DATE_TIME>
+                        <xsl:value-of select="current-dateTime()"/>
+                    </ARRIVAL_DATE_TIME>
+                    <CASE_NUMBER>
+                        <xsl:value-of select="''"/>
+                    </CASE_NUMBER>
+                    <CIF>
+                        <xsl:value-of select="''"/>
+                    </CIF>
+                    <COUNTRY_CODE>
+                        <xsl:value-of select="''"/>
+                    </COUNTRY_CODE>
+                    <CUSTOMER_NAME>
+                        <xsl:value-of select="''"/>
+                    </CUSTOMER_NAME>
+                    <PROJECT_CODE>
+                        <xsl:value-of select="''"/>
+                    </PROJECT_CODE>
+                    <RULE_DESCRIPTION>
+                        <xsl:value-of select="''"/>
+                    </RULE_DESCRIPTION>
+                    <RULE_ID>
+                        <xsl:value-of select="''"/>
+                    </RULE_ID>
+                    <PRIORITY>
+                        <xsl:value-of select="1"/>
+                    </PRIORITY>
+                    <CARD_NUMBER>
+                        <xsl:value-of select="''"/>
+                    </CARD_NUMBER>
+                    <TRANSACTION_AMOUNT>
+                        <xsl:value-of select="1"/>
+                    </TRANSACTION_AMOUNT>
+                    <TRANSACTION_CURRENCY>
+                        <xsl:value-of select="''"/>
+                    </TRANSACTION_CURRENCY>
+                    <CHANNEL_TYPE>
+                        <xsl:value-of select="''"/>
+                    </CHANNEL_TYPE>
+                    <DOC_NUM>
+                        <xsl:value-of select="''"/>
+                    </DOC_NUM>
+                </ns7:StartHFACase>
+            </inputMessage>
+        </pd:inputBindings>
+    </pd:activity>
+    <pd:activity name="InsertCaseData">
+        <pd:type>com.tibco.pe.core.CallProcessActivity</pd:type>
+        <pd:resourceType>ae.process.subprocess</pd:resourceType>
+        <pd:x>1216</pd:x>
+        <pd:y>251</pd:y>
+        <config>
+            <processName>/HFA/SubProcesses/InsertCaseData.process</processName>
+        </config>
+        <pd:inputBindings>
+            <Input/>
+        </pd:inputBindings>
+    </pd:activity>
+    <pd:transition>
+        <pd:from>Start</pd:from>
+        <pd:to>RequestLog</pd:to>
+        <pd:lineType>Default</pd:lineType>
+        <pd:lineColor>-16777216</pd:lineColor>
+        <pd:conditionType>always</pd:conditionType>
+    </pd:transition>
+    <pd:transition>
+        <pd:from>ResponseLog</pd:from>
+        <pd:to>End</pd:to>
+        <pd:lineType>Default</pd:lineType>
+        <pd:lineColor>-16777216</pd:lineColor>
+        <pd:conditionType>always</pd:conditionType>
+    </pd:transition>
+    <pd:transition>
+        <pd:from>RequestLog</pd:from>
+        <pd:to>FetchRuleDesc</pd:to>
+        <pd:lineType>Default</pd:lineType>
+        <pd:lineColor>-16777216</pd:lineColor>
+        <pd:conditionType>always</pd:conditionType>
+    </pd:transition>
+    <pd:transition>
+        <pd:from>FetchRuleDesc</pd:from>
+        <pd:to>GetToken</pd:to>
+        <pd:lineType>Default</pd:lineType>
+        <pd:lineColor>-16777216</pd:lineColor>
+        <pd:conditionType>always</pd:conditionType>
+    </pd:transition>
+    <pd:transition>
+        <pd:from>GetToken</pd:from>
+        <pd:to>Parse XML</pd:to>
+        <pd:lineType>Default</pd:lineType>
+        <pd:lineColor>-16777216</pd:lineColor>
+        <pd:conditionType>always</pd:conditionType>
+    </pd:transition>
+    <pd:transition>
+        <pd:from>Parse XML</pd:from>
+        <pd:to>Get CaseNum</pd:to>
+        <pd:lineType>Default</pd:lineType>
+        <pd:lineColor>-16777216</pd:lineColor>
+        <pd:conditionType>always</pd:conditionType>
+    </pd:transition>
+    <pd:transition>
+        <pd:from>Get CaseNum</pd:from>
+        <pd:to>CallAMXBPMHFA</pd:to>
+        <pd:lineType>Default</pd:lineType>
+        <pd:lineColor>-16777216</pd:lineColor>
+        <pd:conditionType>always</pd:conditionType>
+    </pd:transition>
+    <pd:transition>
+        <pd:from>CallAMXBPMHFA</pd:from>
+        <pd:to>InsertCaseData</pd:to>
+        <pd:lineType>Default</pd:lineType>
+        <pd:lineColor>-16777216</pd:lineColor>
+        <pd:conditionType>always</pd:conditionType>
+    </pd:transition>
+    <pd:transition>
+        <pd:from>InsertCaseData</pd:from>
+        <pd:to>ResponseLog</pd:to>
+        <pd:lineType>Default</pd:lineType>
+        <pd:lineColor>-16777216</pd:lineColor>
+        <pd:conditionType>always</pd:conditionType>
+    </pd:transition>
+</pd:ProcessDefinition>

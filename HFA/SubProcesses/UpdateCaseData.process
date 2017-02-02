@@ -1,0 +1,1028 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<pd:ProcessDefinition xmlns:pd="http://xmlns.tibco.com/bw/process/2003" xmlns:ns2="www.tibco.com/plugin/staffware/iProcessDelayedReleaseActivityInput" xmlns:xsl="http://www.w3.org/1999/XSL/Transform" xmlns:ns1="http://www.tibco.com/pe/EngineTypes" xmlns:ns="http://schemas.tibco.com/bw/plugins/jdbc/5.0/jdbcExceptions" xmlns:ns0="http://www.tibco.com/pe/GenerateErrorActivity/InputSchema" xmlns:xsd="http://www.w3.org/2001/XMLSchema" xmlns:tib="http://www.tibco.com/bw/xslt/custom-functions" xmlns:pfx2="http://www.tibco.com/pe/WriteToLogActivitySchema" xmlns:pfx="http://xmlns.example.com/unique/default/namespace/1303354441086" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance">
+    <xsd:import namespace="http://xmlns.example.com/unique/default/namespace/1303354441086" schemaLocation="/SharedResources/Schema/hfaSchemas/Schema.xsd"/>
+    <pd:name>HFA/SubProcesses/UpdateCaseData.process</pd:name>
+    <pd:startName>Start</pd:startName>
+    <pd:startType ref="pfx:UpdateCaseDataRequest"/>
+    <pd:startX>28</pd:startX>
+    <pd:startY>186</pd:startY>
+    <pd:returnBindings/>
+    <pd:endName>End</pd:endName>
+    <pd:endX>1918</pd:endX>
+    <pd:endY>198</pd:endY>
+    <pd:errorSchemas/>
+    <pd:processVariables/>
+    <pd:targetNamespace>http://xmlns.example.com/1377745414572</pd:targetNamespace>
+    <pd:activity name="OnError">
+        <pd:type>com.tibco.plugin.timer.NullActivity</pd:type>
+        <pd:resourceType>ae.activities.null</pd:resourceType>
+        <pd:x>717</pd:x>
+        <pd:y>510</pd:y>
+        <config/>
+        <pd:inputBindings/>
+    </pd:activity>
+    <pd:activity name="MapError Message">
+        <pd:type>com.tibco.plugin.mapper.MapperActivity</pd:type>
+        <pd:resourceType>ae.activities.MapperActivity</pd:resourceType>
+        <pd:x>1440</pd:x>
+        <pd:y>519</pd:y>
+        <config>
+            <element>
+                <xsd:element name="Error">
+                    <xsd:complexType>
+                        <xsd:sequence>
+                            <xsd:element name="ERROR_CODE" type="xsd:string" minOccurs="0"/>
+                            <xsd:element name="ERROR_DESC" type="xsd:string" minOccurs="0"/>
+                        </xsd:sequence>
+                    </xsd:complexType>
+                </xsd:element>
+            </element>
+        </config>
+        <pd:inputBindings>
+            <xsl:choose>
+                <xsl:when test="(($Start/pfx:UpdateCaseDataRequest/pfx:IS_STATUS_REQ=&quot;YES&quot;) and substring($UpdateCaseStatus/resultSet/outputSet/P_RESULT,1,1) !=&quot;0&quot;)">
+                    <Error>
+                        <ERROR_CODE>
+                            <xsl:value-of select="&quot;RETRY&quot;"/>
+                        </ERROR_CODE>
+                        <ERROR_DESC>
+                            <xsl:value-of select="concat(&quot;UpdateCaseStatus Call  &quot;,$UpdateCaseStatus/resultSet/outputSet/P_RESULT)"/>
+                        </ERROR_DESC>
+                    </Error>
+                </xsl:when>
+                <xsl:when test="(($Start/pfx:UpdateCaseDataRequest/pfx:IS_HIST_REQ = &quot;YES&quot;) and substring($UpdateCaseHistory/resultSet/outputSet/P_RESULT,1,1) !=&quot;0&quot;)">
+                    <Error>
+                        <ERROR_CODE>
+                            <xsl:value-of select="&quot;RETRY&quot;"/>
+                        </ERROR_CODE>
+                        <ERROR_DESC>
+                            <xsl:value-of select="concat(&quot;Update CaseHistory Call  &quot;, $UpdateCaseHistory/resultSet/outputSet/P_RESULT)"/>
+                        </ERROR_DESC>
+                    </Error>
+                </xsl:when>
+                <xsl:when test="(exists($_error_InsertIntoUpdateCaseRemark/ActivityErrors/ns:JDBCDriverLoadingException))">
+                    <Error>
+                        <ERROR_CODE>
+                            <xsl:value-of select="&quot;RETRY&quot;"/>
+                        </ERROR_CODE>
+                        <ERROR_DESC>
+                            <xsl:value-of select="tib:render-xml($_error_InsertIntoUpdateCaseRemark/ActivityErrors/ns:JDBCDriverLoadingException,1,1)"/>
+                        </ERROR_DESC>
+                    </Error>
+                </xsl:when>
+                <xsl:when test="(exists($_error_InsertIntoUpdateCaseRemark/ActivityErrors/ns:InvalidSQLTypeException))">
+                    <Error>
+                        <ERROR_CODE>
+                            <xsl:value-of select="&quot;RETRY&quot;"/>
+                        </ERROR_CODE>
+                        <ERROR_DESC>
+                            <xsl:value-of select="tib:render-xml($_error_InsertIntoUpdateCaseRemark/ActivityErrors/ns:InvalidSQLTypeException,1,1)"/>
+                        </ERROR_DESC>
+                    </Error>
+                </xsl:when>
+                <xsl:when test="(exists($_error_InsertIntoUpdateCaseRemark/ActivityErrors/ns:JDBCConnectionNotFoundException))">
+                    <Error>
+                        <ERROR_CODE>
+                            <xsl:value-of select="&quot;RETRY&quot;"/>
+                        </ERROR_CODE>
+                        <ERROR_DESC>
+                            <xsl:value-of select="tib:render-xml($_error_InsertIntoUpdateCaseRemark/ActivityErrors/ns:JDBCConnectionNotFoundException,1,1)"/>
+                        </ERROR_DESC>
+                    </Error>
+                </xsl:when>
+                <xsl:when test="(exists($_error_InsertIntoUpdateCaseRemark/ActivityErrors/ns:InvalidTimeZoneException))">
+                    <Error>
+                        <ERROR_CODE>
+                            <xsl:value-of select="&quot;RETRY&quot;"/>
+                        </ERROR_CODE>
+                        <ERROR_DESC>
+                            <xsl:value-of select="tib:render-xml($_error_InsertIntoUpdateCaseRemark/ActivityErrors/ns:InvalidTimeZoneException,1,1)"/>
+                        </ERROR_DESC>
+                    </Error>
+                </xsl:when>
+                <xsl:when test="(exists($_error_InsertIntoUpdateCaseRemark/ActivityErrors/ns:JDBCSQLException))">
+                    <Error>
+                        <ERROR_CODE>
+                            <xsl:value-of select="&quot;RETRY&quot;"/>
+                        </ERROR_CODE>
+                        <ERROR_DESC>
+                            <xsl:value-of select="tib:render-xml($_error_InsertIntoUpdateCaseRemark/ActivityErrors/ns:JDBCSQLException,1,1)"/>
+                        </ERROR_DESC>
+                    </Error>
+                </xsl:when>
+                <xsl:when test="(exists($_error_InsertIntoUpdateCaseRemark/ActivityErrors/ns:JDBCTimedOutException))">
+                    <Error>
+                        <ERROR_CODE>
+                            <xsl:value-of select="&quot;RETRY&quot;"/>
+                        </ERROR_CODE>
+                        <ERROR_DESC>
+                            <xsl:value-of select="tib:render-xml($_error_InsertIntoUpdateCaseRemark/ActivityErrors/ns:JDBCTimedOutException,1,1)"/>
+                        </ERROR_DESC>
+                    </Error>
+                </xsl:when>
+                <xsl:when test="(exists($_error_InsertIntoUpdateCaseRemark/ActivityErrors/ns:LoginTimedOutException))">
+                    <Error>
+                        <ERROR_CODE>
+                            <xsl:value-of select="&quot;RETRY&quot;"/>
+                        </ERROR_CODE>
+                        <ERROR_DESC>
+                            <xsl:value-of select="tib:render-xml($_error_InsertIntoUpdateCaseRemark/ActivityErrors/ns:LoginTimedOutException,1,1)"/>
+                        </ERROR_DESC>
+                    </Error>
+                </xsl:when>
+                <xsl:when test="(exists($_error_UpdateCaseStatus/ActivityErrors/ns:JDBCDriverLoadingException))">
+                    <Error>
+                        <ERROR_CODE>
+                            <xsl:value-of select="&quot;RETRY&quot;"/>
+                        </ERROR_CODE>
+                        <ERROR_DESC>
+                            <xsl:value-of select="tib:render-xml($_error_UpdateCaseStatus/ActivityErrors/ns:JDBCDriverLoadingException,1,1)"/>
+                        </ERROR_DESC>
+                    </Error>
+                </xsl:when>
+                <xsl:when test="(exists($_error_UpdateCaseStatus/ActivityErrors/ns:JDBCConnectionNotFoundException))">
+                    <Error>
+                        <ERROR_CODE>
+                            <xsl:value-of select="&quot;RETRY&quot;"/>
+                        </ERROR_CODE>
+                        <ERROR_DESC>
+                            <xsl:value-of select="tib:render-xml($_error_UpdateCaseStatus/ActivityErrors/ns:JDBCConnectionNotFoundException,1,1)"/>
+                        </ERROR_DESC>
+                    </Error>
+                </xsl:when>
+                <xsl:when test="(exists($_error_UpdateCaseStatus/ActivityErrors/ns:InvalidTimeZoneException))">
+                    <Error>
+                        <ERROR_CODE>
+                            <xsl:value-of select="&quot;RETRY&quot;"/>
+                        </ERROR_CODE>
+                        <ERROR_DESC>
+                            <xsl:value-of select="tib:render-xml($_error_UpdateCaseStatus/ActivityErrors/ns:InvalidTimeZoneException,1,1)"/>
+                        </ERROR_DESC>
+                    </Error>
+                </xsl:when>
+                <xsl:when test="(exists($_error_UpdateCaseStatus/ActivityErrors/ns:JDBCSQLException))">
+                    <Error>
+                        <ERROR_CODE>
+                            <xsl:value-of select="&quot;RETRY&quot;"/>
+                        </ERROR_CODE>
+                        <ERROR_DESC>
+                            <xsl:value-of select="tib:render-xml($_error_UpdateCaseStatus/ActivityErrors/ns:JDBCSQLException,1,1)"/>
+                        </ERROR_DESC>
+                    </Error>
+                </xsl:when>
+                <xsl:when test="(exists($_error_UpdateCaseStatus/ActivityErrors/ns:JDBCTimedOutException))">
+                    <Error>
+                        <ERROR_CODE>
+                            <xsl:value-of select="&quot;RETRY&quot;"/>
+                        </ERROR_CODE>
+                        <ERROR_DESC>
+                            <xsl:value-of select="tib:render-xml($_error_UpdateCaseStatus/ActivityErrors/ns:JDBCTimedOutException,1,1)"/>
+                        </ERROR_DESC>
+                    </Error>
+                </xsl:when>
+                <xsl:when test="(exists($_error_UpdateCaseStatus/ActivityErrors/ns:LoginTimedOutException))">
+                    <Error>
+                        <ERROR_CODE>
+                            <xsl:value-of select="&quot;RETRY&quot;"/>
+                        </ERROR_CODE>
+                        <ERROR_DESC>
+                            <xsl:value-of select="tib:render-xml($_error_UpdateCaseStatus/ActivityErrors/ns:LoginTimedOutException,1,1)"/>
+                        </ERROR_DESC>
+                    </Error>
+                </xsl:when>
+                <xsl:when test="(exists($_error_UpdateCaseHistory/ActivityErrors/ns:JDBCDriverLoadingException))">
+                    <Error>
+                        <ERROR_CODE>
+                            <xsl:value-of select="&quot;RETRY&quot;"/>
+                        </ERROR_CODE>
+                        <ERROR_DESC>
+                            <xsl:value-of select="tib:render-xml($_error_UpdateCaseHistory/ActivityErrors/ns:JDBCDriverLoadingException,1,1)"/>
+                        </ERROR_DESC>
+                    </Error>
+                </xsl:when>
+                <xsl:when test="(exists($_error_UpdateCaseHistory/ActivityErrors/ns:JDBCConnectionNotFoundException))">
+                    <Error>
+                        <ERROR_CODE>
+                            <xsl:value-of select="&quot;RETRY&quot;"/>
+                        </ERROR_CODE>
+                        <ERROR_DESC>
+                            <xsl:value-of select="tib:render-xml($_error_UpdateCaseHistory/ActivityErrors/ns:JDBCConnectionNotFoundException,1,1)"/>
+                        </ERROR_DESC>
+                    </Error>
+                </xsl:when>
+                <xsl:when test="(exists($_error_UpdateCaseHistory/ActivityErrors/ns:InvalidTimeZoneException))">
+                    <Error>
+                        <ERROR_CODE>
+                            <xsl:value-of select="&quot;RETRY&quot;"/>
+                        </ERROR_CODE>
+                        <ERROR_DESC>
+                            <xsl:value-of select="tib:render-xml($_error_UpdateCaseHistory/ActivityErrors/ns:InvalidTimeZoneException,1,1)"/>
+                        </ERROR_DESC>
+                    </Error>
+                </xsl:when>
+                <xsl:when test="(exists($_error_UpdateCaseHistory/ActivityErrors/ns:JDBCSQLException))">
+                    <Error>
+                        <ERROR_CODE>
+                            <xsl:value-of select="&quot;RETRY&quot;"/>
+                        </ERROR_CODE>
+                        <ERROR_DESC>
+                            <xsl:value-of select="tib:render-xml($_error_UpdateCaseHistory/ActivityErrors/ns:JDBCSQLException,1,1)"/>
+                        </ERROR_DESC>
+                    </Error>
+                </xsl:when>
+                <xsl:when test="(exists($_error_UpdateCaseHistory/ActivityErrors/ns:JDBCTimedOutException))">
+                    <Error>
+                        <ERROR_CODE>
+                            <xsl:value-of select="&quot;RETRY&quot;"/>
+                        </ERROR_CODE>
+                        <ERROR_DESC>
+                            <xsl:value-of select="tib:render-xml($_error_UpdateCaseHistory/ActivityErrors/ns:JDBCTimedOutException,1,1)"/>
+                        </ERROR_DESC>
+                    </Error>
+                </xsl:when>
+                <xsl:when test="(exists($_error_UpdateCaseHistory/ActivityErrors/ns:LoginTimedOutException))">
+                    <Error>
+                        <ERROR_CODE>
+                            <xsl:value-of select="&quot;RETRY&quot;"/>
+                        </ERROR_CODE>
+                        <ERROR_DESC>
+                            <xsl:value-of select="tib:render-xml($_error_UpdateCaseHistory/ActivityErrors/ns:LoginTimedOutException,1,1)"/>
+                        </ERROR_DESC>
+                    </Error>
+                </xsl:when>
+                <xsl:otherwise>
+                    <Error>
+                        <ERROR_CODE>
+                            <xsl:value-of select="&quot;RETRY&quot;"/>
+                        </ERROR_CODE>
+                        <ERROR_DESC>
+                            <xsl:value-of select="tib:render-xml($_error/ns1:ErrorReport/Msg,1,1)"/>
+                        </ERROR_DESC>
+                    </Error>
+                </xsl:otherwise>
+            </xsl:choose>
+        </pd:inputBindings>
+    </pd:activity>
+    <pd:activity name="No Logging">
+        <pd:type>com.tibco.plugin.timer.NullActivity</pd:type>
+        <pd:resourceType>ae.activities.null</pd:resourceType>
+        <pd:x>1757</pd:x>
+        <pd:y>327</pd:y>
+        <config/>
+        <pd:inputBindings/>
+    </pd:activity>
+    <pd:group name="UpdateCaseData">
+        <pd:type>com.tibco.pe.core.TransactionGroup</pd:type>
+        <pd:resourceType>ae.process.group</pd:resourceType>
+        <pd:x>380</pd:x>
+        <pd:y>9</pd:y>
+        <pd:width>899</pd:width>
+        <pd:height>364</pd:height>
+        <pd:collapsedWidth>57</pd:collapsedWidth>
+        <pd:collapsedHeight>70</pd:collapsedHeight>
+        <pd:groupVariables/>
+        <pd:joinToggle>inherit</pd:joinToggle>
+        <config>
+            <pd:groupType>transactionGroup</pd:groupType>
+            <pd:serializable>false</pd:serializable>
+            <pd:transactionType>JDBCTransaction</pd:transactionType>
+            <pd:includeCheckpoint>false</pd:includeCheckpoint>
+        </config>
+        <pd:inputBindings/>
+        <pd:expanded>true</pd:expanded>
+        <pd:transition>
+            <pd:from>start</pd:from>
+            <pd:to>Null-2</pd:to>
+            <pd:lineType>Default</pd:lineType>
+            <pd:lineColor>-16777216</pd:lineColor>
+            <pd:conditionType>always</pd:conditionType>
+        </pd:transition>
+        <pd:transition>
+            <pd:from>UpdateCurrentStepName</pd:from>
+            <pd:to>end</pd:to>
+            <pd:lineType>Default</pd:lineType>
+            <pd:lineColor>-16777216</pd:lineColor>
+            <pd:conditionType>always</pd:conditionType>
+        </pd:transition>
+        <pd:transition>
+            <pd:from>Null-4</pd:from>
+            <pd:to>end</pd:to>
+            <pd:lineType>Default</pd:lineType>
+            <pd:lineColor>-16777216</pd:lineColor>
+            <pd:conditionType>otherwise</pd:conditionType>
+        </pd:transition>
+        <pd:transition>
+            <pd:from>Null</pd:from>
+            <pd:to>Null-1</pd:to>
+            <pd:lineType>Default</pd:lineType>
+            <pd:lineColor>-16777216</pd:lineColor>
+            <pd:conditionType>always</pd:conditionType>
+        </pd:transition>
+        <pd:transition>
+            <pd:from>Null-1</pd:from>
+            <pd:to>Null-3</pd:to>
+            <pd:lineType>Default</pd:lineType>
+            <pd:lineColor>-16777216</pd:lineColor>
+            <pd:conditionType>otherwise</pd:conditionType>
+        </pd:transition>
+        <pd:transition>
+            <pd:from>UpdateCaseStatus</pd:from>
+            <pd:to>Null-1</pd:to>
+            <pd:lineType>Default</pd:lineType>
+            <pd:lineColor>-16777216</pd:lineColor>
+            <pd:conditionType>otherwise</pd:conditionType>
+        </pd:transition>
+        <pd:transition>
+            <pd:from>Null-2</pd:from>
+            <pd:to>Null</pd:to>
+            <pd:lineType>Default</pd:lineType>
+            <pd:lineColor>-16777216</pd:lineColor>
+            <pd:conditionType>otherwise</pd:conditionType>
+        </pd:transition>
+        <pd:transition>
+            <pd:from>UpdateCaseStatus</pd:from>
+            <pd:to>Generate Error</pd:to>
+            <pd:lineType>Default</pd:lineType>
+            <pd:lineColor>-52429</pd:lineColor>
+            <pd:conditionType>xpath</pd:conditionType>
+            <pd:xpath>(($Start/pfx:UpdateCaseDataRequest/pfx:IS_STATUS_REQ="YES") and substring($UpdateCaseStatus/resultSet/outputSet/P_RESULT,1,1) !="0")</pd:xpath>
+        </pd:transition>
+        <pd:transition>
+            <pd:from>UpdateCaseHistory</pd:from>
+            <pd:to>Generate Error</pd:to>
+            <pd:lineType>Default</pd:lineType>
+            <pd:lineColor>-52429</pd:lineColor>
+            <pd:conditionType>xpath</pd:conditionType>
+            <pd:xpath>(($Start/pfx:UpdateCaseDataRequest/pfx:IS_HIST_REQ = "YES") and substring($UpdateCaseHistory/resultSet/outputSet/P_RESULT,1,1) !="0")</pd:xpath>
+        </pd:transition>
+        <pd:transition>
+            <pd:from>Null-3</pd:from>
+            <pd:to>InsertIntoUpdateCaseRemark</pd:to>
+            <pd:lineType>Default</pd:lineType>
+            <pd:lineColor>-16777216</pd:lineColor>
+            <pd:conditionType>xpath</pd:conditionType>
+            <pd:xpath>upper-case($Start/pfx:UpdateCaseDataRequest/pfx:IS_RMK_REQ) ="YES" and  exists($Start/pfx:UpdateCaseDataRequest/pfx:REMARK) and $Start/pfx:UpdateCaseDataRequest/pfx:REMARK !=""</pd:xpath>
+        </pd:transition>
+        <pd:transition>
+            <pd:from>Null-2</pd:from>
+            <pd:to>UpdateCaseStatus</pd:to>
+            <pd:lineType>Default</pd:lineType>
+            <pd:lineColor>-16777216</pd:lineColor>
+            <pd:conditionType>xpath</pd:conditionType>
+            <pd:xpath>upper-case($Start/pfx:UpdateCaseDataRequest/pfx:IS_STATUS_REQ) ="YES"</pd:xpath>
+        </pd:transition>
+        <pd:transition>
+            <pd:from>Null-1</pd:from>
+            <pd:to>UpdateCaseHistory</pd:to>
+            <pd:lineType>Default</pd:lineType>
+            <pd:lineColor>-16777216</pd:lineColor>
+            <pd:conditionType>xpath</pd:conditionType>
+            <pd:xpath>upper-case($Start/pfx:UpdateCaseDataRequest/pfx:IS_HIST_REQ) = "YES"</pd:xpath>
+        </pd:transition>
+        <pd:transition>
+            <pd:from>UpdateCaseHistory</pd:from>
+            <pd:to>Null-3</pd:to>
+            <pd:lineType>Default</pd:lineType>
+            <pd:lineColor>-16777216</pd:lineColor>
+            <pd:conditionType>otherwise</pd:conditionType>
+        </pd:transition>
+        <pd:transition>
+            <pd:from>InsertIntoUpdateCaseRemark</pd:from>
+            <pd:to>Null-4</pd:to>
+            <pd:lineType>Default</pd:lineType>
+            <pd:lineColor>-16777216</pd:lineColor>
+            <pd:conditionType>always</pd:conditionType>
+        </pd:transition>
+        <pd:transition>
+            <pd:from>Null-3</pd:from>
+            <pd:to>Null-4</pd:to>
+            <pd:lineType>Default</pd:lineType>
+            <pd:lineColor>-16777216</pd:lineColor>
+            <pd:conditionType>always</pd:conditionType>
+        </pd:transition>
+        <pd:transition>
+            <pd:from>Null-4</pd:from>
+            <pd:to>UpdateCurrentStepName</pd:to>
+            <pd:lineType>Default</pd:lineType>
+            <pd:lineColor>-16777216</pd:lineColor>
+            <pd:conditionType>xpath</pd:conditionType>
+            <pd:xpath>string-length(tib:trim($Start/pfx:UpdateCaseDataRequest/pfx:STEP_NAME_HIST)) !=0</pd:xpath>
+        </pd:transition>
+        <pd:activity name="InsertIntoUpdateCaseRemark">
+            <pd:type>com.tibco.plugin.jdbc.JDBCUpdateActivity</pd:type>
+            <pd:resourceType>ae.activities.JDBCUpdateActivity</pd:resourceType>
+            <pd:x>908</pd:x>
+            <pd:y>189</pd:y>
+            <config>
+                <timeout>%%Connections/JDBC/QueryTimeout%%</timeout>
+                <commit>false</commit>
+                <emptyStrAsNil>false</emptyStrAsNil>
+                <jdbcSharedConfig>/SharedResources/Connections/JDBC/IWFDB.sharedjdbc</jdbcSharedConfig>
+                <statement>INSERT INTO HFA_CASE_RMK (REC_ID,USER_ID,STEP_NAME,STEP_DESC,REMARK,REMARK_TIME,CASE_NUM) VALUES(HFA_CASE_RMK_S.nextval,?,?,?,?,sysdate,?)</statement>
+                <Prepared_Param_DataType>
+                    <parameter>
+                        <parameterName>USER_ID</parameterName>
+                        <dataType>VARCHAR</dataType>
+                    </parameter>
+                    <parameter>
+                        <parameterName>STEP_NAME</parameterName>
+                        <dataType>VARCHAR</dataType>
+                    </parameter>
+                    <parameter>
+                        <parameterName>STEP_DESC</parameterName>
+                        <dataType>VARCHAR</dataType>
+                    </parameter>
+                    <parameter>
+                        <parameterName>REMARK</parameterName>
+                        <dataType>VARCHAR</dataType>
+                    </parameter>
+                    <parameter>
+                        <parameterName>CASE_NUM</parameterName>
+                        <dataType>VARCHAR</dataType>
+                    </parameter>
+                </Prepared_Param_DataType>
+            </config>
+            <pd:inputBindings>
+                <jdbcUpdateActivityInput>
+                    <USER_ID>
+                        <xsl:choose>
+                            <xsl:when test="exists(tib:trim($Start/pfx:UpdateCaseDataRequest/pfx:USER_ID))">
+                                <xsl:value-of select="tib:trim($Start/pfx:UpdateCaseDataRequest/pfx:USER_ID)"/>
+                            </xsl:when>
+                            <xsl:otherwise>
+                                <xsl:attribute name="xsi:nil">true</xsl:attribute>
+                            </xsl:otherwise>
+                        </xsl:choose>
+                    </USER_ID>
+                    <STEP_NAME>
+                        <xsl:choose>
+                            <xsl:when test="exists(tib:trim($Start/pfx:UpdateCaseDataRequest/pfx:STEP_NAME_RMK))">
+                                <xsl:value-of select="tib:trim($Start/pfx:UpdateCaseDataRequest/pfx:STEP_NAME_RMK)"/>
+                            </xsl:when>
+                            <xsl:otherwise>
+                                <xsl:attribute name="xsi:nil">true</xsl:attribute>
+                            </xsl:otherwise>
+                        </xsl:choose>
+                    </STEP_NAME>
+                    <STEP_DESC>
+                        <xsl:choose>
+                            <xsl:when test="exists(tib:trim($Start/pfx:UpdateCaseDataRequest/pfx:STEP_DESC_RMK))">
+                                <xsl:value-of select="tib:trim($Start/pfx:UpdateCaseDataRequest/pfx:STEP_DESC_RMK)"/>
+                            </xsl:when>
+                            <xsl:otherwise>
+                                <xsl:attribute name="xsi:nil">true</xsl:attribute>
+                            </xsl:otherwise>
+                        </xsl:choose>
+                    </STEP_DESC>
+                    <REMARK>
+                        <xsl:choose>
+                            <xsl:when test="exists(tib:trim($Start/pfx:UpdateCaseDataRequest/pfx:REMARK))">
+                                <xsl:value-of select="tib:trim($Start/pfx:UpdateCaseDataRequest/pfx:REMARK)"/>
+                            </xsl:when>
+                            <xsl:otherwise>
+                                <xsl:attribute name="xsi:nil">true</xsl:attribute>
+                            </xsl:otherwise>
+                        </xsl:choose>
+                    </REMARK>
+                    <CASE_NUM>
+                        <xsl:choose>
+                            <xsl:when test="exists(tib:trim($Start/pfx:UpdateCaseDataRequest/pfx:CaseNumber))">
+                                <xsl:value-of select="tib:trim($Start/pfx:UpdateCaseDataRequest/pfx:CaseNumber)"/>
+                            </xsl:when>
+                            <xsl:otherwise>
+                                <xsl:attribute name="xsi:nil">true</xsl:attribute>
+                            </xsl:otherwise>
+                        </xsl:choose>
+                    </CASE_NUM>
+                </jdbcUpdateActivityInput>
+            </pd:inputBindings>
+        </pd:activity>
+        <pd:activity name="UpdateCaseStatus">
+            <pd:type>com.tibco.plugin.jdbc.JDBCCallActivity</pd:type>
+            <pd:resourceType>ae.activities.JDBCCallActivity</pd:resourceType>
+            <pd:x>590</pd:x>
+            <pd:y>191</pd:y>
+            <config>
+                <timeout>%%Connections/JDBC/QueryTimeout%%</timeout>
+                <maxRows>%%Connections/JDBC/MaxRow%%</maxRows>
+                <emptyStrAsNil>false</emptyStrAsNil>
+                <jdbcSharedConfig>/SharedResources/Connections/JDBC/IWFDB.sharedjdbc</jdbcSharedConfig>
+                <schema>%%Connections/JDBC/StoredProcedure/Schema%%</schema>
+                <catalog>%%Connections/JDBC/StoredProcedure/Package%%</catalog>
+                <ProcedureName>%%Connections/JDBC/StoredProcedure/ProcName_CaseStat%%</ProcedureName>
+                <parameterTypes>
+                    <parameter>
+                        <colName>P_PROJECT_NAME</colName>
+                        <colType>1</colType>
+                        <dataType>12</dataType>
+                        <typeName>VARCHAR2</typeName>
+                    </parameter>
+                    <parameter>
+                        <colName>P_CASE_STATUS</colName>
+                        <colType>1</colType>
+                        <dataType>12</dataType>
+                        <typeName>VARCHAR2</typeName>
+                    </parameter>
+                    <parameter>
+                        <colName>P_CASE_NUM</colName>
+                        <colType>1</colType>
+                        <dataType>12</dataType>
+                        <typeName>VARCHAR2</typeName>
+                    </parameter>
+                    <parameter>
+                        <colName>P_RESULT</colName>
+                        <colType>4</colType>
+                        <dataType>12</dataType>
+                        <typeName>VARCHAR2</typeName>
+                    </parameter>
+                </parameterTypes>
+            </config>
+            <pd:inputBindings>
+                <inputs>
+                    <inputSet>
+                        <P_PROJECT_NAME>
+                            <xsl:choose>
+                                <xsl:when test="exists(tib:trim($Start/pfx:UpdateCaseDataRequest/pfx:PROJ_CODE))">
+                                    <xsl:value-of select="tib:trim($Start/pfx:UpdateCaseDataRequest/pfx:PROJ_CODE)"/>
+                                </xsl:when>
+                                <xsl:otherwise>
+                                    <xsl:attribute name="xsi:nil">true</xsl:attribute>
+                                </xsl:otherwise>
+                            </xsl:choose>
+                        </P_PROJECT_NAME>
+                        <P_CASE_STATUS>
+                            <xsl:choose>
+                                <xsl:when test="exists(tib:trim($Start/pfx:UpdateCaseDataRequest/pfx:Case_Status))">
+                                    <xsl:value-of select="tib:trim($Start/pfx:UpdateCaseDataRequest/pfx:Case_Status)"/>
+                                </xsl:when>
+                                <xsl:otherwise>
+                                    <xsl:attribute name="xsi:nil">true</xsl:attribute>
+                                </xsl:otherwise>
+                            </xsl:choose>
+                        </P_CASE_STATUS>
+                        <P_CASE_NUM>
+                            <xsl:choose>
+                                <xsl:when test="exists(tib:trim($Start/pfx:UpdateCaseDataRequest/pfx:CaseNumber))">
+                                    <xsl:value-of select="tib:trim($Start/pfx:UpdateCaseDataRequest/pfx:CaseNumber)"/>
+                                </xsl:when>
+                                <xsl:otherwise>
+                                    <xsl:attribute name="xsi:nil">true</xsl:attribute>
+                                </xsl:otherwise>
+                            </xsl:choose>
+                        </P_CASE_NUM>
+                    </inputSet>
+                </inputs>
+            </pd:inputBindings>
+        </pd:activity>
+        <pd:activity name="UpdateCaseHistory">
+            <pd:type>com.tibco.plugin.jdbc.JDBCCallActivity</pd:type>
+            <pd:resourceType>ae.activities.JDBCCallActivity</pd:resourceType>
+            <pd:x>750</pd:x>
+            <pd:y>190</pd:y>
+            <config>
+                <timeout>%%Connections/JDBC/QueryTimeout%%</timeout>
+                <maxRows>%%Connections/JDBC/MaxRow%%</maxRows>
+                <emptyStrAsNil>false</emptyStrAsNil>
+                <jdbcSharedConfig>/SharedResources/Connections/JDBC/IWFDB.sharedjdbc</jdbcSharedConfig>
+                <schema>%%Connections/JDBC/StoredProcedure/Schema%%</schema>
+                <catalog>%%Connections/JDBC/StoredProcedure/Package%%</catalog>
+                <ProcedureName>%%Connections/JDBC/StoredProcedure/ProcName_CaseHist%%</ProcedureName>
+                <parameterTypes>
+                    <parameter>
+                        <colName>P_PROJECT_NAME</colName>
+                        <colType>1</colType>
+                        <dataType>12</dataType>
+                        <typeName>VARCHAR2</typeName>
+                    </parameter>
+                    <parameter>
+                        <colName>P_CASE_NUM</colName>
+                        <colType>1</colType>
+                        <dataType>12</dataType>
+                        <typeName>VARCHAR2</typeName>
+                    </parameter>
+                    <parameter>
+                        <colName>P_STEP_NAME</colName>
+                        <colType>1</colType>
+                        <dataType>12</dataType>
+                        <typeName>VARCHAR2</typeName>
+                    </parameter>
+                    <parameter>
+                        <colName>P_STEP_DESC</colName>
+                        <colType>1</colType>
+                        <dataType>12</dataType>
+                        <typeName>VARCHAR2</typeName>
+                    </parameter>
+                    <parameter>
+                        <colName>P_STEP_ACTION</colName>
+                        <colType>1</colType>
+                        <dataType>12</dataType>
+                        <typeName>VARCHAR2</typeName>
+                    </parameter>
+                    <parameter>
+                        <colName>P_ACTED_BY</colName>
+                        <colType>1</colType>
+                        <dataType>12</dataType>
+                        <typeName>VARCHAR2</typeName>
+                    </parameter>
+                    <parameter>
+                        <colName>P_ACTED_DATE</colName>
+                        <colType>1</colType>
+                        <dataType>12</dataType>
+                        <typeName>VARCHAR2</typeName>
+                    </parameter>
+                    <parameter>
+                        <colName>P_RESULT</colName>
+                        <colType>4</colType>
+                        <dataType>12</dataType>
+                        <typeName>VARCHAR2</typeName>
+                    </parameter>
+                </parameterTypes>
+            </config>
+            <pd:inputBindings>
+                <inputs>
+                    <inputSet>
+                        <P_PROJECT_NAME>
+                            <xsl:choose>
+                                <xsl:when test="exists(tib:trim($Start/pfx:UpdateCaseDataRequest/pfx:PROJ_CODE))">
+                                    <xsl:value-of select="tib:trim($Start/pfx:UpdateCaseDataRequest/pfx:PROJ_CODE)"/>
+                                </xsl:when>
+                                <xsl:otherwise>
+                                    <xsl:attribute name="xsi:nil">true</xsl:attribute>
+                                </xsl:otherwise>
+                            </xsl:choose>
+                        </P_PROJECT_NAME>
+                        <P_CASE_NUM>
+                            <xsl:choose>
+                                <xsl:when test="exists(tib:trim($Start/pfx:UpdateCaseDataRequest/pfx:CaseNumber))">
+                                    <xsl:value-of select="tib:trim($Start/pfx:UpdateCaseDataRequest/pfx:CaseNumber)"/>
+                                </xsl:when>
+                                <xsl:otherwise>
+                                    <xsl:attribute name="xsi:nil">true</xsl:attribute>
+                                </xsl:otherwise>
+                            </xsl:choose>
+                        </P_CASE_NUM>
+                        <P_STEP_NAME>
+                            <xsl:choose>
+                                <xsl:when test="exists(tib:trim($Start/pfx:UpdateCaseDataRequest/pfx:STEP_NAME_HIST))">
+                                    <xsl:value-of select="tib:trim($Start/pfx:UpdateCaseDataRequest/pfx:STEP_NAME_HIST)"/>
+                                </xsl:when>
+                                <xsl:otherwise>
+                                    <xsl:attribute name="xsi:nil">true</xsl:attribute>
+                                </xsl:otherwise>
+                            </xsl:choose>
+                        </P_STEP_NAME>
+                        <P_STEP_DESC>
+                            <xsl:choose>
+                                <xsl:when test="exists(tib:trim($Start/pfx:UpdateCaseDataRequest/pfx:STEP_DESC_HIST))">
+                                    <xsl:value-of select="tib:trim($Start/pfx:UpdateCaseDataRequest/pfx:STEP_DESC_HIST)"/>
+                                </xsl:when>
+                                <xsl:otherwise>
+                                    <xsl:attribute name="xsi:nil">true</xsl:attribute>
+                                </xsl:otherwise>
+                            </xsl:choose>
+                        </P_STEP_DESC>
+                        <P_STEP_ACTION>
+                            <xsl:choose>
+                                <xsl:when test="exists(tib:trim($Start/pfx:UpdateCaseDataRequest/pfx:STEP_ACTION))">
+                                    <xsl:value-of select="tib:trim($Start/pfx:UpdateCaseDataRequest/pfx:STEP_ACTION)"/>
+                                </xsl:when>
+                                <xsl:otherwise>
+                                    <xsl:attribute name="xsi:nil">true</xsl:attribute>
+                                </xsl:otherwise>
+                            </xsl:choose>
+                        </P_STEP_ACTION>
+                        <P_ACTED_BY>
+                            <xsl:choose>
+                                <xsl:when test="exists(tib:trim($Start/pfx:UpdateCaseDataRequest/pfx:ACTED_BY))">
+                                    <xsl:value-of select="tib:trim($Start/pfx:UpdateCaseDataRequest/pfx:ACTED_BY)"/>
+                                </xsl:when>
+                                <xsl:otherwise>
+                                    <xsl:attribute name="xsi:nil">true</xsl:attribute>
+                                </xsl:otherwise>
+                            </xsl:choose>
+                        </P_ACTED_BY>
+                        <P_ACTED_DATE>
+                            <xsl:choose>
+                                <xsl:when test="exists(tib:trim($Start/pfx:UpdateCaseDataRequest/pfx:ACTED_DT))">
+                                    <xsl:value-of select="tib:trim($Start/pfx:UpdateCaseDataRequest/pfx:ACTED_DT)"/>
+                                </xsl:when>
+                                <xsl:otherwise>
+                                    <xsl:attribute name="xsi:nil">true</xsl:attribute>
+                                </xsl:otherwise>
+                            </xsl:choose>
+                        </P_ACTED_DATE>
+                    </inputSet>
+                </inputs>
+            </pd:inputBindings>
+        </pd:activity>
+        <pd:activity name="Null">
+            <pd:type>com.tibco.plugin.timer.NullActivity</pd:type>
+            <pd:resourceType>ae.activities.null</pd:resourceType>
+            <pd:x>588</pd:x>
+            <pd:y>69</pd:y>
+            <config/>
+            <pd:inputBindings/>
+        </pd:activity>
+        <pd:activity name="Null-1">
+            <pd:type>com.tibco.plugin.timer.NullActivity</pd:type>
+            <pd:resourceType>ae.activities.null</pd:resourceType>
+            <pd:x>746</pd:x>
+            <pd:y>69</pd:y>
+            <config/>
+            <pd:inputBindings/>
+        </pd:activity>
+        <pd:activity name="Null-2">
+            <pd:type>com.tibco.plugin.timer.NullActivity</pd:type>
+            <pd:resourceType>ae.activities.null</pd:resourceType>
+            <pd:x>444</pd:x>
+            <pd:y>191</pd:y>
+            <config/>
+            <pd:inputBindings/>
+        </pd:activity>
+        <pd:activity name="Null-3">
+            <pd:type>com.tibco.plugin.timer.NullActivity</pd:type>
+            <pd:resourceType>ae.activities.null</pd:resourceType>
+            <pd:x>903</pd:x>
+            <pd:y>68</pd:y>
+            <config/>
+            <pd:inputBindings/>
+        </pd:activity>
+        <pd:activity name="Generate Error">
+            <pd:type>com.tibco.pe.core.GenerateErrorActivity</pd:type>
+            <pd:resourceType>ae.activities.throw</pd:resourceType>
+            <pd:x>673</pd:x>
+            <pd:y>297</pd:y>
+            <config>
+                <faultName/>
+            </config>
+            <pd:inputBindings>
+                <ns0:ActivityInput/>
+            </pd:inputBindings>
+        </pd:activity>
+        <pd:activity name="Null-4">
+            <pd:type>com.tibco.plugin.timer.NullActivity</pd:type>
+            <pd:resourceType>ae.activities.null</pd:resourceType>
+            <pd:x>1071</pd:x>
+            <pd:y>198</pd:y>
+            <config/>
+            <pd:inputBindings/>
+        </pd:activity>
+        <pd:activity name="UpdateCurrentStepName">
+            <pd:type>com.tibco.plugin.jdbc.JDBCUpdateActivity</pd:type>
+            <pd:resourceType>ae.activities.JDBCUpdateActivity</pd:resourceType>
+            <pd:x>1152</pd:x>
+            <pd:y>81</pd:y>
+            <config>
+                <timeout>%%Connections/JDBC/QueryTimeout%%</timeout>
+                <commit>false</commit>
+                <emptyStrAsNil>false</emptyStrAsNil>
+                <jdbcSharedConfig>/SharedResources/Connections/JDBC/IWFDB.sharedjdbc</jdbcSharedConfig>
+                <statement>UPDATE HFA_CASE_DATA
+SET CURRENT_STEP = ?
+WHERE CASE_NUM = ?</statement>
+                <Prepared_Param_DataType>
+                    <parameter>
+                        <parameterName>CURRENT_STEP</parameterName>
+                        <dataType>VARCHAR</dataType>
+                    </parameter>
+                    <parameter>
+                        <parameterName>CASE_NUM</parameterName>
+                        <dataType>VARCHAR</dataType>
+                    </parameter>
+                </Prepared_Param_DataType>
+            </config>
+            <pd:inputBindings>
+                <jdbcUpdateActivityInput>
+                    <xsl:choose>
+                        <xsl:when test="tib:trim($Start/pfx:UpdateCaseDataRequest/pfx:STEP_NAME_HIST) = &quot;S0000100&quot;">
+                            <CURRENT_STEP>
+                                <xsl:choose>
+                                    <xsl:when test="exists(&quot;S0000300&quot;)">
+                                        <xsl:value-of select="&quot;S0000300&quot;"/>
+                                    </xsl:when>
+                                    <xsl:otherwise>
+                                        <xsl:attribute name="xsi:nil">true</xsl:attribute>
+                                    </xsl:otherwise>
+                                </xsl:choose>
+                            </CURRENT_STEP>
+                        </xsl:when>
+                        <xsl:otherwise>
+                            <CURRENT_STEP>
+                                <xsl:choose>
+                                    <xsl:when test="exists(&quot;S0000300&quot;)">
+                                        <xsl:value-of select="&quot;S0000300&quot;"/>
+                                    </xsl:when>
+                                    <xsl:otherwise>
+                                        <xsl:attribute name="xsi:nil">true</xsl:attribute>
+                                    </xsl:otherwise>
+                                </xsl:choose>
+                            </CURRENT_STEP>
+                        </xsl:otherwise>
+                    </xsl:choose>
+                    <CASE_NUM>
+                        <xsl:choose>
+                            <xsl:when test="exists(tib:trim($Start/pfx:UpdateCaseDataRequest/pfx:CaseNumber))">
+                                <xsl:value-of select="tib:trim($Start/pfx:UpdateCaseDataRequest/pfx:CaseNumber)"/>
+                            </xsl:when>
+                            <xsl:otherwise>
+                                <xsl:attribute name="xsi:nil">true</xsl:attribute>
+                            </xsl:otherwise>
+                        </xsl:choose>
+                    </CASE_NUM>
+                </jdbcUpdateActivityInput>
+            </pd:inputBindings>
+        </pd:activity>
+    </pd:group>
+    <pd:activity name="LogStart">
+        <pd:type>com.tibco.pe.core.WriteToLogActivity</pd:type>
+        <pd:resourceType>ae.activities.log</pd:resourceType>
+        <pd:x>235</pd:x>
+        <pd:y>189</pd:y>
+        <config>
+            <role>User</role>
+        </config>
+        <pd:inputBindings>
+            <pfx2:ActivityInput>
+                <message>
+                    <xsl:value-of select="tib:render-xml($Start/pfx:UpdateCaseDataRequest,1,1)"/>
+                </message>
+                <msgCode>
+                    <xsl:value-of select="concat(&quot;&#xA;&quot;,&quot;Below is the Request Message for the Case Number &quot;,tib:trim($Start/pfx:UpdateCaseDataRequest/pfx:CaseNumber),&quot; Service call is UpdateCaseData  &quot;,&quot;&#xA;&quot;)"/>
+                </msgCode>
+            </pfx2:ActivityInput>
+        </pd:inputBindings>
+    </pd:activity>
+    <pd:activity name="LogEnd">
+        <pd:type>com.tibco.pe.core.WriteToLogActivity</pd:type>
+        <pd:resourceType>ae.activities.log</pd:resourceType>
+        <pd:x>1706</pd:x>
+        <pd:y>200</pd:y>
+        <config>
+            <role>User</role>
+        </config>
+        <pd:inputBindings>
+            <pfx2:ActivityInput>
+                <message>
+                    <xsl:value-of select="concat(&quot;&#xA;&quot;,&quot;Below is the Response Message for the Case Number  &quot;,tib:trim($Start/pfx:UpdateCaseDataRequest/pfx:CaseNumber)  ,&quot; Service Call is UpdateCaseData&quot;,&quot;&#xA;&quot;,&quot; All the Tables are updated successfully &quot;,&quot;&#xA;&quot;)"/>
+                </message>
+            </pfx2:ActivityInput>
+        </pd:inputBindings>
+    </pd:activity>
+    <pd:activity name="ErrorLog">
+        <pd:type>com.tibco.pe.core.WriteToLogActivity</pd:type>
+        <pd:resourceType>ae.activities.log</pd:resourceType>
+        <pd:x>1439</pd:x>
+        <pd:y>343</pd:y>
+        <config>
+            <role>User</role>
+        </config>
+        <pd:inputBindings>
+            <pfx2:ActivityInput>
+                <message>
+                    <xsl:value-of select="tib:render-xml($MapError-Message/Error,1,1)"/>
+                </message>
+                <msgCode>
+                    <xsl:value-of select="concat(&quot;&#xA;&quot;,&quot;Below is the Error Message for the Case Number &quot;,tib:trim($Start/pfx:UpdateCaseDataRequest/pfx:CaseNumber),&quot; Service throwing Exception is UpdateCaseData &quot;, &quot;&#xA;&quot;)"/>
+                </msgCode>
+            </pfx2:ActivityInput>
+        </pd:inputBindings>
+    </pd:activity>
+    <pd:activity name="CheckTheInitiator">
+        <pd:type>com.tibco.plugin.timer.NullActivity</pd:type>
+        <pd:resourceType>ae.activities.null</pd:resourceType>
+        <pd:x>1592</pd:x>
+        <pd:y>56</pd:y>
+        <config/>
+        <pd:inputBindings/>
+    </pd:activity>
+    <pd:activity name="ConsolidateEnd">
+        <pd:type>com.tibco.plugin.timer.NullActivity</pd:type>
+        <pd:resourceType>ae.activities.null</pd:resourceType>
+        <pd:x>1438</pd:x>
+        <pd:y>195</pd:y>
+        <config/>
+        <pd:inputBindings/>
+    </pd:activity>
+    <pd:transition>
+        <pd:from>Start</pd:from>
+        <pd:to>LogStart</pd:to>
+        <pd:lineType>Default</pd:lineType>
+        <pd:lineColor>-16777216</pd:lineColor>
+        <pd:conditionType>otherwise</pd:conditionType>
+    </pd:transition>
+    <pd:transition>
+        <pd:from>Start</pd:from>
+        <pd:to>OnError</pd:to>
+        <pd:lineType>Curved</pd:lineType>
+        <pd:lineColor>-65434</pd:lineColor>
+        <pd:conditionType>error</pd:conditionType>
+    </pd:transition>
+    <pd:transition>
+        <pd:from>OnError</pd:from>
+        <pd:to>MapError Message</pd:to>
+        <pd:xpathDescription>Map Response</pd:xpathDescription>
+        <pd:lineType>Default</pd:lineType>
+        <pd:lineColor>-65485</pd:lineColor>
+        <pd:conditionType>always</pd:conditionType>
+    </pd:transition>
+    <pd:transition>
+        <pd:from>MapError Message</pd:from>
+        <pd:to>ErrorLog</pd:to>
+        <pd:lineType>Default</pd:lineType>
+        <pd:lineColor>-65485</pd:lineColor>
+        <pd:conditionType>always</pd:conditionType>
+    </pd:transition>
+    <pd:transition>
+        <pd:from>No Logging</pd:from>
+        <pd:to>End</pd:to>
+        <pd:lineType>Default</pd:lineType>
+        <pd:lineColor>-52378</pd:lineColor>
+        <pd:conditionType>always</pd:conditionType>
+    </pd:transition>
+    <pd:transition>
+        <pd:from>UpdateCaseData</pd:from>
+        <pd:to>OnError</pd:to>
+        <pd:lineType>Default</pd:lineType>
+        <pd:lineColor>-65536</pd:lineColor>
+        <pd:conditionType>error</pd:conditionType>
+    </pd:transition>
+    <pd:transition>
+        <pd:from>UpdateCaseData</pd:from>
+        <pd:to>ConsolidateEnd</pd:to>
+        <pd:lineType>Default</pd:lineType>
+        <pd:lineColor>-16777216</pd:lineColor>
+        <pd:conditionType>otherwise</pd:conditionType>
+    </pd:transition>
+    <pd:transition>
+        <pd:from>LogStart</pd:from>
+        <pd:to>UpdateCaseData</pd:to>
+        <pd:lineType>Default</pd:lineType>
+        <pd:lineColor>-16777216</pd:lineColor>
+        <pd:conditionType>always</pd:conditionType>
+    </pd:transition>
+    <pd:transition>
+        <pd:from>LogEnd</pd:from>
+        <pd:to>End</pd:to>
+        <pd:lineType>Default</pd:lineType>
+        <pd:lineColor>-16777216</pd:lineColor>
+        <pd:conditionType>always</pd:conditionType>
+    </pd:transition>
+    <pd:transition>
+        <pd:from>ErrorLog</pd:from>
+        <pd:to>ConsolidateEnd</pd:to>
+        <pd:lineType>Default</pd:lineType>
+        <pd:lineColor>-16777216</pd:lineColor>
+        <pd:conditionType>always</pd:conditionType>
+    </pd:transition>
+    <pd:transition>
+        <pd:from>UpdateCaseData</pd:from>
+        <pd:to>CheckTheInitiator</pd:to>
+        <pd:lineType>Default</pd:lineType>
+        <pd:lineColor>-16711885</pd:lineColor>
+        <pd:conditionType>xpath</pd:conditionType>
+        <pd:xpath>upper-case($Start/pfx:UpdateCaseDataRequest/pfx:IS_FROM_BW) = "YES"</pd:xpath>
+    </pd:transition>
+    <pd:transition>
+        <pd:from>CheckTheInitiator</pd:from>
+        <pd:to>LogEnd</pd:to>
+        <pd:lineType>Default</pd:lineType>
+        <pd:lineColor>-16777216</pd:lineColor>
+        <pd:conditionType>always</pd:conditionType>
+    </pd:transition>
+    <pd:transition>
+        <pd:from>ConsolidateEnd</pd:from>
+        <pd:to>No Logging</pd:to>
+        <pd:lineType>Default</pd:lineType>
+        <pd:lineColor>-65485</pd:lineColor>
+        <pd:conditionType>xpath</pd:conditionType>
+        <pd:xpath>exists($MapError-Message/Error/ERROR_CODE) and $MapError-Message/Error/ERROR_CODE !=""</pd:xpath>
+    </pd:transition>
+    <pd:transition>
+        <pd:from>ConsolidateEnd</pd:from>
+        <pd:to>LogEnd</pd:to>
+        <pd:lineType>Default</pd:lineType>
+        <pd:lineColor>-13369600</pd:lineColor>
+        <pd:conditionType>otherwise</pd:conditionType>
+    </pd:transition>
+    <pd:label>
+        <pd:name>Label</pd:name>
+        <pd:description>1. Avoid using the generic catch activity in this background process, this is required so as to display more user defined errors back 
+    on the iporcess error screen.
+2. Replace the SOAPRequestReply and SQL Direct  activity with actual processes implementation
+3. Always log the request and response messages, this will be used ful when deguging the issues with the back ground calls. If 
+    messages have some unique data then it is easy to grep in unix log.( really helpful for support team)
+4. Make the process more specific to the back ground calls then generic.
+5. Make sure there is always error transition from the start activity as well, in case if the mandatory fields are missing process
+    will route to error transition path and EAI call will return back to the iprocess with user defined exception.
+6. Using this approach we can also update the iprocess audit trial if in case required in future for any back ground call</pd:description>
+        <pd:x>878</pd:x>
+        <pd:y>709</pd:y>
+        <pd:width>755</pd:width>
+        <pd:height>157</pd:height>
+        <pd:fontColor>-16777216</pd:fontColor>
+        <pd:color>-13369345</pd:color>
+        <pd:type>solid</pd:type>
+        <pd:thickness>0</pd:thickness>
+        <pd:fade>true</pd:fade>
+    </pd:label>
+</pd:ProcessDefinition>

@@ -1,0 +1,33 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<!-- edited with XMLSpy v2007 rel. 3 sp1 (http://www.altova.com) by DBS BANK LIMITED (DBS BANK LIMITED) -->
+<!-- edited with XML Spy v4.4 U (http://www.xmlspy.com) by ITG-Business Management Office (DBS Bank) -->
+<!-- edited with XMLSPY v2004 rel. 3 U (http://www.xmlspy.com) by ADC (DBS Bank, ITG-AMG Integration CC (0519)) -->
+<xs:schema xmlns:ems="http://schemas.dbs.com/icc/ems"
+	 xmlns:env="http://schemas.xmlsoap.org/soap/envelope/"
+	 xmlns:xs="http://www.w3.org/2001/XMLSchema"
+	 targetNamespace="http://schemas.xmlsoap.org/soap/envelope/"
+	 elementFormDefault="qualified"
+	 attributeFormDefault="unqualified">
+	<xs:annotation>
+		<xs:documentation>Version 1.0 (2009-11-04): New release for IP message version 3.0</xs:documentation>
+	</xs:annotation>
+	<xs:annotation>
+		<xs:documentation>Versiom 1.1 (2011-01-26): Import CommAggregate3_v1.1 and SOAP_FaultElements3_v1.1</xs:documentation>
+	</xs:annotation>
+	<xs:import namespace="http://schemas.dbs.com/icc/ems" schemaLocation="CommAggregate3_v1.5.xsd"/>
+	<xs:import schemaLocation="SOAP_FaultElements3_v1.1.xsd"/>
+	<xs:element name="Fault">
+		<xs:annotation>
+			<xs:documentation>Fault information</xs:documentation>
+		</xs:annotation>
+		<xs:complexType>
+			<xs:sequence>
+				<xs:element ref="faultcode"/>
+				<xs:element ref="faultstring"/>
+				<xs:element ref="faultactor"/>
+				<xs:element ref="detail"/>
+			</xs:sequence>
+		</xs:complexType>
+	</xs:element>
+</xs:schema>

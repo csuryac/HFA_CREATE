@@ -1,0 +1,25 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<BWSharedResource>
+    <name>HFAJMS</name>
+    <resourceType>ae.shared.JMSConnectionKey</resourceType>
+    <config>
+        <NamingEnvironment>
+            <UseJNDI>true</UseJNDI>
+            <ProviderURL>tcp://localhost:7222</ProviderURL>
+            <NamingURL>%%Connections/JMS/URL%%</NamingURL>
+            <NamingInitialContextFactory>com.tibco.tibjms.naming.TibjmsInitialContextFactory</NamingInitialContextFactory>
+            <TopicFactoryName>TopicConnectionFactory</TopicFactoryName>
+            <QueueFactoryName>QueueConnectionFactory</QueueFactoryName>
+            <NamingPrincipal>%%Connections/JMS/Username%%</NamingPrincipal>
+            <NamingCredential>%%Connections/JMS/Password%%</NamingCredential>
+        </NamingEnvironment>
+        <ConnectionAttributes>
+            <username/>
+            <password/>
+            <clientID/>
+            <autoGenClientID>true</autoGenClientID>
+        </ConnectionAttributes>
+        <UseXACF>false</UseXACF>
+        <UseSharedJndiConfig>false</UseSharedJndiConfig>
+    </config>
+</BWSharedResource>

@@ -1,0 +1,140 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!-- 
+
+  [ServiceNode]=Services
+  [ServiceName]=createMemo_v4_0_0
+  [OperName]=createMemo
+  [PortNumber]=_PortNum_
+  [SchemaLoc]=createMemoOp_v4_0_0.xsd
+  [CommAggregate]=CommAggregate_v4_0_0.xsd, CommAggregate_v4_1_0.xsd
+  [SoapAction]=/DBS/Services/DocumentServices/createMemo/v4_1
+  [SchemaNamespaceURI]=http://schemas.dbs.com/soi/createMemo/4_1
+  [WSDLNamespace]]=http://schemas.dbs.com/soi/wsdl/createMemo/4_1
+
+
+-->
+<wsdl:definitions xmlns:ns1="http://schemas.dbs.com/soi/MemoAdd/4_1" xmlns:tns="http://schemas.dbs.com/soi/wsdl/createMemo/4_1" xmlns:ns="http://schemas.dbs.com/soi/common/4_0" xmlns:ns0="http://schemas.dbs.com/soi/common/4_1" xmlns:soap="http://schemas.xmlsoap.org/wsdl/soap/" xmlns:jms="http://www.tibco.com/namespaces/ws/2004/soap/binding/JMS" xmlns:wsdl="http://schemas.xmlsoap.org/wsdl/" targetNamespace="http://schemas.dbs.com/soi/wsdl/createMemo/4_1">
+	<wsdl:types>
+		<xs:schema xmlns:xs="http://www.w3.org/2001/XMLSchema" targetNamespace="http://schemas.dbs.com/soi/common/4_0" elementFormDefault="qualified" attributeFormDefault="unqualified">
+			<xs:include schemaLocation="Common/MsgHeader_v4_0_0.xsd"/>
+			<xs:include schemaLocation="Common/CommAggregate_v4_0_0.xsd"/>
+		</xs:schema>
+		<xs:schema xmlns:xs="http://www.w3.org/2001/XMLSchema" targetNamespace="http://schemas.dbs.com/soi/common/4_1" elementFormDefault="qualified" attributeFormDefault="unqualified">
+			<xs:include schemaLocation="Common/CommAggregate_v4_1_0.xsd"/>
+		</xs:schema>
+		<xs:schema xmlns:xs="http://www.w3.org/2001/XMLSchema" targetNamespace="http://schemas.dbs.com/soi/MemoAdd/4_1" elementFormDefault="qualified" attributeFormDefault="unqualified">
+			<xs:include schemaLocation="MemoAddOp_v4_1_0.xsd"/>
+		</xs:schema>
+	</wsdl:types>
+	<wsdl:message name="MsgHeader">
+		<wsdl:part name="part1" element="ns:MsgDetl">
+			<wsdl:documentation>Mandatory</wsdl:documentation>
+		</wsdl:part>
+		<wsdl:part name="part2" element="ns:Trace">
+			<wsdl:documentation>Mandatory</wsdl:documentation>
+		</wsdl:part>
+		<wsdl:part name="part3" element="ns:ExtendedHeader">
+			<wsdl:documentation>Optional</wsdl:documentation>
+		</wsdl:part>
+		<wsdl:part name="part4" element="ns:InfoWarn">
+			<wsdl:documentation>Optional</wsdl:documentation>
+		</wsdl:part>
+		<wsdl:part name="part5" element="ns:Stats">
+			<wsdl:documentation>Optional</wsdl:documentation>
+		</wsdl:part>
+	</wsdl:message>
+	<wsdl:message name="Fault">
+		<wsdl:part name="Fault" element="ns:DetailInfo">
+			<wsdl:documentation>1 or more occurrences</wsdl:documentation>
+		</wsdl:part>
+	</wsdl:message>
+	<wsdl:message name="createMemoRq">
+		<wsdl:part name="createMemoRq" element="ns1:MemoAdd"/>
+	</wsdl:message>
+	<wsdl:message name="createMemoRs">
+		<wsdl:part name="createMemoRs" element="ns1:MemoAddResponse"/>
+	</wsdl:message>
+	<wsdl:portType name="PortType">
+		<wsdl:operation name="createMemo">
+			<wsdl:input message="tns:createMemoRq"/>
+			<wsdl:output message="tns:createMemoRs"/>
+			<wsdl:fault name="fault1" message="tns:Fault"/>
+		</wsdl:operation>
+	</wsdl:portType>
+	<wsdl:binding name="HTTPEndpointbinding" type="tns:PortType">
+		<soap:binding style="document" transport="http://schemas.xmlsoap.org/soap/http"/>
+		<wsdl:operation name="createMemo">
+			<soap:operation soapAction="/DBS/Services/DocumentServices/createMemo/v4_1" style="document"/>
+			<wsdl:input>
+				<soap:body parts="createMemoRq" use="literal"/>
+				<soap:header message="tns:MsgHeader" part="part1" use="literal"/>
+				<soap:header message="tns:MsgHeader" part="part2" use="literal"/>
+				<soap:header message="tns:MsgHeader" part="part3" use="literal"/>
+			</wsdl:input>
+			<wsdl:output>
+				<soap:body parts="createMemoRs" use="literal"/>
+				<soap:header message="tns:MsgHeader" part="part1" use="literal"/>
+				<soap:header message="tns:MsgHeader" part="part2" use="literal"/>
+				<soap:header message="tns:MsgHeader" part="part4" use="literal"/>
+				<soap:header message="tns:MsgHeader" part="part5" use="literal"/>
+			</wsdl:output>
+			<wsdl:fault name="fault1">
+				<soap:fault name="fault1" use="literal"/>
+				<soap:header message="tns:MsgHeader" part="part1" use="literal"/>
+				<soap:header message="tns:MsgHeader" part="part2" use="literal"/>
+				<soap:header message="tns:MsgHeader" part="part5" use="literal"/>
+			</wsdl:fault>
+		</wsdl:operation>
+	</wsdl:binding>
+	<wsdl:binding name="JMSEndpointbinding" type="tns:PortType">
+		<soap:binding style="document" transport="http://schemas.xmlsoap.org/soap/http"/>
+		<wsdl:operation name="createMemo">
+			<soap:operation soapAction="/DBS/Services/DocumentServices/createMemo/v4_1" style="document"/>
+			<wsdl:input>
+				<soap:body parts="createMemoRq" use="literal"/>
+				<soap:header message="tns:MsgHeader" part="part1" use="literal"/>
+				<soap:header message="tns:MsgHeader" part="part2" use="literal"/>
+				<soap:header message="tns:MsgHeader" part="part3" use="literal"/>
+			</wsdl:input>
+			<wsdl:output>
+				<soap:body parts="createMemoRs" use="literal"/>
+				<soap:header message="tns:MsgHeader" part="part1" use="literal"/>
+				<soap:header message="tns:MsgHeader" part="part2" use="literal"/>
+				<soap:header message="tns:MsgHeader" part="part4" use="literal"/>
+				<soap:header message="tns:MsgHeader" part="part5" use="literal"/>
+			</wsdl:output>
+			<wsdl:fault name="fault1">
+				<soap:fault name="fault1" use="literal"/>
+				<soap:header message="tns:MsgHeader" part="part1" use="literal"/>
+				<soap:header message="tns:MsgHeader" part="part2" use="literal"/>
+				<soap:header message="tns:MsgHeader" part="part5" use="literal"/>
+			</wsdl:fault>
+		</wsdl:operation>
+	</wsdl:binding>
+	<wsdl:service name="createMemo_v4_0_0">
+		<wsdl:port name="HTTP" binding="tns:HTTPEndpointbinding">
+			<wsdl:documentation>Endpoint for TIN env</wsdl:documentation>
+			<soap:address location="https://localhost:12345/Services/createMemo_v4_1_0"/>
+		</wsdl:port>
+		<wsdl:port name="JMS" binding="tns:JMSEndpointbinding">
+			<wsdl:documentation>Endpoint for BRONZE env</wsdl:documentation>
+			<soap:address location="tcp://localhost:7222"/>
+			<jms:connectionFactory>QueueConnectionFactory</jms:connectionFactory>
+			<jms:targetAddress destination="queue">queue.sample</jms:targetAddress>
+		</wsdl:port>
+	</wsdl:service>
+	<!--  types - what data types will be transmitted? 
+-->
+	<!--  message - what messages will be transmitted? 
+-->
+	<!--  customer headers 
+-->
+	<!--  custom fault detail 
+-->
+	<!--  operation request 
+-->
+	<!--  operation response 
+-->
+	<!--  service - where is the service located?  
+-->
+</wsdl:definitions>

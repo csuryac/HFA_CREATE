@@ -1,0 +1,20 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<xs:schema xmlns:xs="http://www.w3.org/2001/XMLSchema"
+	 xmlns="http://www.tibco.com/schemas/SAMLAssertion/SharedResources/SAMLInput/InputMsg.xsd"
+	 targetNamespace="http://www.tibco.com/schemas/SAMLAssertion/SharedResources/SAMLInput/InputMsg.xsd"
+	 elementFormDefault="qualified"
+	 attributeFormDefault="unqualified">
+	<xs:element name="SOEID" type="xs:string"/>
+	<xs:element name="SAML_Request">
+		<xs:complexType>
+			<xs:sequence>
+				<xs:element ref="SOEID" minOccurs="0"/>
+				<xs:element ref="Password"/>
+				<xs:element ref="TokenValidityInMinutes" minOccurs="0"/>
+			</xs:sequence>
+		</xs:complexType>
+	</xs:element>
+	<xs:element name="TokenValidityInMinutes" type="xs:string"/>
+	<xs:element name="Password" type="xs:string"/>
+</xs:schema>

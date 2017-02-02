@@ -1,0 +1,342 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<pd:ProcessDefinition xmlns:pfx6="http://www.dbs.com/sg/wis/hfa/xsd/hfaCaseDetails" xmlns:pfx7="http://schemas.dbs.com/icc/BasicSvc" xmlns:pfx="http://www.dbs.com/iwf/bpm/services/token" xmlns:pfx2="http://www.dbs.com.sg/iwf_hfa_process_start_contract/iwf_hfa_process_start_contract_wsp" xmlns:ns="http://www.dbs.com/iwf/bpm/token" xmlns:pfx3="urn:oasis:names:tc:SAML:2.0:assertion" xmlns:pfx4="http://docs.oasis-open.org/wss/2004/01/oasis-200401-wss-wssecurity-secext-1.0.xsd" xmlns:pfx5="http://xmlns.example.com/1429342289226" xmlns:xsd="http://www.w3.org/2001/XMLSchema" xmlns:ns2="http://www.dbs.com.sg/iwf_hfa_process_start_contract/" xmlns:xsl="http://www.w3.org/1999/XSL/Transform" xmlns:wsdl="http://schemas.xmlsoap.org/wsdl/" xmlns:pd="http://xmlns.tibco.com/bw/process/2003">
+    <xsd:import namespace="urn:oasis:names:tc:SAML:2.0:assertion" schemaLocation="/SharedResources/Schema/saml/saml-schema-assertion-2.0.xsd"/>
+    <wsdl:import namespace="http://www.dbs.com/iwf/bpm/services/token" location="/SharedResources/WSDL/Concrete/TokenService.wsdl"/>
+    <wsdl:import namespace="http://www.dbs.com.sg/iwf_hfa_process_start_contract/iwf_hfa_process_start_contract_wsp" location="/SharedResources/WSDL/Concrete/HFACaseStart.wsdl"/>
+    <pd:name>xUT/HFACreateCaseTest.process</pd:name>
+    <pd:startName>Start</pd:startName>
+    <pd:startX>43</pd:startX>
+    <pd:startY>163</pd:startY>
+    <pd:returnBindings/>
+    <pd:endName>End</pd:endName>
+    <pd:endX>824</pd:endX>
+    <pd:endY>170</pd:endY>
+    <pd:errorSchemas/>
+    <pd:processVariables/>
+    <pd:targetNamespace>http://xmlns.example.com/1453967211904</pd:targetNamespace>
+    <pd:activity name="CallTokenService">
+        <pd:type>com.tibco.plugin.soap.SOAPSendReceiveActivity</pd:type>
+        <pd:resourceType>ae.activities.SOAPSendReceiveUI</pd:resourceType>
+        <pd:x>239</pd:x>
+        <pd:y>165</pd:y>
+        <config>
+            <timeout>0</timeout>
+            <soapAttachmentStyle>SwA</soapAttachmentStyle>
+            <timeoutType>Seconds</timeoutType>
+            <service>pfx:TokenService</service>
+            <servicePort>HTTPEP</servicePort>
+            <operation>GetTokenOp</operation>
+            <soapAction>/iwf/bpm/services/token/GetTokenOp</soapAction>
+            <endpointURL>http://10.91.35.169:40002/iwf/bpm/services/token</endpointURL>
+            <authScheme>NONE</authScheme>
+        </config>
+        <pd:inputBindings>
+            <inputMessage>
+                <ns:GetTokenReq>
+                    <ns:ID>
+                        <xsl:value-of select="'tibco-admin'"/>
+                    </ns:ID>
+                </ns:GetTokenReq>
+            </inputMessage>
+        </pd:inputBindings>
+    </pd:activity>
+    <pd:activity name="Parse XML">
+        <pd:type>com.tibco.plugin.xml.XMLParseActivity</pd:type>
+        <pd:resourceType>ae.activities.XMLParseActivity</pd:resourceType>
+        <pd:x>388</pd:x>
+        <pd:y>165</pd:y>
+        <config>
+            <inputStyle>text</inputStyle>
+            <xsdVersion>default</xsdVersion>
+            <validateOutput>true</validateOutput>
+            <term ref="pfx3:Assertion"/>
+        </config>
+        <pd:inputBindings>
+            <xmlString>
+                <xsl:value-of select="$CallTokenService/outputMessage/ns:GetTokenRes/ns:SAMLToken"/>
+            </xmlString>
+        </pd:inputBindings>
+    </pd:activity>
+    <pd:activity name="Map Data">
+        <pd:type>com.tibco.plugin.mapper.MapperActivity</pd:type>
+        <pd:resourceType>ae.activities.MapperActivity</pd:resourceType>
+        <pd:x>493</pd:x>
+        <pd:y>165</pd:y>
+        <config>
+            <element>
+                <xsd:element name="root">
+                    <xsd:complexType>
+                        <xsd:sequence>
+                            <xsd:element name="param" type="xsd:string" minOccurs="0" maxOccurs="unbounded"/>
+                        </xsd:sequence>
+                    </xsd:complexType>
+                </xsd:element>
+            </element>
+        </config>
+        <pd:inputBindings>
+            <root>
+                <param>
+                    <xsl:value-of select="123456"/>
+                </param>
+                <param>
+                    <xsl:value-of select="123456"/>
+                </param>
+                <param>
+                    <xsl:value-of select="123456"/>
+                </param>
+                <param>
+                    <xsl:value-of select="123456"/>
+                </param>
+                <param>
+                    <xsl:value-of select="123456"/>
+                </param>
+                <param>
+                    <xsl:value-of select="123456"/>
+                </param>
+                <param>
+                    <xsl:value-of select="123456"/>
+                </param>
+                <param>
+                    <xsl:value-of select="123456"/>
+                </param>
+                <param>
+                    <xsl:value-of select="123456"/>
+                </param>
+                <param>
+                    <xsl:value-of select="123456"/>
+                </param>
+                <param>
+                    <xsl:value-of select="123456"/>
+                </param>
+                <param>
+                    <xsl:value-of select="123456"/>
+                </param>
+                <param>
+                    <xsl:value-of select="123456"/>
+                </param>
+                <param>
+                    <xsl:value-of select="123456"/>
+                </param>
+                <param>
+                    <xsl:value-of select="123456"/>
+                </param>
+                <param>
+                    <xsl:value-of select="123456"/>
+                </param>
+                <param>
+                    <xsl:value-of select="123456"/>
+                </param>
+                <param>
+                    <xsl:value-of select="123456"/>
+                </param>
+                <param>
+                    <xsl:value-of select="123456"/>
+                </param>
+                <param>
+                    <xsl:value-of select="123456"/>
+                </param>
+                <param>
+                    <xsl:value-of select="123456"/>
+                </param>
+                <param>
+                    <xsl:value-of select="123456"/>
+                </param>
+                <param>
+                    <xsl:value-of select="123456"/>
+                </param>
+                <param>
+                    <xsl:value-of select="123456"/>
+                </param>
+                <param>
+                    <xsl:value-of select="123456"/>
+                </param>
+                <param>
+                    <xsl:value-of select="123456"/>
+                </param>
+                <param>
+                    <xsl:value-of select="123456"/>
+                </param>
+                <param>
+                    <xsl:value-of select="123456"/>
+                </param>
+                <param>
+                    <xsl:value-of select="123456"/>
+                </param>
+                <param>
+                    <xsl:value-of select="123456"/>
+                </param>
+                <param>
+                    <xsl:value-of select="123456"/>
+                </param>
+                <param>
+                    <xsl:value-of select="123456"/>
+                </param>
+                <param>
+                    <xsl:value-of select="123456"/>
+                </param>
+                <param>
+                    <xsl:value-of select="123456"/>
+                </param>
+                <param>
+                    <xsl:value-of select="123456"/>
+                </param>
+                <param>
+                    <xsl:value-of select="123456"/>
+                </param>
+                <param>
+                    <xsl:value-of select="123456"/>
+                </param>
+            </root>
+        </pd:inputBindings>
+    </pd:activity>
+    <pd:group name="Group">
+        <pd:type>com.tibco.pe.core.LoopGroup</pd:type>
+        <pd:resourceType>ae.process.group</pd:resourceType>
+        <pd:x>576</pd:x>
+        <pd:y>102</pd:y>
+        <pd:width>183</pd:width>
+        <pd:height>140</pd:height>
+        <pd:collapsedWidth>57</pd:collapsedWidth>
+        <pd:collapsedHeight>70</pd:collapsedHeight>
+        <pd:groupVariables/>
+        <pd:joinToggle>inherit</pd:joinToggle>
+        <config>
+            <pd:groupType>inputLoop</pd:groupType>
+            <pd:serializable>false</pd:serializable>
+            <pd:over>$Map-Data/root/param</pd:over>
+            <pd:iterationElementSlot>iter</pd:iterationElementSlot>
+            <pd:indexSlot>i</pd:indexSlot>
+            <pd:activityOutputName/>
+            <pd:accumulateOutput>false</pd:accumulateOutput>
+        </config>
+        <pd:inputBindings/>
+        <pd:expanded>true</pd:expanded>
+        <pd:transition>
+            <pd:from>start</pd:from>
+            <pd:to>CallHFACreateCase</pd:to>
+            <pd:lineType>Default</pd:lineType>
+            <pd:lineColor>-16777216</pd:lineColor>
+            <pd:conditionType>always</pd:conditionType>
+        </pd:transition>
+        <pd:transition>
+            <pd:from>CallHFACreateCase</pd:from>
+            <pd:to>end</pd:to>
+            <pd:lineType>Default</pd:lineType>
+            <pd:lineColor>-16777216</pd:lineColor>
+            <pd:conditionType>always</pd:conditionType>
+        </pd:transition>
+        <pd:activity name="CallHFACreateCase">
+            <pd:type>com.tibco.plugin.soap.SOAPSendReceiveActivity</pd:type>
+            <pd:resourceType>ae.activities.SOAPSendReceiveUI</pd:resourceType>
+            <pd:x>658</pd:x>
+            <pd:y>166</pd:y>
+            <config>
+                <timeout>0</timeout>
+                <soapAttachmentStyle>SwA</soapAttachmentStyle>
+                <timeoutType>Seconds</timeoutType>
+                <service>pfx2:iwf_hfa_process_start_contract_wsp</service>
+                <servicePort>iwf_hfa_process_start_contract_EP</servicePort>
+                <operation>StartHFACase</operation>
+                <soapAction>StartHFACase</soapAction>
+                <endpointURL>http://10.91.35.169:50010/iwf_hfa_process_start_contract/iwf_hfa_process_start_contractSOAP</endpointURL>
+                <authScheme>NONE</authScheme>
+            </config>
+            <pd:inputBindings>
+                <inputMessage>
+                    <ns2:StartHFACase>
+                        <ALERT_ID>
+                            <xsl:value-of select="'123'"/>
+                        </ALERT_ID>
+                        <ALERT_STATUS>
+                            <xsl:value-of select="'NEW'"/>
+                        </ALERT_STATUS>
+                        <ARRIVAL_DATE_TIME>
+                            <xsl:value-of select="current-dateTime()"/>
+                        </ARRIVAL_DATE_TIME>
+                        <CASE_NUMBER>
+                            <xsl:value-of select="'123'"/>
+                        </CASE_NUMBER>
+                        <CIF>
+                            <xsl:value-of select="'123'"/>
+                        </CIF>
+                        <COUNTRY_CODE>
+                            <xsl:value-of select="'HK'"/>
+                        </COUNTRY_CODE>
+                        <CUSTOMER_NAME>
+                            <xsl:value-of select="'CUST NAME'"/>
+                        </CUSTOMER_NAME>
+                        <PROJECT_CODE>
+                            <xsl:value-of select="'HFA'"/>
+                        </PROJECT_CODE>
+                        <RULE_DESCRIPTION>
+                            <xsl:value-of select="'RULEDESC'"/>
+                        </RULE_DESCRIPTION>
+                        <RULE_ID>
+                            <xsl:value-of select="'RULEID123'"/>
+                        </RULE_ID>
+                        <PRIORITY>
+                            <xsl:value-of select="1"/>
+                        </PRIORITY>
+                        <CARD_NUMBER>
+                            <xsl:value-of select="&quot;12345&quot;"/>
+                        </CARD_NUMBER>
+                        <TRANSACTION_AMOUNT>
+                            <xsl:value-of select="100"/>
+                        </TRANSACTION_AMOUNT>
+                        <TRANSACTION_CURRENCY>
+                            <xsl:value-of select="&quot;HKD&quot;"/>
+                        </TRANSACTION_CURRENCY>
+                        <CHANNEL_TYPE>
+                            <xsl:value-of select="&quot;ATM&quot;"/>
+                        </CHANNEL_TYPE>
+                        <DOC_NUM>
+                            <xsl:value-of select="&quot;1&quot;"/>
+                        </DOC_NUM>
+                    </ns2:StartHFACase>
+                    <headers>
+                        <Header.SAMLHeader>
+                            <pfx4:Security>
+                                <xsl:copy-of select="$Parse-XML/pfx3:Assertion"/>
+                            </pfx4:Security>
+                        </Header.SAMLHeader>
+                    </headers>
+                </inputMessage>
+            </pd:inputBindings>
+        </pd:activity>
+    </pd:group>
+    <pd:transition>
+        <pd:from>Start</pd:from>
+        <pd:to>CallTokenService</pd:to>
+        <pd:lineType>Default</pd:lineType>
+        <pd:lineColor>-16777216</pd:lineColor>
+        <pd:conditionType>always</pd:conditionType>
+    </pd:transition>
+    <pd:transition>
+        <pd:from>CallTokenService</pd:from>
+        <pd:to>Parse XML</pd:to>
+        <pd:lineType>Default</pd:lineType>
+        <pd:lineColor>-16777216</pd:lineColor>
+        <pd:conditionType>always</pd:conditionType>
+    </pd:transition>
+    <pd:transition>
+        <pd:from>Parse XML</pd:from>
+        <pd:to>Map Data</pd:to>
+        <pd:lineType>Default</pd:lineType>
+        <pd:lineColor>-16777216</pd:lineColor>
+        <pd:conditionType>always</pd:conditionType>
+    </pd:transition>
+    <pd:transition>
+        <pd:from>Group</pd:from>
+        <pd:to>End</pd:to>
+        <pd:lineType>Default</pd:lineType>
+        <pd:lineColor>-16777216</pd:lineColor>
+        <pd:conditionType>always</pd:conditionType>
+    </pd:transition>
+    <pd:transition>
+        <pd:from>Map Data</pd:from>
+        <pd:to>Group</pd:to>
+        <pd:lineType>Default</pd:lineType>
+        <pd:lineColor>-16777216</pd:lineColor>
+        <pd:conditionType>always</pd:conditionType>
+    </pd:transition>
+</pd:ProcessDefinition>

@@ -1,0 +1,1051 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!-- edited with XMLSpy v2007 rel. 3 sp1 (http://www.altova.com) by Kanne (DBS BANK LIMITED) -->
+<!-- edited with XMLSPY v2004 rel. 3 U (http://www.xmlspy.com) by ADC (DBS Bank, ITG-AMG Integration CC (0519)) -->
+<!-- edited with XML Spy v4.4 U (http://www.xmlspy.com) by ITG-Business Management Office (DBS Bank) -->
+<xs:schema xmlns:act="http://schemas.dbs.com/icc/AcctProfSvc" xmlns:cst="http://schemas.dbs.com/icc/CustomerSvc" xmlns:env="http://schemas.xmlsoap.org/soap/envelope" xmlns:ems="http://schemas.dbs.com/icc/ems" xmlns:xs="http://www.w3.org/2001/XMLSchema" xmlns="http://schemas.dbs.com/icc/CardSvc" targetNamespace="http://schemas.dbs.com/icc/CardSvc" elementFormDefault="qualified" attributeFormDefault="unqualified">
+	<xs:import namespace="http://schemas.dbs.com/icc/ems" schemaLocation="CommAggregate3_v1.5.xsd"/>
+	<xs:import namespace="http://schemas.dbs.com/icc/CustomerSvc" schemaLocation="CommCustomerSvc3_v1.2.xsd"/>
+	<xs:import namespace="http://schemas.dbs.com/icc/AcctProfSvc" schemaLocation="CommAcctProfSvc3_v1.2.xsd"/>
+	<xs:annotation>
+		<xs:documentation>2009-11-06: Version 1.0 for IP message set v3.0</xs:documentation>
+	</xs:annotation>
+	<xs:annotation>
+		<xs:documentation>2009-11-17: Removed enumerated values for AutoPayType; update annotation</xs:documentation>
+	</xs:annotation>
+	<xs:annotation>
+		<xs:documentation>2009-12-14: Update annotation for AvailPts, ForfeitPts</xs:documentation>
+	</xs:annotation>
+	<xs:annotation>
+		<xs:documentation>2010-07-28: Add TotalPts, NonExpiryPts, PtsExpiryPeriodDetl; amend annotation for CardReward, RewardDetl, RewardScheme, RewardBal, PtsType, NewPtsEarned, CurrPts, PrevPts, AdjustedPts, ResetDate, RewardExpiryDetl, ExpiringPts, PtsExpiryDate, PtsExpiryShortDate; Add CardBrand to CardReward, replace CardAcctId with CardAcct; Add NonExpiryPts to RewardBal, PtsExpiryPeriod to RewardExpiryDetl</xs:documentation>
+	</xs:annotation>
+	<xs:annotation>
+		<xs:documentation>2010-08-02: Add ExpiryPeriod, ExpiryRange</xs:documentation>
+	</xs:annotation>
+	<xs:annotation>
+		<xs:documentation>2010-10-06: Add PtsLastUpdDate to RewardBal</xs:documentation>
+	</xs:annotation>
+	<xs:annotation>
+		<xs:documentation>2010-11-15: Import CommCustomerSvc3_v1.1 and CommAcctProfSvc3_v1.1</xs:documentation>
+	</xs:annotation>
+	<xs:annotation>
+		<xs:documentation>2011-02-08: Upgrade version of common schemas</xs:documentation>
+	</xs:annotation>
+	<xs:annotation>
+		<xs:documentation>2011-06-02: Add ApprovalRef, EntryMode, MerchantId, MerchantCat, TranCtry, Update annotation of TranAmt, LinkAcctId</xs:documentation>
+	</xs:annotation>
+	<xs:annotation>
+		<xs:documentation>2011-06-14: Add ECommerce indicator</xs:documentation>
+	</xs:annotation>
+	<xs:annotation>
+		<xs:documentation>2012-03-05: Add ActivationStatus</xs:documentation>
+	</xs:annotation>
+	<xs:element name="AcctAddr" type="ems:Address">
+		<xs:annotation>
+			<xs:documentation>Account Address</xs:documentation>
+		</xs:annotation>
+	</xs:element>
+	<xs:element name="AcctGrpId">
+		<xs:annotation>
+			<xs:documentation>Account Group Identifier</xs:documentation>
+			<xs:documentation>This is used to link all the accounts belonging to a customer</xs:documentation>
+		</xs:annotation>
+		<xs:simpleType>
+			<xs:restriction base="xs:string">
+				<xs:maxLength value="36"/>
+			</xs:restriction>
+		</xs:simpleType>
+	</xs:element>
+	<xs:element name="ActivationStatus">
+		<xs:annotation>
+			<xs:documentation>Activation status</xs:documentation>
+			<xs:documentation>Refer to Processing Status code in Foundation for IP Message Set - Codes document</xs:documentation>
+		</xs:annotation>
+		<xs:simpleType>
+			<xs:restriction base="xs:string">
+				<xs:maxLength value="20"/>
+			</xs:restriction>
+		</xs:simpleType>
+	</xs:element>
+	<xs:element name="AdjustedPts" type="xs:decimal">
+		<xs:annotation>
+			<xs:documentation>Adjusted points since last statement</xs:documentation>
+		</xs:annotation>
+	</xs:element>
+	<xs:element name="ApprovalRef">
+		<xs:annotation>
+			<xs:documentation>Approval reference</xs:documentation>
+		</xs:annotation>
+		<xs:simpleType>
+			<xs:restriction base="xs:string">
+				<xs:maxLength value="36"/>
+			</xs:restriction>
+		</xs:simpleType>
+	</xs:element>
+	<xs:element name="AutoDR" type="xs:boolean">
+		<xs:annotation>
+			<xs:documentation>Auto-debit indicator</xs:documentation>
+			<xs:documentation>true: auto-debit instruction exists 
+false: no auto-debit Instruction 
+</xs:documentation>
+		</xs:annotation>
+	</xs:element>
+	<xs:element name="AutoPayAmt" type="ems:Amount">
+		<xs:annotation>
+			<xs:documentation>Amount which is to be paid via direct debiting</xs:documentation>
+		</xs:annotation>
+	</xs:element>
+	<xs:element name="AutoPayType">
+		<xs:annotation>
+			<xs:documentation>Payment type</xs:documentation>
+			<xs:documentation>Refer to AutoPay Type code in Foundation for IP Message Set - Codes document</xs:documentation>
+		</xs:annotation>
+		<xs:simpleType>
+			<xs:restriction base="xs:string"/>
+		</xs:simpleType>
+	</xs:element>
+	<xs:element name="AvailBal" type="ems:Amount">
+		<xs:annotation>
+			<xs:documentation>Available Balance</xs:documentation>
+		</xs:annotation>
+	</xs:element>
+	<xs:element name="AvailCashWdlLimit" type="ems:Amount">
+		<xs:annotation>
+			<xs:documentation>Available cash withdrawal limit</xs:documentation>
+			<xs:documentation>This is the amount of cash that is still available for withdrawal from the account</xs:documentation>
+		</xs:annotation>
+	</xs:element>
+	<xs:element name="AvailLimit" type="ems:Amount">
+		<xs:annotation>
+			<xs:documentation>Available credit limit</xs:documentation>
+		</xs:annotation>
+	</xs:element>
+	<xs:element name="AvailPts" type="xs:decimal">
+		<xs:annotation>
+			<xs:documentation>Available bonus points or cash rebates</xs:documentation>
+		</xs:annotation>
+	</xs:element>
+	<xs:element name="BalTfrAmt" type="ems:Amount">
+		<xs:annotation>
+			<xs:documentation>Balance transfer amount</xs:documentation>
+		</xs:annotation>
+	</xs:element>
+	<xs:element name="BillCur">
+		<xs:annotation>
+			<xs:documentation>Billing currency code of the card</xs:documentation>
+			<xs:documentation>Examples of values are ‘CNY’, HKD’, ’IDR’, ‘INR’, ‘JPY’, ‘SGD’, ‘USD’
+
+CNY: Yuan Renminbi
+HKD: Hong Kong Dollar
+IDR: Rupiah
+INR: Indian Rupee
+JPY: Yen
+SGD: Singapore Dollar
+USD: US Dollar
+
+Refer to Currency code in Foundation for EMS – Codes document </xs:documentation>
+		</xs:annotation>
+		<xs:simpleType>
+			<xs:restriction base="xs:string">
+				<xs:maxLength value="3"/>
+			</xs:restriction>
+		</xs:simpleType>
+	</xs:element>
+	<xs:element name="BillingDay" type="xs:integer">
+		<xs:annotation>
+			<xs:documentation>Day of the month when billing is done</xs:documentation>
+		</xs:annotation>
+	</xs:element>
+	<xs:element name="BillTranAmt" type="ems:Amount">
+		<xs:annotation>
+			<xs:documentation>Amount to be billed in the billing currency of the credit card</xs:documentation>
+			<xs:documentation>Required only if the transaction currency is different from the billing currency.</xs:documentation>
+		</xs:annotation>
+	</xs:element>
+	<xs:element name="BlockCode">
+		<xs:annotation>
+			<xs:documentation>Block code</xs:documentation>
+			<xs:documentation>Refer to Block Code in Foundation for IP Message Set - Codes document</xs:documentation>
+		</xs:annotation>
+		<xs:simpleType>
+			<xs:restriction base="xs:string">
+				<xs:length value="1"/>
+			</xs:restriction>
+		</xs:simpleType>
+	</xs:element>
+	<xs:element name="BlockCodeDate" type="xs:date">
+		<xs:annotation>
+			<xs:documentation>Date block code was assigned</xs:documentation>
+		</xs:annotation>
+	</xs:element>
+	<xs:element name="BlockCodeDesc">
+		<xs:annotation>
+			<xs:documentation>Block code description</xs:documentation>
+		</xs:annotation>
+		<xs:simpleType>
+			<xs:restriction base="xs:string">
+				<xs:maxLength value="20"/>
+			</xs:restriction>
+		</xs:simpleType>
+	</xs:element>
+	<xs:element name="BlockCodeDetl">
+		<xs:annotation>
+			<xs:documentation>Block code details</xs:documentation>
+		</xs:annotation>
+		<xs:complexType>
+			<xs:sequence>
+				<xs:element ref="BlockCode"/>
+				<xs:element ref="BlockCodeDesc" minOccurs="0"/>
+				<xs:element ref="BlockCodeDate" minOccurs="0"/>
+			</xs:sequence>
+		</xs:complexType>
+	</xs:element>
+	<xs:element name="CardExpiryDate">
+		<xs:annotation>
+			<xs:documentation>Card expiry date</xs:documentation>
+			<xs:documentation>Format is YYYYMM</xs:documentation>
+		</xs:annotation>
+		<xs:simpleType>
+			<xs:restriction base="xs:string">
+				<xs:maxLength value="6"/>
+			</xs:restriction>
+		</xs:simpleType>
+	</xs:element>
+	<xs:element name="CardFee" type="ems:Amount">
+		<xs:annotation>
+			<xs:documentation>Card fee amount</xs:documentation>
+		</xs:annotation>
+	</xs:element>
+	<xs:element name="CardFeeDate" type="xs:date">
+		<xs:annotation>
+			<xs:documentation>Date on which card fee will be charged</xs:documentation>
+		</xs:annotation>
+	</xs:element>
+	<xs:element name="CardFeeWaiver" type="xs:boolean">
+		<xs:annotation>
+			<xs:documentation>Card fee waiver indicator</xs:documentation>
+			<xs:documentation>true: card fee waived</xs:documentation>
+		</xs:annotation>
+	</xs:element>
+	<xs:element name="CardFeeWaiverExpDate" type="xs:date">
+		<xs:annotation>
+			<xs:documentation>End date of card fee waiver</xs:documentation>
+		</xs:annotation>
+	</xs:element>
+	<xs:element name="CardHolderInfo">
+		<xs:annotation>
+			<xs:documentation>Card holder details</xs:documentation>
+		</xs:annotation>
+		<xs:complexType>
+			<xs:sequence>
+				<xs:choice>
+					<xs:element ref="ems:CustInternalId"/>
+					<xs:element ref="ems:CISInternalId"/>
+				</xs:choice>
+				<xs:element ref="ems:CustName" minOccurs="0"/>
+				<xs:element ref="cst:BirthDate" minOccurs="0"/>
+				<xs:element ref="cst:Gender" minOccurs="0"/>
+				<xs:element ref="cst:MotherMaidenName" minOccurs="0"/>
+				<xs:element ref="cst:CustDoc" minOccurs="0" maxOccurs="5"/>
+				<xs:element name="CustAddr" minOccurs="0" maxOccurs="4">
+					<xs:annotation>
+						<xs:documentation>Cardholder's address details</xs:documentation>
+					</xs:annotation>
+					<xs:simpleType>
+						<xs:restriction base="xs:string">
+							<xs:maxLength value="40"/>
+						</xs:restriction>
+					</xs:simpleType>
+				</xs:element>
+			</xs:sequence>
+		</xs:complexType>
+	</xs:element>
+	<xs:element name="CardIssueDate" type="xs:date">
+		<xs:annotation>
+			<xs:documentation>Card issue date</xs:documentation>
+		</xs:annotation>
+	</xs:element>
+	<xs:element name="CardStatus">
+		<xs:annotation>
+			<xs:documentation>Card status</xs:documentation>
+			<xs:documentation>Refer to Card Status Code in Foundation for IP Message Set - Codes document</xs:documentation>
+		</xs:annotation>
+		<xs:simpleType>
+			<xs:restriction base="xs:string">
+				<xs:maxLength value="4"/>
+			</xs:restriction>
+		</xs:simpleType>
+	</xs:element>
+	<xs:element name="CardType">
+		<xs:annotation>
+			<xs:documentation>Code to represent the type of card</xs:documentation>
+			<xs:documentation>Values vary depending on organization and product group</xs:documentation>
+			<xs:documentation>Refer to Card Type code in Foundation for IP Message Set - Codes document </xs:documentation>
+		</xs:annotation>
+		<xs:simpleType>
+			<xs:restriction base="xs:string">
+				<xs:maxLength value="3"/>
+			</xs:restriction>
+		</xs:simpleType>
+	</xs:element>
+	<xs:element name="CardTypeDesc">
+		<xs:annotation>
+			<xs:documentation>Card type description</xs:documentation>
+		</xs:annotation>
+		<xs:simpleType>
+			<xs:restriction base="xs:string">
+				<xs:maxLength value="40"/>
+			</xs:restriction>
+		</xs:simpleType>
+	</xs:element>
+	<xs:element name="CardUsageLoc">
+		<xs:annotation>
+			<xs:documentation>Location where the card is accepted</xs:documentation>
+			<xs:documentation>Refer to Card Usage Location code in Foundation for IP Message Set - Codes document</xs:documentation>
+		</xs:annotation>
+		<xs:simpleType>
+			<xs:restriction base="xs:string">
+				<xs:maxLength value="10"/>
+			</xs:restriction>
+		</xs:simpleType>
+	</xs:element>
+	<xs:element name="CashBal" type="ems:Amount">
+		<xs:annotation>
+			<xs:documentation>Cash balance</xs:documentation>
+		</xs:annotation>
+	</xs:element>
+	<xs:element name="CashWdlLimit" type="ems:Amount">
+		<xs:annotation>
+			<xs:documentation>Cash withdrawal limit</xs:documentation>
+			<xs:documentation>This is the total amount of cash that can be withdrawn from the account</xs:documentation>
+		</xs:annotation>
+	</xs:element>
+	<xs:element name="ChrgOffStatus">
+		<xs:annotation>
+			<xs:documentation>Charge off status code for an account</xs:documentation>
+		</xs:annotation>
+		<xs:simpleType>
+			<xs:restriction base="xs:string">
+				<xs:length value="1"/>
+			</xs:restriction>
+		</xs:simpleType>
+	</xs:element>
+	<xs:element name="CrLimit" type="ems:Amount">
+		<xs:annotation>
+			<xs:documentation>Credit limit</xs:documentation>
+		</xs:annotation>
+	</xs:element>
+	<xs:element name="CrLimitDetl">
+		<xs:annotation>
+			<xs:documentation>Credit limit details</xs:documentation>
+		</xs:annotation>
+		<xs:complexType>
+			<xs:sequence>
+				<xs:element ref="CrLimitType"/>
+				<xs:element ref="PermanentCrLimit"/>
+				<xs:element ref="CrLimit">
+					<xs:annotation>
+						<xs:documentation>Limit for the given channel</xs:documentation>
+					</xs:annotation>
+				</xs:element>
+				<xs:element ref="AvailLimit" minOccurs="0"/>
+				<xs:element name="MaxCrLimit" type="ems:Amount" minOccurs="0">
+					<xs:annotation>
+						<xs:documentation>Maximum credit limit allowed</xs:documentation>
+					</xs:annotation>
+				</xs:element>
+			</xs:sequence>
+		</xs:complexType>
+	</xs:element>
+	<xs:element name="CrLimitEffDate" type="xs:date">
+		<xs:annotation>
+			<xs:documentation>Effective date of (temporary) credit limit</xs:documentation>
+			<xs:documentation>For temp limits only</xs:documentation>
+		</xs:annotation>
+	</xs:element>
+	<xs:element name="CrLimitExpDate" type="xs:date">
+		<xs:annotation>
+			<xs:documentation>Expiry date of (temporary) credit limit</xs:documentation>
+			<xs:documentation>For temp limits only</xs:documentation>
+		</xs:annotation>
+	</xs:element>
+	<xs:element name="CrLimitType">
+		<xs:annotation>
+			<xs:documentation>Type of credit limit</xs:documentation>
+			<xs:documentation>Refer to Credit Card Limit Type code in Foundation for IP Message Set - Codes document</xs:documentation>
+		</xs:annotation>
+		<xs:simpleType>
+			<xs:restriction base="xs:string">
+				<xs:length value="1"/>
+			</xs:restriction>
+		</xs:simpleType>
+	</xs:element>
+	<xs:element name="CurrAmtDue" type="ems:Amount">
+		<xs:annotation>
+			<xs:documentation>Current amount due</xs:documentation>
+		</xs:annotation>
+	</xs:element>
+	<xs:element name="CurrBal" type="ems:Amount">
+		<xs:annotation>
+			<xs:documentation>Current balance</xs:documentation>
+			<xs:documentation>Total amount due (including balances brought forward from previous months and transactions that have not been statemented)</xs:documentation>
+		</xs:annotation>
+	</xs:element>
+	<xs:element name="CurrPts" type="xs:decimal">
+		<xs:annotation>
+			<xs:documentation>Current points</xs:documentation>
+		</xs:annotation>
+	</xs:element>
+	<xs:element name="CustRiskGrade">
+		<xs:annotation>
+			<xs:documentation>Customer risk grading </xs:documentation>
+			<xs:documentation>Currently not in scope</xs:documentation>
+		</xs:annotation>
+		<xs:simpleType>
+			<xs:restriction base="xs:string">
+				<xs:maxLength value="15"/>
+			</xs:restriction>
+		</xs:simpleType>
+	</xs:element>
+	<xs:element name="CycleDue">
+		<xs:annotation>
+			<xs:documentation>Indicates the number of cycles for which a payment is due</xs:documentation>
+			<xs:documentation>This code also indicates the contractual delinquency level of the account
+</xs:documentation>
+			<xs:documentation>Possible values are '0' thru '9'
+0: No amount due; not past due
+1: Current amount due; not past due
+2: Amount past due 1-29 days
+3: Amount past due 30-59 days
+4: Amount past due 60-89 days
+5: Amount past due 90-119 days
+6: Amount past due 120-149 days
+7: Amount past due 150-179 days
+8: Amount past due 180-209 days
+9: Amount past due 210 or more days
+</xs:documentation>
+		</xs:annotation>
+		<xs:simpleType>
+			<xs:restriction base="xs:string">
+				<xs:length value="1"/>
+			</xs:restriction>
+		</xs:simpleType>
+	</xs:element>
+	<xs:element name="DisputedAmt" type="ems:Amount">
+		<xs:annotation>
+			<xs:documentation>Disputed amount</xs:documentation>
+		</xs:annotation>
+	</xs:element>
+	<xs:element name="DisputedItemCnt" type="xs:integer">
+		<xs:annotation>
+			<xs:documentation>Current number of items being disputed</xs:documentation>
+		</xs:annotation>
+	</xs:element>
+	<xs:element name="ECommerce" type="xs:boolean">
+		<xs:annotation>
+			<xs:documentation>Indicates if transaction was done via the internet</xs:documentation>
+			<xs:documentation>true: e-Commerce transaction</xs:documentation>
+		</xs:annotation>
+	</xs:element>
+	<xs:element name="EmbosserName">
+		<xs:annotation>
+			<xs:documentation>Name reflected on card</xs:documentation>
+		</xs:annotation>
+		<xs:simpleType>
+			<xs:restriction base="xs:string">
+				<xs:maxLength value="60"/>
+			</xs:restriction>
+		</xs:simpleType>
+	</xs:element>
+	<xs:element name="EmbossName">
+		<xs:annotation>
+			<xs:documentation>Name reflected on Card</xs:documentation>
+		</xs:annotation>
+		<xs:simpleType>
+			<xs:restriction base="xs:string">
+				<xs:maxLength value="60"/>
+			</xs:restriction>
+		</xs:simpleType>
+	</xs:element>
+	<xs:element name="EntryMode">
+		<xs:annotation>
+			<xs:documentation>Point of sale entry mode</xs:documentation>
+		</xs:annotation>
+		<xs:simpleType>
+			<xs:restriction base="xs:string">
+				<xs:maxLength value="3"/>
+			</xs:restriction>
+		</xs:simpleType>
+	</xs:element>
+	<xs:element name="ExchgRate" type="xs:decimal">
+		<xs:annotation>
+			<xs:documentation>Exchange rate of transaction</xs:documentation>
+		</xs:annotation>
+	</xs:element>
+	<xs:element name="ExchgRefCur">
+		<xs:annotation>
+			<xs:documentation>Reference currency of exchange</xs:documentation>
+		</xs:annotation>
+		<xs:simpleType>
+			<xs:restriction base="xs:string">
+				<xs:maxLength value="3"/>
+			</xs:restriction>
+		</xs:simpleType>
+	</xs:element>
+	<xs:element name="ExpiringPts" type="xs:decimal">
+		<xs:annotation>
+			<xs:documentation>Expiring points</xs:documentation>
+		</xs:annotation>
+	</xs:element>
+	<xs:element name="ExpiryPeriod">
+		<xs:annotation>
+			<xs:documentation>Expiry period</xs:documentation>
+			<xs:documentation>Refer to Period Code code in Foundation for IP Message Set – Codes document</xs:documentation>
+		</xs:annotation>
+		<xs:simpleType>
+			<xs:restriction base="xs:string">
+				<xs:maxLength value="5"/>
+			</xs:restriction>
+		</xs:simpleType>
+	</xs:element>
+	<xs:element name="ExpiryDateRange" type="ems:DateRange">
+		<xs:annotation>
+			<xs:documentation>Start and end date of expiry period</xs:documentation>
+		</xs:annotation>
+	</xs:element>
+	<xs:element name="FixedAmt" type="ems:Amount">
+		<xs:annotation>
+			<xs:documentation>Fixed payment amount</xs:documentation>
+		</xs:annotation>
+	</xs:element>
+	<xs:element name="ForfeitPts" type="xs:decimal">
+		<xs:annotation>
+			<xs:documentation>Forfeited bonus points or cash rebates since last statement</xs:documentation>
+		</xs:annotation>
+	</xs:element>
+	<xs:element name="InsuranceCover" type="xs:boolean">
+		<xs:annotation>
+			<xs:documentation>Indicates whether the account has insurance coverage</xs:documentation>
+			<xs:documentation>true: covered by insurance
+false: not covered by insurance
+</xs:documentation>
+		</xs:annotation>
+	</xs:element>
+	<xs:element name="InternetCard" type="xs:boolean">
+		<xs:annotation>
+			<xs:documentation>Indicates that the card is for use over the Internet only</xs:documentation>
+			<xs:documentation>true: Card is an Internet card
+false: Card is not an Internet card</xs:documentation>
+		</xs:annotation>
+	</xs:element>
+	<xs:element name="LastActivityDate" type="xs:date">
+		<xs:annotation>
+			<xs:documentation>Date of last activity for the card</xs:documentation>
+		</xs:annotation>
+	</xs:element>
+	<xs:element name="LastPayAmt" type="ems:Amount">
+		<xs:annotation>
+			<xs:documentation>Previous payment amount</xs:documentation>
+			<xs:documentation>For CrStmtDetlInq, this element can only be returned for current month statement.</xs:documentation>
+		</xs:annotation>
+	</xs:element>
+	<xs:element name="LastPayDate" type="xs:date">
+		<xs:annotation>
+			<xs:documentation>Previous payment date</xs:documentation>
+			<xs:documentation>For CrStmtDetlInq, this element can only be returned for current month statement.</xs:documentation>
+		</xs:annotation>
+	</xs:element>
+	<xs:element name="LastRedeemRqDate" type="xs:date">
+		<xs:annotation>
+			<xs:documentation>Date when redemption of rewards was last requested</xs:documentation>
+		</xs:annotation>
+	</xs:element>
+	<xs:element name="LastStmtDate" type="xs:date">
+		<xs:annotation>
+			<xs:documentation>Date on which the last statement was generated</xs:documentation>
+		</xs:annotation>
+	</xs:element>
+	<xs:element name="LineDetl">
+		<xs:annotation>
+			<xs:documentation>Detail of statement line</xs:documentation>
+		</xs:annotation>
+		<xs:simpleType>
+			<xs:restriction base="xs:string">
+				<xs:maxLength value="255"/>
+			</xs:restriction>
+		</xs:simpleType>
+	</xs:element>
+	<xs:element name="LineNumber" type="xs:integer">
+		<xs:annotation>
+			<xs:documentation>Line number of statement line</xs:documentation>
+		</xs:annotation>
+	</xs:element>
+	<xs:element name="LineType">
+		<xs:annotation>
+			<xs:documentation>Type of line in statement</xs:documentation>
+			<xs:documentation>Valid values are '01', '02' and '03'
+01 - Card information
+02 - Detail line information
+03 - Messages</xs:documentation>
+		</xs:annotation>
+		<xs:simpleType>
+			<xs:restriction base="xs:string">
+				<xs:maxLength value="2"/>
+			</xs:restriction>
+		</xs:simpleType>
+	</xs:element>
+	<xs:element name="LinkAcctId" type="ems:DepAcct">
+		<xs:annotation>
+			<xs:documentation>Account that is linked to a card</xs:documentation>
+			<xs:documentation>For example, identifier of the deposit account that is linked to a debit card</xs:documentation>
+		</xs:annotation>
+	</xs:element>
+	<xs:element name="LowerLimit" type="ems:Amount">
+		<xs:annotation>
+			<xs:documentation>Payment Lower Limit or Total Due</xs:documentation>
+		</xs:annotation>
+	</xs:element>
+	<xs:element name="Memo">
+		<xs:annotation>
+			<xs:documentation>Memo relating to the account</xs:documentation>
+		</xs:annotation>
+		<xs:simpleType>
+			<xs:restriction base="xs:string">
+				<xs:maxLength value="60"/>
+			</xs:restriction>
+		</xs:simpleType>
+	</xs:element>
+	<xs:element name="MerchantCat">
+		<xs:annotation>
+			<xs:documentation>Merchant category</xs:documentation>
+		</xs:annotation>
+		<xs:simpleType>
+			<xs:restriction base="xs:string">
+				<xs:maxLength value="10"/>
+			</xs:restriction>
+		</xs:simpleType>
+	</xs:element>
+	<xs:element name="MerchantId">
+		<xs:annotation>
+			<xs:documentation>Merchant Identifier</xs:documentation>
+		</xs:annotation>
+		<xs:simpleType>
+			<xs:restriction base="xs:string">
+				<xs:maxLength value="36"/>
+			</xs:restriction>
+		</xs:simpleType>
+	</xs:element>
+	<xs:element name="MinPayAmt" type="ems:Amount">
+		<xs:annotation>
+			<xs:documentation>Minimum amount for payment</xs:documentation>
+		</xs:annotation>
+	</xs:element>
+	<xs:element name="ModifyReason">
+		<xs:annotation>
+			<xs:documentation>Reason for modification request</xs:documentation>
+		</xs:annotation>
+		<xs:simpleType>
+			<xs:restriction base="xs:string">
+				<xs:maxLength value="4"/>
+			</xs:restriction>
+		</xs:simpleType>
+	</xs:element>
+	<xs:element name="ModifyReasonDesc">
+		<xs:annotation>
+			<xs:documentation>Descriptive text for modification reason</xs:documentation>
+		</xs:annotation>
+		<xs:simpleType>
+			<xs:restriction base="xs:string">
+				<xs:maxLength value="255"/>
+			</xs:restriction>
+		</xs:simpleType>
+	</xs:element>
+	<xs:element name="NewPtsEarned" type="xs:decimal">
+		<xs:annotation>
+			<xs:documentation>Points earned since last statement</xs:documentation>
+		</xs:annotation>
+	</xs:element>
+	<xs:element name="NewRewardScheme">
+		<xs:annotation>
+			<xs:documentation>New Card Reward Scheme</xs:documentation>
+			<xs:documentation>Refer to Reward Scheme code in Foundation for EMS - Codes document </xs:documentation>
+		</xs:annotation>
+		<xs:simpleType>
+			<xs:restriction base="xs:string">
+				<xs:maxLength value="3"/>
+			</xs:restriction>
+		</xs:simpleType>
+	</xs:element>
+	<xs:element name="NewRewardSchemeDesc">
+		<xs:annotation>
+			<xs:documentation>New Reward Scheme Description</xs:documentation>
+		</xs:annotation>
+		<xs:simpleType>
+			<xs:restriction base="xs:string">
+				<xs:maxLength value="80"/>
+			</xs:restriction>
+		</xs:simpleType>
+	</xs:element>
+	<xs:element name="NextStmtDate" type="xs:date">
+		<xs:annotation>
+			<xs:documentation>Date on which the next statement will be generated</xs:documentation>
+		</xs:annotation>
+	</xs:element>
+	<xs:element name="NonExpiryPts" type="xs:decimal">
+		<xs:annotation>
+			<xs:documentation>Points with no expiry date</xs:documentation>
+		</xs:annotation>
+	</xs:element>
+	<xs:element name="PastAmtDue" type="ems:Amount">
+		<xs:annotation>
+			<xs:documentation>Previous amount due</xs:documentation>
+		</xs:annotation>
+	</xs:element>
+	<xs:element name="PayCardAcctId" type="ems:CardAcct">
+		<xs:annotation>
+			<xs:documentation>Card Account Identifier to debit payment from</xs:documentation>
+		</xs:annotation>
+	</xs:element>
+	<xs:element name="PayDueDate" type="xs:date">
+		<xs:annotation>
+			<xs:documentation>Due date for current amount due</xs:documentation>
+		</xs:annotation>
+	</xs:element>
+	<xs:element name="PayDueType">
+		<xs:annotation>
+			<xs:documentation>Payment due type</xs:documentation>
+			<xs:documentation>Refer to Payment Due Type code in Foundation for IP Message Set - Codes document </xs:documentation>
+		</xs:annotation>
+		<xs:simpleType>
+			<xs:restriction base="xs:string">
+				<xs:maxLength value="15"/>
+			</xs:restriction>
+		</xs:simpleType>
+	</xs:element>
+	<xs:element name="PermanentCrLimit" type="xs:boolean">
+		<xs:annotation>
+			<xs:documentation>Permanent credit limit indicator</xs:documentation>
+			<xs:documentation>true: Permanent limit
+false: Temporary limit
+</xs:documentation>
+		</xs:annotation>
+	</xs:element>
+	<xs:element name="PostDate" type="xs:date">
+		<xs:annotation>
+			<xs:documentation>Date when the transaction was posted to the credit card issuer</xs:documentation>
+		</xs:annotation>
+	</xs:element>
+	<xs:element name="PrePaidAmt" type="ems:Amount">
+		<xs:annotation>
+			<xs:documentation>Pre-paid amount</xs:documentation>
+		</xs:annotation>
+	</xs:element>
+	<xs:element name="PrevStmtBal" type="ems:Amount">
+		<xs:annotation>
+			<xs:documentation>The billing amount on previous month’s statement</xs:documentation>
+		</xs:annotation>
+	</xs:element>
+	<xs:element name="PrevPts" type="xs:decimal">
+		<xs:annotation>
+			<xs:documentation>Points earned as of last statement</xs:documentation>
+		</xs:annotation>
+	</xs:element>
+	<xs:element name="PtsExpiryDate" type="xs:date">
+		<xs:annotation>
+			<xs:documentation>Expiry date of points</xs:documentation>
+		</xs:annotation>
+	</xs:element>
+	<xs:element name="PtsExpiryPeriodDetl">
+		<xs:annotation>
+			<xs:documentation>Expiry period details</xs:documentation>
+			<xs:documentation>Refer to Period Code code in Foundation for IP Message Set – Codes document</xs:documentation>
+		</xs:annotation>
+		<xs:complexType>
+			<xs:sequence>
+				<xs:element ref="ExpiryPeriod" minOccurs="0"/>
+				<xs:element ref="ExpiryDateRange" minOccurs="0"/>
+			</xs:sequence>
+		</xs:complexType>
+	</xs:element>
+	<xs:element name="PtsExpiryShortDate">
+		<xs:annotation>
+			<xs:documentation>Expiry date of points in MMCCYY format</xs:documentation>
+		</xs:annotation>
+		<xs:simpleType>
+			<xs:restriction base="xs:string">
+				<xs:maxLength value="6"/>
+			</xs:restriction>
+		</xs:simpleType>
+	</xs:element>
+	<xs:element name="PtsLastUpdDate" type="xs:date">
+		<xs:annotation>
+			<xs:documentation>Date when points were last updated </xs:documentation>
+		</xs:annotation>
+	</xs:element>
+	<xs:element name="PtsType">
+		<xs:annotation>
+			<xs:documentation>Type of points</xs:documentation>
+			<xs:documentation>Refer to  Reward Scheme code in Foundation for IP Message Set - Codes document</xs:documentation>
+		</xs:annotation>
+		<xs:simpleType>
+			<xs:restriction base="xs:string">
+				<xs:maxLength value="3"/>
+			</xs:restriction>
+		</xs:simpleType>
+	</xs:element>
+	<xs:element name="ResetDate" type="xs:date">
+		<xs:annotation>
+			<xs:documentation>Reset date of points</xs:documentation>
+		</xs:annotation>
+	</xs:element>
+	<xs:element name="RetailBal" type="ems:Amount">
+		<xs:annotation>
+			<xs:documentation>Retail Balance</xs:documentation>
+		</xs:annotation>
+	</xs:element>
+	<xs:element name="RewardBal">
+		<xs:annotation>
+			<xs:documentation>Reward balance</xs:documentation>
+		</xs:annotation>
+		<xs:complexType>
+			<xs:sequence>
+				<xs:element ref="PtsType"/>
+				<xs:element ref="NewPtsEarned" minOccurs="0"/>
+				<xs:element ref="CurrPts" minOccurs="0"/>
+				<xs:element ref="PrevPts" minOccurs="0"/>
+				<xs:element ref="UsedPts" minOccurs="0"/>
+				<xs:element ref="AdjustedPts" minOccurs="0"/>
+				<xs:element ref="NonExpiryPts" minOccurs="0"/>
+				<xs:element ref="LastRedeemRqDate" minOccurs="0"/>
+				<xs:element ref="ResetDate" minOccurs="0"/>
+				<xs:element ref="PtsLastUpdDate" minOccurs="0"/>
+				<xs:element ref="RewardExpiryDetl" minOccurs="0" maxOccurs="12"/>
+			</xs:sequence>
+		</xs:complexType>
+	</xs:element>
+	<xs:element name="RewardDetl">
+		<xs:annotation>
+			<xs:documentation>Details of reward</xs:documentation>
+		</xs:annotation>
+		<xs:complexType>
+			<xs:sequence>
+				<xs:element ref="RewardScheme"/>
+				<xs:element ref="RewardSchemeDesc" minOccurs="0"/>
+				<xs:element ref="SchemeLastUpdDate" minOccurs="0"/>
+				<xs:element ref="SchemeEffDate" minOccurs="0"/>
+				<xs:element ref="RewardBal" maxOccurs="3"/>
+			</xs:sequence>
+		</xs:complexType>
+	</xs:element>
+	<xs:element name="RewardExpiryDetl">
+		<xs:annotation>
+			<xs:documentation>Details of expiring points</xs:documentation>
+		</xs:annotation>
+		<xs:complexType>
+			<xs:sequence>
+				<xs:element ref="ExpiringPts" minOccurs="0"/>
+				<xs:choice minOccurs="0">
+					<xs:element ref="PtsExpiryDate" minOccurs="0"/>
+					<xs:element ref="PtsExpiryShortDate" minOccurs="0"/>
+					<xs:element ref="PtsExpiryPeriodDetl" minOccurs="0"/>
+				</xs:choice>
+			</xs:sequence>
+		</xs:complexType>
+	</xs:element>
+	<xs:element name="RewardScheme">
+		<xs:annotation>
+			<xs:documentation>Card reward scheme</xs:documentation>
+			<xs:documentation>Refer to  Reward Scheme code in Foundation for IP Message Set - Codes document</xs:documentation>
+		</xs:annotation>
+		<xs:simpleType>
+			<xs:restriction base="xs:string">
+				<xs:maxLength value="3"/>
+			</xs:restriction>
+		</xs:simpleType>
+	</xs:element>
+	<xs:element name="RewardSchemeDesc">
+		<xs:annotation>
+			<xs:documentation>Reward scheme description</xs:documentation>
+		</xs:annotation>
+		<xs:simpleType>
+			<xs:restriction base="xs:string">
+				<xs:maxLength value="80"/>
+			</xs:restriction>
+		</xs:simpleType>
+	</xs:element>
+	<xs:element name="RqSchemeEffDate" type="xs:date">
+		<xs:annotation>
+			<xs:documentation>Requested effective date of reward scheme </xs:documentation>
+			<xs:documentation>Currently not used</xs:documentation>
+		</xs:annotation>
+	</xs:element>
+	<xs:element name="SchemeChgDetl">
+		<xs:annotation>
+			<xs:documentation>Reward Scheme to be changed</xs:documentation>
+		</xs:annotation>
+		<xs:complexType>
+			<xs:sequence>
+				<xs:element ref="RewardScheme"/>
+				<xs:element ref="NewRewardScheme"/>
+				<xs:element ref="RqSchemeEffDate" minOccurs="0"/>
+			</xs:sequence>
+		</xs:complexType>
+	</xs:element>
+	<xs:element name="SchemeChgResult">
+		<xs:annotation>
+			<xs:documentation>Results of Reward Scheme changed</xs:documentation>
+		</xs:annotation>
+		<xs:complexType>
+			<xs:sequence>
+				<xs:element ref="RewardScheme"/>
+				<xs:element ref="RewardSchemeDesc" minOccurs="0"/>
+				<xs:element ref="NewRewardScheme"/>
+				<xs:element ref="NewRewardSchemeDesc" minOccurs="0"/>
+				<xs:element ref="SchemeEffDate" minOccurs="0"/>
+				<xs:element ref="SchemeLastUpdDate" minOccurs="0"/>
+				<xs:element ref="TfrRewardDetl" minOccurs="0" maxOccurs="3"/>
+			</xs:sequence>
+		</xs:complexType>
+	</xs:element>
+	<xs:element name="SchemeEffDate" type="xs:date">
+		<xs:annotation>
+			<xs:documentation>Effective date of reward scheme</xs:documentation>
+		</xs:annotation>
+	</xs:element>
+	<xs:element name="SchemeLastUpdDate" type="xs:date">
+		<xs:annotation>
+			<xs:documentation>Date of previous reward scheme change</xs:documentation>
+		</xs:annotation>
+	</xs:element>
+	<xs:element name="StmtBal" type="ems:Amount">
+		<xs:annotation>
+			<xs:documentation>Balance stated on current statement</xs:documentation>
+		</xs:annotation>
+	</xs:element>
+	<xs:element name="TempCrLimit" type="ems:Amount">
+		<xs:annotation>
+			<xs:documentation>Temporary credit limit</xs:documentation>
+		</xs:annotation>
+	</xs:element>
+	<xs:element name="TfrPts" type="xs:decimal">
+		<xs:annotation>
+			<xs:documentation>Balance of Bonus Points or Cash Rebates transferred to the new reward scheme</xs:documentation>
+		</xs:annotation>
+	</xs:element>
+	<xs:element name="TfrRewardDetl">
+		<xs:annotation>
+			<xs:documentation>Reward Details for the transferred Scheme</xs:documentation>
+		</xs:annotation>
+		<xs:complexType>
+			<xs:sequence>
+				<xs:element ref="PtsType"/>
+				<xs:element ref="CurrPts" minOccurs="0"/>
+				<xs:element ref="TfrPts"/>
+				<xs:element ref="RewardExpiryDetl" minOccurs="0" maxOccurs="12"/>
+			</xs:sequence>
+		</xs:complexType>
+	</xs:element>
+	<xs:element name="TotalAmtDue" type="ems:Amount">
+		<xs:annotation>
+			<xs:documentation>Total amount due for all cards held by a customer</xs:documentation>
+		</xs:annotation>
+	</xs:element>
+	<xs:element name="TotalCrLimit" type="ems:Amount">
+		<xs:annotation>
+			<xs:documentation>Total credit limit for all cards held by a customer</xs:documentation>
+		</xs:annotation>
+	</xs:element>
+	<xs:element name="TotalCurrBal" type="ems:Amount">
+		<xs:annotation>
+			<xs:documentation>Total current balance for all cards held by a customer</xs:documentation>
+			<xs:documentation>Includes previous balances brought forward and transacton balances that are not statemented</xs:documentation>
+		</xs:annotation>
+	</xs:element>
+	<xs:element name="TotalDue" type="ems:Amount">
+		<xs:annotation>
+			<xs:documentation>Total amount due for payment</xs:documentation>
+			<xs:documentation>CurrAmtDue + PastAmtDue</xs:documentation>
+		</xs:annotation>
+	</xs:element>
+	<xs:element name="TotalPts" type="xs:decimal">
+		<xs:annotation>
+			<xs:documentation>Total points for all cards</xs:documentation>
+		</xs:annotation>
+	</xs:element>
+	<xs:element name="TranAmt" type="ems:Amount">
+		<xs:annotation>
+			<xs:documentation>Transaction amount in the original transaction currency</xs:documentation>
+		</xs:annotation>
+	</xs:element>
+	<xs:element name="TranCtry">
+		<xs:annotation>
+			<xs:documentation>Transaction country</xs:documentation>
+			<xs:documentation>Refer to Country code in Foundation for IP Message Set - Codes document</xs:documentation>
+		</xs:annotation>
+		<xs:simpleType>
+			<xs:restriction base="xs:string">
+				<xs:maxLength value="3"/>
+			</xs:restriction>
+		</xs:simpleType>
+	</xs:element>
+	<xs:element name="TranDate" type="xs:date">
+		<xs:annotation>
+			<xs:documentation>Date when the transaction was done.</xs:documentation>
+		</xs:annotation>
+	</xs:element>
+	<xs:element name="TranDesc">
+		<xs:annotation>
+			<xs:documentation>Description of the transaction</xs:documentation>
+		</xs:annotation>
+		<xs:simpleType>
+			<xs:restriction base="xs:string">
+				<xs:maxLength value="255"/>
+			</xs:restriction>
+		</xs:simpleType>
+	</xs:element>
+	<xs:element name="UpperLimit" type="ems:Amount">
+		<xs:annotation>
+			<xs:documentation>Payment Upper Limit or Credit Limit</xs:documentation>
+		</xs:annotation>
+	</xs:element>
+	<xs:element name="UsedPts" type="xs:decimal">
+		<xs:annotation>
+			<xs:documentation>Redeemed points since last statement</xs:documentation>
+		</xs:annotation>
+	</xs:element>
+	<xs:element name="WarningCodeDetl">
+		<xs:annotation>
+			<xs:documentation>Warning codes</xs:documentation>
+		</xs:annotation>
+		<xs:complexType>
+			<xs:sequence>
+				<xs:element name="WarningCodeSeq">
+					<xs:annotation>
+						<xs:documentation>Warning code sequence number</xs:documentation>
+					</xs:annotation>
+					<xs:simpleType>
+						<xs:restriction base="xs:string">
+							<xs:length value="1"/>
+						</xs:restriction>
+					</xs:simpleType>
+				</xs:element>
+				<xs:element name="WarningCode">
+					<xs:annotation>
+						<xs:documentation>Warning code value</xs:documentation>
+						<xs:documentation>Interpretation depends on the sequence number and what is defined by users
+</xs:documentation>
+					</xs:annotation>
+					<xs:simpleType>
+						<xs:restriction base="xs:string">
+							<xs:length value="1"/>
+						</xs:restriction>
+					</xs:simpleType>
+				</xs:element>
+			</xs:sequence>
+		</xs:complexType>
+	</xs:element>
+	<xs:element name="YTDInterest" type="ems:Amount">
+		<xs:annotation>
+			<xs:documentation>Year-to-date interest</xs:documentation>
+		</xs:annotation>
+	</xs:element>
+</xs:schema>

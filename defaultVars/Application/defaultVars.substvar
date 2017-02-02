@@ -1,0 +1,29 @@
+<?xml version = "1.0" encoding = "UTF-8"?>
+<repository xmlns:xsi = "http://www.w3.org/2001/XMLSchema-instance" xmlns = "http://www.tibco.com/xmlns/repo/types/2002">
+	<globalVariables>
+		<globalVariable>
+			<name>ProjectCode</name>
+			<value>HFA</value>
+			<deploymentSettable>true</deploymentSettable>
+			<serviceSettable>false</serviceSettable>
+			<type>String</type>
+			<modTime>1454494618625</modTime>
+		</globalVariable>
+		<globalVariable>
+			<name>Timer_InstanceID</name>
+			<value>900000</value>
+			<deploymentSettable>true</deploymentSettable>
+			<serviceSettable>false</serviceSettable>
+			<type>String</type>
+			<modTime>1484195823461</modTime>
+		</globalVariable>
+		<globalVariable>
+			<name>Timer_InstanceWait</name>
+			<value>3000</value>
+			<deploymentSettable>true</deploymentSettable>
+			<serviceSettable>false</serviceSettable>
+			<type>String</type>
+			<modTime>1484195823656</modTime>
+		</globalVariable>
+	</globalVariables>
+</repository>

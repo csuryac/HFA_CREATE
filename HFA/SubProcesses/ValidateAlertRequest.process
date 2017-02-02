@@ -1,0 +1,213 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<pd:ProcessDefinition xmlns:pd="http://xmlns.tibco.com/bw/process/2003" xmlns:ns2="http://www.tibco.com/pe/WriteToLogActivitySchema" xmlns:xsl="http://www.w3.org/1999/XSL/Transform" xmlns:ns1="http://www.tibco.com/pe/DeployedVarsType" xmlns:ns="http://schemas.dbs.com/icc/ems" xmlns:ns4="http://schemas.dbs.com/icc/CustomerSvc" xmlns:ns3="http://www.tibco.com/pe/EngineTypes" xmlns:xsd="http://www.w3.org/2001/XMLSchema" xmlns:tib="http://www.tibco.com/bw/xslt/custom-functions" xmlns:pfx2="http://www.tibco.com/pe/GenerateErrorActivity/InputSchema" xmlns:pfx="http://schemas.dbs.com/icc/BasicSvc" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance">
+    <xsd:import namespace="http://schemas.dbs.com/icc/BasicSvc" schemaLocation="/SharedResources/Schema/IP/CaseMgmtRqAddOp_v1.1.xsd"/>
+    <pd:name>HFA/SubProcesses/ValidateAlertRequest.process</pd:name>
+    <pd:startName>Start</pd:startName>
+    <pd:startType ref="pfx:CaseMgmtRqAdd"/>
+    <pd:startX>29</pd:startX>
+    <pd:startY>93</pd:startY>
+    <pd:returnBindings/>
+    <pd:endName>End</pd:endName>
+    <pd:endX>763</pd:endX>
+    <pd:endY>95</pd:endY>
+    <pd:errorSchemas/>
+    <pd:processVariables/>
+    <pd:targetNamespace>http://xmlns.example.com/1377745446151</pd:targetNamespace>
+    <pd:activity name="QueryForDuplicate">
+        <pd:type>com.tibco.plugin.jdbc.JDBCQueryActivity</pd:type>
+        <pd:resourceType>ae.activities.JDBCQueryActivity</pd:resourceType>
+        <pd:x>290</pd:x>
+        <pd:y>91</pd:y>
+        <config>
+            <timeout>%%Connections/JDBC/QueryTimeout%%</timeout>
+            <commit>false</commit>
+            <maxRows>%%Connections/JDBC/MaxRow%%</maxRows>
+            <emptyStrAsNil>false</emptyStrAsNil>
+            <jdbcSharedConfig>/SharedResources/Connections/JDBC/IWFDB.sharedjdbc</jdbcSharedConfig>
+            <statement>SELECT CASE_ID, CASE_STATUS FROM HFA_ALERT_HEADER WHERE ALERT_ID =?</statement>
+            <Prepared_Param_DataType>
+                <parameter>
+                    <parameterName>ALERT_ID</parameterName>
+                    <dataType>VARCHAR</dataType>
+                </parameter>
+            </Prepared_Param_DataType>
+            <oraObjects/>
+            <oraTables/>
+            <QueryOutputCachedSchemaColumns>CASE_ID</QueryOutputCachedSchemaColumns>
+            <QueryOutputCachedSchemaDataTypes>12</QueryOutputCachedSchemaDataTypes>
+            <QueryOutputCachedSchemaDataTypesName>VARCHAR2</QueryOutputCachedSchemaDataTypesName>
+            <QueryOutputCachedSchemaStatus>OptionalElement</QueryOutputCachedSchemaStatus>
+            <QueryOutputCachedSchemaColumns>CASE_STATUS</QueryOutputCachedSchemaColumns>
+            <QueryOutputCachedSchemaDataTypes>12</QueryOutputCachedSchemaDataTypes>
+            <QueryOutputCachedSchemaDataTypesName>VARCHAR2</QueryOutputCachedSchemaDataTypesName>
+            <QueryOutputCachedSchemaStatus>OptionalElement</QueryOutputCachedSchemaStatus>
+        </config>
+        <pd:inputBindings>
+            <jdbcQueryActivityInput>
+                <ALERT_ID>
+                    <xsl:choose>
+                        <xsl:when test="exists($Start/pfx:CaseMgmtRqAdd/pfx:AlertDetl[1]/pfx:AlertId)">
+                            <xsl:value-of select="$Start/pfx:CaseMgmtRqAdd/pfx:AlertDetl[1]/pfx:AlertId"/>
+                        </xsl:when>
+                        <xsl:otherwise>
+                            <xsl:attribute name="xsi:nil">true</xsl:attribute>
+                        </xsl:otherwise>
+                    </xsl:choose>
+                </ALERT_ID>
+            </jdbcQueryActivityInput>
+        </pd:inputBindings>
+    </pd:activity>
+    <pd:activity name="AssertDuplicate">
+        <pd:type>com.tibco.pe.core.CallProcessActivity</pd:type>
+        <pd:resourceType>ae.process.subprocess</pd:resourceType>
+        <pd:x>460</pd:x>
+        <pd:y>94</pd:y>
+        <config>
+            <processName>/HFA/SubProcesses/AssertCondition.process</processName>
+        </config>
+        <pd:inputBindings>
+            <root>
+                <Condition>
+                    <xsl:value-of select="count($QueryForDuplicate/resultSet/Record)=0"/>
+                </Condition>
+                <ErrorMessage>
+                    <xsl:value-of select="concat(&quot;ERROR DUE TO DUPLICATE RECORD. CASE ID: &quot;, $QueryForDuplicate/resultSet/Record[1]/CASE_ID, &quot; ALREADY EXISTS FOR ALERT ID: &quot;, $Start/pfx:CaseMgmtRqAdd/pfx:AlertDetl[1]/pfx:AlertId)"/>
+                </ErrorMessage>
+                <ErrorCode>
+                    <xsl:value-of select="$_globalVariables/ns1:GlobalVariables/Application/ErrorCode/DuplicateRecord"/>
+                </ErrorCode>
+            </root>
+        </pd:inputBindings>
+    </pd:activity>
+    <pd:activity name="LogStart">
+        <pd:type>com.tibco.pe.core.WriteToLogActivity</pd:type>
+        <pd:resourceType>ae.activities.log</pd:resourceType>
+        <pd:x>146</pd:x>
+        <pd:y>93</pd:y>
+        <config>
+            <role>User</role>
+        </config>
+        <pd:inputBindings>
+            <ns2:ActivityInput>
+                <message>
+                    <xsl:value-of select="concat(&quot;Validate Alert Request Process Start for Alert Id: &quot;, $Start/pfx:CaseMgmtRqAdd/pfx:AlertDetl[1]/pfx:AlertId)"/>
+                </message>
+            </ns2:ActivityInput>
+        </pd:inputBindings>
+    </pd:activity>
+    <pd:activity name="LogEnd">
+        <pd:type>com.tibco.pe.core.WriteToLogActivity</pd:type>
+        <pd:resourceType>ae.activities.log</pd:resourceType>
+        <pd:x>612</pd:x>
+        <pd:y>94</pd:y>
+        <config>
+            <role>User</role>
+        </config>
+        <pd:inputBindings>
+            <ns2:ActivityInput>
+                <message>
+                    <xsl:value-of select="concat(&quot;Validate Alert Request Process End for Alert Id: &quot;, $Start/pfx:CaseMgmtRqAdd/pfx:AlertDetl[1]/pfx:AlertId)"/>
+                </message>
+            </ns2:ActivityInput>
+        </pd:inputBindings>
+    </pd:activity>
+    <pd:activity name="Catch">
+        <pd:type>com.tibco.pe.core.CatchActivity</pd:type>
+        <pd:resourceType>ae.activities.catch</pd:resourceType>
+        <pd:x>352</pd:x>
+        <pd:y>215</pd:y>
+        <pd:handler>true</pd:handler>
+        <config>
+            <catchAll>true</catchAll>
+        </config>
+        <pd:inputBindings/>
+    </pd:activity>
+    <pd:activity name="LogError">
+        <pd:type>com.tibco.pe.core.WriteToLogActivity</pd:type>
+        <pd:resourceType>ae.activities.log</pd:resourceType>
+        <pd:x>601</pd:x>
+        <pd:y>216</pd:y>
+        <config>
+            <role>User</role>
+        </config>
+        <pd:inputBindings>
+            <ns2:ActivityInput>
+                <message>
+                    <xsl:value-of select="concat(&quot;Error in Validate Alert request process. Alert ID: &quot;,$Start/pfx:CaseMgmtRqAdd/pfx:AlertDetl[1]/pfx:AlertId, &quot;&#xD;&#xA;&quot;,&quot;Error report: &quot;, tib:render-xml($_error/ns3:ErrorReport, 1, 1))"/>
+                </message>
+            </ns2:ActivityInput>
+        </pd:inputBindings>
+    </pd:activity>
+    <pd:activity name="Generate Error">
+        <pd:type>com.tibco.pe.core.GenerateErrorActivity</pd:type>
+        <pd:resourceType>ae.activities.throw</pd:resourceType>
+        <pd:x>767</pd:x>
+        <pd:y>218</pd:y>
+        <config>
+            <faultName/>
+        </config>
+        <pd:inputBindings>
+            <pfx2:ActivityInput>
+                <xsl:if test="$_error/ns3:ErrorReport/Msg">
+                    <message>
+                        <xsl:value-of select="$_error/ns3:ErrorReport/Msg"/>
+                    </message>
+                </xsl:if>
+                <xsl:if test="$_error/ns3:ErrorReport/MsgCode">
+                    <messageCode>
+                        <xsl:value-of select="$_error/ns3:ErrorReport/MsgCode"/>
+                    </messageCode>
+                </xsl:if>
+            </pfx2:ActivityInput>
+        </pd:inputBindings>
+    </pd:activity>
+    <pd:transition>
+        <pd:from>Start</pd:from>
+        <pd:to>LogStart</pd:to>
+        <pd:lineType>Default</pd:lineType>
+        <pd:lineColor>-16777216</pd:lineColor>
+        <pd:conditionType>always</pd:conditionType>
+    </pd:transition>
+    <pd:transition>
+        <pd:from>QueryForDuplicate</pd:from>
+        <pd:to>AssertDuplicate</pd:to>
+        <pd:lineType>Default</pd:lineType>
+        <pd:lineColor>-16777216</pd:lineColor>
+        <pd:conditionType>always</pd:conditionType>
+    </pd:transition>
+    <pd:transition>
+        <pd:from>LogStart</pd:from>
+        <pd:to>QueryForDuplicate</pd:to>
+        <pd:lineType>Default</pd:lineType>
+        <pd:lineColor>-16777216</pd:lineColor>
+        <pd:conditionType>always</pd:conditionType>
+    </pd:transition>
+    <pd:transition>
+        <pd:from>AssertDuplicate</pd:from>
+        <pd:to>LogEnd</pd:to>
+        <pd:lineType>Default</pd:lineType>
+        <pd:lineColor>-16777216</pd:lineColor>
+        <pd:conditionType>always</pd:conditionType>
+    </pd:transition>
+    <pd:transition>
+        <pd:from>LogEnd</pd:from>
+        <pd:to>End</pd:to>
+        <pd:lineType>Default</pd:lineType>
+        <pd:lineColor>-16777216</pd:lineColor>
+        <pd:conditionType>always</pd:conditionType>
+    </pd:transition>
+    <pd:transition>
+        <pd:from>Catch</pd:from>
+        <pd:to>LogError</pd:to>
+        <pd:lineType>Default</pd:lineType>
+        <pd:lineColor>-16777216</pd:lineColor>
+        <pd:conditionType>always</pd:conditionType>
+    </pd:transition>
+    <pd:transition>
+        <pd:from>LogError</pd:from>
+        <pd:to>Generate Error</pd:to>
+        <pd:lineType>One Bend</pd:lineType>
+        <pd:lineColor>-16777216</pd:lineColor>
+        <pd:conditionType>always</pd:conditionType>
+    </pd:transition>
+</pd:ProcessDefinition>

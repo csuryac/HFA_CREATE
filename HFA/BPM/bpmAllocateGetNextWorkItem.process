@@ -1,0 +1,365 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<pd:ProcessDefinition xmlns:xsl="http://www.w3.org/1999/XSL/Transform" xmlns:ns="http://api.wp.n2.tibco.com" xmlns:wsdl="http://schemas.xmlsoap.org/wsdl/" xmlns:pfx10="http://www.dbs.com/sg/wis/hfa/xsd/hfaCaseDetails" xmlns:ns5="http://api.brm.n2.tibco.com" xmlns:ns6="http://xmlns.tibco.com/encodings/mime" xmlns:pfx="http://xmlns.example.com/1429342289226" xmlns:pd="http://xmlns.tibco.com/bw/process/2003" xmlns:ns2="http://www.tibco.com/namespaces/tnt/plugins/file" xmlns:ns1="http://www.tibco.com/namespaces/tnt/plugins/file/v2" xmlns:ns4="urn:oasis:names:tc:SAML:2.0:assertion" xmlns:ns3="http://www.dbs.com/schema/header" xmlns:xsd="http://www.w3.org/2001/XMLSchema" xmlns:pfx5="http://www.dbs.com/1411971490249" xmlns:tib="http://www.tibco.com/bw/xslt/custom-functions" xmlns:pfx4="http://www.dbs.com/sg/wis/afa/xsd/afaCaseDetails" xmlns:pfx3="http://schemas.dbs.com/icc/BasicSvc" xmlns:pfx2="http://www.tibco.com/bs3.0/_i3L3QN8sEeSkQqj1-ZOMvA/iwf_atm_fraudsalert_process_ws" xmlns:pfx9="http://www.dbs.com/iwf/bpm/services/token" xmlns:pfx8="http://www.tibco.com/pe/WriteToLogActivitySchema" xmlns:pfx7="http://www.tibco.com/pe/EngineTypes" xmlns:pfx6="http://www.iwf.com/xsd/afaFetchCaseDetails/opCaseDetailsImpl">
+    <xsd:import namespace="urn:oasis:names:tc:SAML:2.0:assertion" schemaLocation="/SharedResources/Schema/saml/saml-schema-assertion-2.0.xsd"/>
+    <xsd:import namespace="http://www.dbs.com/sg/wis/afa/xsd/afaCaseDetails" schemaLocation="/SharedResources/Schema/afaSchemas/afaCaseDetails.xsd"/>
+    <xsd:import namespace="http://www.dbs.com/sg/wis/hfa/xsd/hfaCaseDetails" schemaLocation="/SharedResources/Schema/hfaSchemas/hfaCase.xsd"/>
+    <wsdl:import namespace="http://xmlns.example.com/1429342289226" location="/SharedResources/WSDL/Concrete/AMXBPMWrapper.wsdl"/>
+    <pd:name>HFA/BPM/bpmAllocateGetNextWorkItem.process</pd:name>
+    <pd:startName>Start</pd:startName>
+    <pd:startType>
+        <xsd:element name="Input">
+            <xsd:complexType>
+                <xsd:sequence>
+                    <xsd:element name="Token" type="xsd:string" minOccurs="0"/>
+                    <xsd:element name="WorkListViewID" type="xsd:string" minOccurs="0"/>
+                    <xsd:element name="GUID" type="xsd:string" minOccurs="0"/>
+                    <xsd:element name="WorkItemID" type="xsd:string" minOccurs="0"/>
+                </xsd:sequence>
+            </xsd:complexType>
+        </xsd:element>
+    </pd:startType>
+    <pd:startX>102</pd:startX>
+    <pd:startY>171</pd:startY>
+    <pd:returnBindings>
+        <xsl:copy-of select="$ProcessVariable/Output"/>
+    </pd:returnBindings>
+    <pd:endName>End</pd:endName>
+    <pd:endType>
+        <xsd:element name="Output">
+            <xsd:complexType>
+                <xsd:sequence>
+                    <xsd:element name="responseCode" type="xsd:string" minOccurs="0"/>
+                    <xsd:element name="responseMessage" type="xsd:string" minOccurs="0"/>
+                    <xsd:element ref="pfx10:dataModel" minOccurs="0"/>
+                    <xsd:element ref="pfx10:attributes" minOccurs="0"/>
+                </xsd:sequence>
+            </xsd:complexType>
+        </xsd:element>
+    </pd:endType>
+    <pd:endX>1257</pd:endX>
+    <pd:endY>177</pd:endY>
+    <pd:errorSchemas/>
+    <pd:processVariables>
+        <ProcessVariable>
+            <xsd:element name="Output">
+                <xsd:complexType>
+                    <xsd:sequence>
+                        <xsd:element name="responseCode" type="xsd:string" minOccurs="0"/>
+                        <xsd:element name="responseMessage" type="xsd:string" minOccurs="0"/>
+                        <xsd:element ref="pfx10:dataModel" minOccurs="0"/>
+                        <xsd:element ref="pfx10:attributes" minOccurs="0"/>
+                    </xsd:sequence>
+                </xsd:complexType>
+            </xsd:element>
+        </ProcessVariable>
+    </pd:processVariables>
+    <pd:targetNamespace>http://xmlns.example.com/1429701406226</pd:targetNamespace>
+    <pd:activity name="Assign">
+        <pd:type>com.tibco.pe.core.AssignActivity</pd:type>
+        <pd:resourceType>ae.activities.assignActivity</pd:resourceType>
+        <pd:x>1065</pd:x>
+        <pd:y>175</pd:y>
+        <config>
+            <variableName>ProcessVariable</variableName>
+        </config>
+        <pd:inputBindings>
+            <Output>
+                <responseCode>
+                    <xsl:value-of select="&quot;00&quot;"/>
+                </responseCode>
+                <responseMessage>
+                    <xsl:value-of select="$SOAPRequestReply/outputMessage/ns5:allocateAndOpenNextWorkItemResponse/workItem/id/@id"/>
+                </responseMessage>
+                <pfx10:dataModel>
+                    <xsl:for-each select="$SOAPRequestReply/outputMessage/ns5:allocateAndOpenNextWorkItemResponse/workItem/body/dataModel/inputs">
+                        <pfx10:inputs>
+                            <pfx10:name>
+                                <xsl:value-of select="@name"/>
+                            </pfx10:name>
+                            <pfx10:type>
+                                <xsl:value-of select="@type"/>
+                            </pfx10:type>
+                            <pfx10:simpleSpec>
+                                <xsl:if test="current()/simpleSpec/value[1]">
+                                    <pfx10:value>
+                                        <xsl:value-of select="current()/simpleSpec/value[1]"/>
+                                    </pfx10:value>
+                                </xsl:if>
+                            </pfx10:simpleSpec>
+                        </pfx10:inputs>
+                    </xsl:for-each>
+                    <xsl:for-each select="$SOAPRequestReply/outputMessage/ns5:allocateAndOpenNextWorkItemResponse/workItem/body/dataModel/outputs">
+                        <pfx10:outputs>
+                            <pfx10:name>
+                                <xsl:value-of select="@name"/>
+                            </pfx10:name>
+                            <pfx10:type>
+                                <xsl:value-of select="@type"/>
+                            </pfx10:type>
+                            <pfx10:simpleSpec>
+                                <xsl:if test="current()/simpleSpec/value[1]">
+                                    <pfx10:value>
+                                        <xsl:value-of select="current()/simpleSpec/value[1]"/>
+                                    </pfx10:value>
+                                </xsl:if>
+                            </pfx10:simpleSpec>
+                        </pfx10:outputs>
+                    </xsl:for-each>
+                    <xsl:for-each select="$SOAPRequestReply/outputMessage/ns5:allocateAndOpenNextWorkItemResponse/workItem/body/dataModel/inouts">
+                        <pfx10:inouts>
+                            <pfx10:name>
+                                <xsl:value-of select="@name"/>
+                            </pfx10:name>
+                            <pfx10:type>
+                                <xsl:value-of select="@type"/>
+                            </pfx10:type>
+                            <pfx10:simpleSpec>
+                                <xsl:if test="current()/simpleSpec/value[1]">
+                                    <pfx10:value>
+                                        <xsl:value-of select="current()/simpleSpec/value[1]"/>
+                                    </pfx10:value>
+                                </xsl:if>
+                            </pfx10:simpleSpec>
+                        </pfx10:inouts>
+                    </xsl:for-each>
+                </pfx10:dataModel>
+                <pfx10:attributes>
+                    <xsl:copy-of select="$SOAPRequestReply/outputMessage/ns5:allocateAndOpenNextWorkItemResponse/workItem/attributes/ancestor-or-self::*/namespace::node()"/>
+                    <xsl:copy-of select="$SOAPRequestReply/outputMessage/ns5:allocateAndOpenNextWorkItemResponse/workItem/attributes/@*"/>
+                    <xsl:copy-of select="$SOAPRequestReply/outputMessage/ns5:allocateAndOpenNextWorkItemResponse/workItem/attributes/node()"/>
+                </pfx10:attributes>
+            </Output>
+        </pd:inputBindings>
+    </pd:activity>
+    <pd:activity name="Catch">
+        <pd:type>com.tibco.pe.core.CatchActivity</pd:type>
+        <pd:resourceType>ae.activities.catch</pd:resourceType>
+        <pd:x>535</pd:x>
+        <pd:y>279</pd:y>
+        <pd:handler>true</pd:handler>
+        <config>
+            <catchAll>true</catchAll>
+        </config>
+        <pd:inputBindings/>
+    </pd:activity>
+    <pd:activity name="Assign-1">
+        <pd:type>com.tibco.pe.core.AssignActivity</pd:type>
+        <pd:resourceType>ae.activities.assignActivity</pd:resourceType>
+        <pd:x>773</pd:x>
+        <pd:y>280</pd:y>
+        <config>
+            <variableName>ProcessVariable</variableName>
+        </config>
+        <pd:inputBindings>
+            <Output>
+                <responseCode>
+                    <xsl:value-of select="&quot;00&quot;"/>
+                </responseCode>
+                <responseMessage>
+                    <xsl:value-of select="&quot;0&quot;"/>
+                </responseMessage>
+            </Output>
+        </pd:inputBindings>
+    </pd:activity>
+    <pd:group name="Group">
+        <pd:type>com.tibco.pe.core.LoopGroup</pd:type>
+        <pd:resourceType>ae.process.group</pd:resourceType>
+        <pd:x>523</pd:x>
+        <pd:y>93</pd:y>
+        <pd:width>184</pd:width>
+        <pd:height>140</pd:height>
+        <pd:collapsedWidth>57</pd:collapsedWidth>
+        <pd:collapsedHeight>70</pd:collapsedHeight>
+        <pd:groupVariables/>
+        <pd:joinToggle>inherit</pd:joinToggle>
+        <config>
+            <pd:groupType>repeat</pd:groupType>
+            <pd:serializable>false</pd:serializable>
+            <pd:indexSlot>iter</pd:indexSlot>
+            <pd:outSlot>acc</pd:outSlot>
+            <pd:activityOutputName>SOAPRequestReply</pd:activityOutputName>
+            <pd:repeatCondition>$SOAPRequestReply/outputMessage/ns5:allocateAndOpenNextWorkItemResponse/workItem/id/@id !=$Start/Input/WorkItemID
+and
+$iter &lt; 3</pd:repeatCondition>
+            <pd:accumulateOutput>false</pd:accumulateOutput>
+        </config>
+        <pd:inputBindings/>
+        <pd:expanded>true</pd:expanded>
+        <pd:transition>
+            <pd:from>start</pd:from>
+            <pd:to>SOAPRequestReply</pd:to>
+            <pd:lineType>Default</pd:lineType>
+            <pd:lineColor>-16777216</pd:lineColor>
+            <pd:conditionType>always</pd:conditionType>
+        </pd:transition>
+        <pd:transition>
+            <pd:from>SOAPRequestReply</pd:from>
+            <pd:to>end</pd:to>
+            <pd:lineType>Default</pd:lineType>
+            <pd:lineColor>-16777216</pd:lineColor>
+            <pd:conditionType>always</pd:conditionType>
+        </pd:transition>
+        <pd:activity name="SOAPRequestReply">
+            <pd:type>com.tibco.plugin.soap.SOAPSendReceiveActivity</pd:type>
+            <pd:resourceType>ae.activities.SOAPSendReceiveUI</pd:resourceType>
+            <pd:x>620</pd:x>
+            <pd:y>160</pd:y>
+            <config>
+                <timeout>%%BPM/Wrapper/timeout%%</timeout>
+                <soapAttachmentStyle>SwA</soapAttachmentStyle>
+                <timeoutType>Seconds</timeoutType>
+                <service>pfx:Service</service>
+                <servicePort>PortTypeEndpoint1</servicePort>
+                <operation>allocateAndOpenNextWorkItem</operation>
+                <soapAction>/SharedResources/WrapperService/Service.serviceagent//allocateAndOpenNextWorkItem</soapAction>
+                <endpointURL>http://%%BPM/Wrapper/host%%:%%BPM/Wrapper/port%%%%BPM/Wrapper/URI%%</endpointURL>
+                <authScheme>NONE</authScheme>
+            </config>
+            <pd:inputBindings>
+                <inputMessage>
+                    <headers>
+                        <Header.reqHeader>
+                            <ns3:RqHeader>
+                                <xsl:if test="$Start/Input/Token">
+                                    <ns3:SamlTokenStringReq>
+                                        <xsl:value-of select="$Start/Input/Token"/>
+                                    </ns3:SamlTokenStringReq>
+                                </xsl:if>
+                            </ns3:RqHeader>
+                        </Header.reqHeader>
+                    </headers>
+                    <ns5:allocateAndOpenNextWorkItem>
+                        <resource>
+                            <xsl:value-of select="$Start/Input/GUID"/>
+                        </resource>
+                        <xsl:if test="$Start/Input/WorkListViewID!='9999'">
+                            <xsl:if test="$Start/Input/WorkListViewID">
+                                <workListViewID>
+                                    <xsl:value-of select="$Start/Input/WorkListViewID"/>
+                                </workListViewID>
+                            </xsl:if>
+                        </xsl:if>
+                    </ns5:allocateAndOpenNextWorkItem>
+                </inputMessage>
+            </pd:inputBindings>
+        </pd:activity>
+    </pd:group>
+    <pd:activity name="RequestLogging">
+        <pd:type>com.tibco.pe.core.CallProcessActivity</pd:type>
+        <pd:resourceType>ae.process.subprocess</pd:resourceType>
+        <pd:x>316</pd:x>
+        <pd:y>172</pd:y>
+        <config>
+            <processName>/HFA/SubProcesses/Log.process</processName>
+            <spawn>true</spawn>
+        </config>
+        <pd:inputBindings>
+            <Input>
+                <LogLocation>
+                    <xsl:value-of select="'bpmAllocateGetNextWorkItem'"/>
+                </LogLocation>
+                <ServiceName>
+                    <xsl:value-of select="'HFA_BPM'"/>
+                </ServiceName>
+                <InputType>
+                    <xsl:value-of select="'RQST'"/>
+                </InputType>
+                <Schema>
+                    <xsl:copy-of select="$Start/Input"/>
+                </Schema>
+            </Input>
+        </pd:inputBindings>
+    </pd:activity>
+    <pd:activity name="ResponseLogging">
+        <pd:type>com.tibco.pe.core.CallProcessActivity</pd:type>
+        <pd:resourceType>ae.process.subprocess</pd:resourceType>
+        <pd:x>815</pd:x>
+        <pd:y>159</pd:y>
+        <config>
+            <processName>/HFA/SubProcesses/Log.process</processName>
+            <spawn>true</spawn>
+        </config>
+        <pd:inputBindings>
+            <Input>
+                <LogLocation>
+                    <xsl:value-of select="'bpmAllocateGetNextWorkItem'"/>
+                </LogLocation>
+                <ServiceName>
+                    <xsl:value-of select="'HFA_BPM'"/>
+                </ServiceName>
+                <InputType>
+                    <xsl:value-of select="'RSPN'"/>
+                </InputType>
+                <Schema>
+                    <xsl:copy-of select="$SOAPRequestReply/outputMessage/ns5:allocateAndOpenNextWorkItemResponse"/>
+                </Schema>
+            </Input>
+        </pd:inputBindings>
+    </pd:activity>
+    <pd:activity name="Rethrow">
+        <pd:type>com.tibco.pe.core.RethrowActivity</pd:type>
+        <pd:resourceType>ae.activities.rethrow</pd:resourceType>
+        <pd:x>737</pd:x>
+        <pd:y>365</pd:y>
+        <config/>
+        <pd:inputBindings/>
+    </pd:activity>
+    <pd:transition>
+        <pd:from>Assign</pd:from>
+        <pd:to>End</pd:to>
+        <pd:lineType>Default</pd:lineType>
+        <pd:lineColor>-16777216</pd:lineColor>
+        <pd:conditionType>always</pd:conditionType>
+    </pd:transition>
+    <pd:transition>
+        <pd:from>Catch</pd:from>
+        <pd:to>Assign-1</pd:to>
+        <pd:xpathDescription>No Items</pd:xpathDescription>
+        <pd:lineType>Default</pd:lineType>
+        <pd:lineColor>-16777216</pd:lineColor>
+        <pd:conditionType>xpath</pd:conditionType>
+        <pd:xpath>contains(tib:render-xml($_error/pfx7:ErrorReport/Data), 'NO_ITEMS_FOR_RESOURCE')</pd:xpath>
+    </pd:transition>
+    <pd:transition>
+        <pd:from>Assign-1</pd:from>
+        <pd:to>End</pd:to>
+        <pd:lineType>Default</pd:lineType>
+        <pd:lineColor>-16777216</pd:lineColor>
+        <pd:conditionType>always</pd:conditionType>
+    </pd:transition>
+    <pd:transition>
+        <pd:from>Group</pd:from>
+        <pd:to>ResponseLogging</pd:to>
+        <pd:lineType>Default</pd:lineType>
+        <pd:lineColor>-16777216</pd:lineColor>
+        <pd:conditionType>always</pd:conditionType>
+    </pd:transition>
+    <pd:transition>
+        <pd:from>Start</pd:from>
+        <pd:to>RequestLogging</pd:to>
+        <pd:lineType>Default</pd:lineType>
+        <pd:lineColor>-16777216</pd:lineColor>
+        <pd:conditionType>always</pd:conditionType>
+    </pd:transition>
+    <pd:transition>
+        <pd:from>RequestLogging</pd:from>
+        <pd:to>Group</pd:to>
+        <pd:lineType>Default</pd:lineType>
+        <pd:lineColor>-16777216</pd:lineColor>
+        <pd:conditionType>always</pd:conditionType>
+    </pd:transition>
+    <pd:transition>
+        <pd:from>ResponseLogging</pd:from>
+        <pd:to>Assign</pd:to>
+        <pd:lineType>Default</pd:lineType>
+        <pd:lineColor>-16777216</pd:lineColor>
+        <pd:conditionType>always</pd:conditionType>
+    </pd:transition>
+    <pd:transition>
+        <pd:from>Catch</pd:from>
+        <pd:to>Rethrow</pd:to>
+        <pd:lineType>Default</pd:lineType>
+        <pd:lineColor>-16777216</pd:lineColor>
+        <pd:conditionType>otherwise</pd:conditionType>
+    </pd:transition>
+</pd:ProcessDefinition>

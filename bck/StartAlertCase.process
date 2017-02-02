@@ -1,0 +1,579 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<pd:ProcessDefinition xmlns:xsl="http://www.w3.org/1999/XSL/Transform" xmlns:ns="http://www.tibco.com/pe/DeployedVarsType" xmlns:wsdl="http://schemas.xmlsoap.org/wsdl/" xmlns:ns5="http://schemas.dbs.com/icc/CardSvc" xmlns:ns6="http://docs.oasis-open.org/wss/2004/01/oasis-200401-wss-wssecurity-secext-1.0.xsd" xmlns:ns7="http://www.dbs.com.sg/iwf_hfa_process_start_contract/" xmlns:pfx="http://schemas.dbs.com/icc/BasicSvc" xmlns:pd="http://xmlns.tibco.com/bw/process/2003" xmlns:ns2="http://xmlns.tibco.com/encodings/mime" xmlns:ns1="http://www.dbs.com/iwf/bpm/token" xmlns:ns4="http://schemas.dbs.com/icc/CustomerSvc" xmlns:ns3="http://schemas.dbs.com/icc/ems" xmlns:pfx5="http://www.dbs.com.sg/iwf_hfa_process_start_contract/iwf_hfa_process_start_contract_wsp" xmlns:pfx4="http://www.tibco.com/bs3.0/_i3L3QN8sEeSkQqj1-ZOMvA/iwf_atm_fraudsalert_process_ws" xmlns:tib="http://www.tibco.com/bw/xslt/custom-functions" xmlns:pfx3="urn:oasis:names:tc:SAML:2.0:assertion" xmlns:pfx2="http://www.dbs.com/sg/wis/hfa/xsd/hfaCaseDetails" xmlns:pfx8="http://www.dbs.com/iwf/bpm/services/token" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance">
+    <xs:import xmlns:xs="http://www.w3.org/2001/XMLSchema" namespace="http://schemas.dbs.com/icc/BasicSvc" schemaLocation="/SharedResources/Schema/IP/CaseMgmtRqAddOp_v1.1.xsd"/>
+    <xs:import xmlns:xs="http://www.w3.org/2001/XMLSchema" namespace="http://www.dbs.com/sg/wis/hfa/xsd/hfaCaseDetails" schemaLocation="/SharedResources/Schema/hfaSchemas/hfaCase.xsd"/>
+    <xs:import xmlns:xs="http://www.w3.org/2001/XMLSchema" namespace="urn:oasis:names:tc:SAML:2.0:assertion" schemaLocation="/SharedResources/Schema/saml/saml-schema-assertion-2.0.xsd"/>
+    <wsdl:import namespace="http://www.dbs.com/iwf/bpm/services/token" location="/SharedResources/WSDL/Concrete/TokenService.wsdl"/>
+    <wsdl:import namespace="http://www.tibco.com/bs3.0/_i3L3QN8sEeSkQqj1-ZOMvA/iwf_atm_fraudsalert_process_ws" location="/SharedResources/wsdl/concrete/AFA-ATM-ProcessStart.wsdl"/>
+    <wsdl:import namespace="http://www.dbs.com.sg/iwf_hfa_process_start_contract/iwf_hfa_process_start_contract_wsp" location="/SharedResources/WSDL/Concrete/HFACaseStart.wsdl"/>
+    <pd:name>bck/StartAlertCase.process</pd:name>
+    <pd:startName>Start</pd:startName>
+    <pd:startType ref="pfx:CaseMgmtRqAdd"/>
+    <pd:startX>45</pd:startX>
+    <pd:startY>248</pd:startY>
+    <pd:returnBindings>
+        <pfx2:HFA_CaseDetails_output>
+            <pfx2:Response>
+                <pfx2:responseCode>
+                    <xsl:value-of select="'00'"/>
+                </pfx2:responseCode>
+            </pfx2:Response>
+        </pfx2:HFA_CaseDetails_output>
+    </pd:returnBindings>
+    <pd:endName>End</pd:endName>
+    <pd:endType ref="pfx2:HFA_CaseDetails_output"/>
+    <pd:endX>1974</pd:endX>
+    <pd:endY>256</pd:endY>
+    <pd:errorSchemas/>
+    <pd:processVariables/>
+    <pd:targetNamespace>http://xmlns.example.com/1454496511062</pd:targetNamespace>
+    <pd:activity name="RequestLog">
+        <pd:type>com.tibco.pe.core.CallProcessActivity</pd:type>
+        <pd:resourceType>ae.process.subprocess</pd:resourceType>
+        <pd:x>175</pd:x>
+        <pd:y>246</pd:y>
+        <config>
+            <processName>/HFA/SubProcesses/Log.process</processName>
+            <spawn>true</spawn>
+        </config>
+        <pd:inputBindings>
+            <Input>
+                <LogLocation>
+                    <xsl:value-of select="'StartAlertCase'"/>
+                </LogLocation>
+                <ServiceName>
+                    <xsl:value-of select="'HFA'"/>
+                </ServiceName>
+                <InputType>
+                    <xsl:value-of select="'RQST'"/>
+                </InputType>
+                <Schema>
+                    <xsl:copy-of select="$Start/pfx:CaseMgmtRqAdd"/>
+                </Schema>
+            </Input>
+        </pd:inputBindings>
+    </pd:activity>
+    <pd:activity name="ResponseLog">
+        <pd:type>com.tibco.pe.core.CallProcessActivity</pd:type>
+        <pd:resourceType>ae.process.subprocess</pd:resourceType>
+        <pd:x>1827</pd:x>
+        <pd:y>255</pd:y>
+        <config>
+            <processName>/HFA/SubProcesses/Log.process</processName>
+            <spawn>true</spawn>
+        </config>
+        <pd:inputBindings>
+            <Input>
+                <LogLocation>
+                    <xsl:value-of select="'StartAlertCase'"/>
+                </LogLocation>
+                <ServiceName>
+                    <xsl:value-of select="'HFA'"/>
+                </ServiceName>
+                <InputType>
+                    <xsl:value-of select="'RSPN'"/>
+                </InputType>
+                <Schema>
+                    <xsl:copy-of select="$CallAMXBPMHFA/outputMessage"/>
+                </Schema>
+            </Input>
+        </pd:inputBindings>
+    </pd:activity>
+    <pd:activity name="FetchRuleDesc">
+        <pd:type>com.tibco.plugin.jdbc.JDBCQueryActivity</pd:type>
+        <pd:resourceType>ae.activities.JDBCQueryActivity</pd:resourceType>
+        <pd:x>331</pd:x>
+        <pd:y>247</pd:y>
+        <config>
+            <timeout>%%Connections/JDBC/QueryTimeout%%</timeout>
+            <commit>false</commit>
+            <maxRows>%%Connections/JDBC/MaxRow%%</maxRows>
+            <emptyStrAsNil>false</emptyStrAsNil>
+            <jdbcSharedConfig>/SharedResources/Connections/JDBC/IWFDB.sharedjdbc</jdbcSharedConfig>
+            <statement>SELECT LIST_NAME, LIST_CODE, LIST_DESC FROM IWF_CODE_LIST WHERE PROJECT_CODE = 'HFA' AND LIST_NAME ='RULE_DESC'</statement>
+            <oraObjects/>
+            <oraTables/>
+            <QueryOutputCachedSchemaColumns>LIST_NAME</QueryOutputCachedSchemaColumns>
+            <QueryOutputCachedSchemaDataTypes>12</QueryOutputCachedSchemaDataTypes>
+            <QueryOutputCachedSchemaDataTypesName>VARCHAR2</QueryOutputCachedSchemaDataTypesName>
+            <QueryOutputCachedSchemaStatus>RequiredElement</QueryOutputCachedSchemaStatus>
+            <QueryOutputCachedSchemaColumns>LIST_CODE</QueryOutputCachedSchemaColumns>
+            <QueryOutputCachedSchemaDataTypes>12</QueryOutputCachedSchemaDataTypes>
+            <QueryOutputCachedSchemaDataTypesName>VARCHAR2</QueryOutputCachedSchemaDataTypesName>
+            <QueryOutputCachedSchemaStatus>RequiredElement</QueryOutputCachedSchemaStatus>
+            <QueryOutputCachedSchemaColumns>LIST_DESC</QueryOutputCachedSchemaColumns>
+            <QueryOutputCachedSchemaDataTypes>12</QueryOutputCachedSchemaDataTypes>
+            <QueryOutputCachedSchemaDataTypesName>VARCHAR2</QueryOutputCachedSchemaDataTypesName>
+            <QueryOutputCachedSchemaStatus>OptionalElement</QueryOutputCachedSchemaStatus>
+        </config>
+        <pd:inputBindings>
+            <jdbcQueryActivityInput/>
+        </pd:inputBindings>
+    </pd:activity>
+    <pd:activity name="GetToken">
+        <pd:type>com.tibco.plugin.soap.SOAPSendReceiveActivity</pd:type>
+        <pd:resourceType>ae.activities.SOAPSendReceiveUI</pd:resourceType>
+        <pd:x>505</pd:x>
+        <pd:y>249</pd:y>
+        <config>
+            <timeout>%%BPM/Token/timeout%%</timeout>
+            <soapAttachmentStyle>SwA</soapAttachmentStyle>
+            <timeoutType>Seconds</timeoutType>
+            <service>pfx8:TokenService</service>
+            <servicePort>HTTPEP</servicePort>
+            <operation>GetTokenOp</operation>
+            <soapAction>/iwf/bpm/services/token/GetTokenOp</soapAction>
+            <endpointURL>http://%%BPM/Token/host%%:%%BPM/Token/port%%/iwf/bpm/services/token</endpointURL>
+            <authScheme>NONE</authScheme>
+        </config>
+        <pd:inputBindings>
+            <inputMessage>
+                <ns1:GetTokenReq>
+                    <ns1:ID>
+                        <xsl:value-of select="$_globalVariables/ns:GlobalVariables/SAML/User"/>
+                    </ns1:ID>
+                </ns1:GetTokenReq>
+            </inputMessage>
+        </pd:inputBindings>
+    </pd:activity>
+    <pd:activity name="Parse XML">
+        <pd:type>com.tibco.plugin.xml.XMLParseActivity</pd:type>
+        <pd:resourceType>ae.activities.XMLParseActivity</pd:resourceType>
+        <pd:x>674</pd:x>
+        <pd:y>250</pd:y>
+        <config>
+            <inputStyle>text</inputStyle>
+            <xsdVersion>default</xsdVersion>
+            <validateOutput>false</validateOutput>
+            <term ref="pfx3:Assertion"/>
+        </config>
+        <pd:inputBindings>
+            <xmlString>
+                <xsl:value-of select="$GetToken/outputMessage/ns1:GetTokenRes/ns1:SAMLToken"/>
+            </xmlString>
+        </pd:inputBindings>
+    </pd:activity>
+    <pd:activity name="Get CaseNum">
+        <pd:type>com.tibco.plugin.jdbc.JDBCCallActivity</pd:type>
+        <pd:resourceType>ae.activities.JDBCCallActivity</pd:resourceType>
+        <pd:x>849</pd:x>
+        <pd:y>249</pd:y>
+        <config>
+            <timeout>%%Connections/JDBC/QueryTimeout%%</timeout>
+            <maxRows>%%Connections/JDBC/MaxRow%%</maxRows>
+            <emptyStrAsNil>false</emptyStrAsNil>
+            <jdbcSharedConfig>/SharedResources/Connections/JDBC/IWFDB.sharedjdbc</jdbcSharedConfig>
+            <schema>IWFDB</schema>
+            <catalog>IWF_BPM</catalog>
+            <ProcedureName>GENERATE_CASENUMBER</ProcedureName>
+            <oraObjects/>
+            <oraTables/>
+            <parameterTypes>
+                <parameter>
+                    <colName>P_RESULT</colName>
+                    <colType>4</colType>
+                    <dataType>2</dataType>
+                    <typeName>NUMBER</typeName>
+                </parameter>
+            </parameterTypes>
+        </config>
+        <pd:inputBindings>
+            <inputs/>
+        </pd:inputBindings>
+    </pd:activity>
+    <pd:group name="Group">
+        <pd:type>com.tibco.pe.core.TransactionGroup</pd:type>
+        <pd:resourceType>ae.process.group</pd:resourceType>
+        <pd:x>1086</pd:x>
+        <pd:y>178</pd:y>
+        <pd:width>581</pd:width>
+        <pd:height>142</pd:height>
+        <pd:collapsedWidth>57</pd:collapsedWidth>
+        <pd:collapsedHeight>70</pd:collapsedHeight>
+        <pd:groupVariables/>
+        <pd:joinToggle>inherit</pd:joinToggle>
+        <config>
+            <pd:groupType>transactionGroup</pd:groupType>
+            <pd:serializable>false</pd:serializable>
+            <pd:transactionType>JDBCTransaction</pd:transactionType>
+            <pd:includeCheckpoint>false</pd:includeCheckpoint>
+        </config>
+        <pd:inputBindings/>
+        <pd:expanded>true</pd:expanded>
+        <pd:transition>
+            <pd:from>start</pd:from>
+            <pd:to>UpdateHFADatabase</pd:to>
+            <pd:lineType>Default</pd:lineType>
+            <pd:lineColor>-16777216</pd:lineColor>
+            <pd:conditionType>always</pd:conditionType>
+        </pd:transition>
+        <pd:transition>
+            <pd:from>UpdateInstanceID</pd:from>
+            <pd:to>end</pd:to>
+            <pd:lineType>Default</pd:lineType>
+            <pd:lineColor>-16777216</pd:lineColor>
+            <pd:conditionType>always</pd:conditionType>
+        </pd:transition>
+        <pd:transition>
+            <pd:from>UpdateHFADatabase</pd:from>
+            <pd:to>CallAMXBPMHFA</pd:to>
+            <pd:lineType>Default</pd:lineType>
+            <pd:lineColor>-16777216</pd:lineColor>
+            <pd:conditionType>always</pd:conditionType>
+        </pd:transition>
+        <pd:transition>
+            <pd:from>CallAMXBPMHFA</pd:from>
+            <pd:to>UpdateInstanceID</pd:to>
+            <pd:lineType>Default</pd:lineType>
+            <pd:lineColor>-16777216</pd:lineColor>
+            <pd:conditionType>always</pd:conditionType>
+        </pd:transition>
+        <pd:activity name="UpdateHFADatabase">
+            <pd:type>com.tibco.pe.core.CallProcessActivity</pd:type>
+            <pd:resourceType>ae.process.subprocess</pd:resourceType>
+            <pd:x>1189</pd:x>
+            <pd:y>241</pd:y>
+            <config>
+                <processName>/HFA/SubProcesses/UpdateHFADatabase.process</processName>
+            </config>
+            <pd:inputBindings>
+                <pfx2:HFA_CaseDetails_output>
+                    <pfx2:CaseInformation>
+                        <pfx2:CASE_NUM>
+                            <xsl:value-of select="$Get-CaseNum/resultSet/outputSet/P_RESULT"/>
+                        </pfx2:CASE_NUM>
+                        <pfx2:CASE_STATUS>
+                            <xsl:value-of select="&quot;MONITOR&quot;"/>
+                        </pfx2:CASE_STATUS>
+                        <pfx2:DATE_RECEIVED>
+                            <xsl:value-of select="current-date()"/>
+                        </pfx2:DATE_RECEIVED>
+                        <pfx2:CASE_TYPE>
+                            <xsl:value-of select="$Start/pfx:CaseMgmtRqAdd/pfx:CaseType"/>
+                        </pfx2:CASE_TYPE>
+                    </pfx2:CaseInformation>
+                    <pfx2:AlertDetails>
+                        <xsl:if test="$Start/pfx:CaseMgmtRqAdd/pfx:AlertDetl/pfx:AlertId">
+                            <pfx2:ALERT_ID>
+                                <xsl:value-of select="$Start/pfx:CaseMgmtRqAdd/pfx:AlertDetl/pfx:AlertId"/>
+                            </pfx2:ALERT_ID>
+                        </xsl:if>
+                        <xsl:if test="$Start/pfx:CaseMgmtRqAdd/pfx:AlertDetl/pfx:AlertRuleId">
+                            <pfx2:ALERT_RULE_ID>
+                                <xsl:value-of select="$Start/pfx:CaseMgmtRqAdd/pfx:AlertDetl/pfx:AlertRuleId"/>
+                            </pfx2:ALERT_RULE_ID>
+                        </xsl:if>
+                        <pfx2:ALERT_RULE_DESC>
+                            <xsl:value-of select="$FetchRuleDesc/resultSet/Record[LIST_CODE=$Start/pfx:CaseMgmtRqAdd/pfx:AlertDetl/pfx:AlertRuleId][1]/LIST_DESC"/>
+                        </pfx2:ALERT_RULE_DESC>
+                        <xsl:if test="$Start/pfx:CaseMgmtRqAdd/pfx:AlertDetl/pfx:AlertDateTime">
+                            <pfx2:ALERT_DATE_TIME>
+                                <xsl:value-of select="$Start/pfx:CaseMgmtRqAdd/pfx:AlertDetl/pfx:AlertDateTime"/>
+                            </pfx2:ALERT_DATE_TIME>
+                        </xsl:if>
+                        <xsl:if test="$Start/pfx:CaseMgmtRqAdd/pfx:AlertDetl/pfx:AlertSent">
+                            <pfx2:CUST_ALERT_SENT>
+                                <xsl:value-of select="$Start/pfx:CaseMgmtRqAdd/pfx:AlertDetl/pfx:AlertSent"/>
+                            </pfx2:CUST_ALERT_SENT>
+                        </xsl:if>
+                        <pfx2:ALERT_STATUS>
+                            <xsl:value-of select="&quot;MONITOR&quot;"/>
+                        </pfx2:ALERT_STATUS>
+                        <pfx2:CONTACT_MODE>
+                            <xsl:value-of select="tib:concat-sequence-format($Start/pfx:CaseMgmtRqAdd/pfx:AlertDetl/pfx:ContactMode, &quot;,  &quot;, 1)"/>
+                        </pfx2:CONTACT_MODE>
+                        <pfx2:CHANNEL_ID>
+                            <xsl:value-of select="$Start/pfx:CaseMgmtRqAdd/ns3:CommonRq/ns3:ChannelId"/>
+                        </pfx2:CHANNEL_ID>
+                    </pfx2:AlertDetails>
+                    <pfx2:TXNDetails>
+                        <xsl:for-each xmlns:xsl="http://www.w3.org/1999/XSL/Transform" select="$Start/pfx:CaseMgmtRqAdd/pfx:TranDetl">
+                            <pfx2:TXNDetailsOutput>
+                                <xsl:if test="ns3:OrigTermId">
+                                    <pfx2:TXNTerminalID>
+                                        <xsl:value-of select="ns3:OrigTermId"/>
+                                    </pfx2:TXNTerminalID>
+                                </xsl:if>
+                                <xsl:if test="ns3:TranAmt/ns3:Amt">
+                                    <pfx2:TXNAmt>
+                                        <xsl:value-of select="ns3:TranAmt/ns3:Amt"/>
+                                    </pfx2:TXNAmt>
+                                </xsl:if>
+                                <pfx2:TXNDate>
+                                    <xsl:value-of select="ns3:TranDate"/>
+                                </pfx2:TXNDate>
+                                <xsl:if test="ns3:TranTime">
+                                    <pfx2:TXNTime>
+                                        <xsl:value-of select="ns3:TranTime"/>
+                                    </pfx2:TXNTime>
+                                </xsl:if>
+                                <xsl:if test="ns3:TranAmt/ns3:Cur">
+                                    <pfx2:Currency>
+                                        <xsl:value-of select="ns3:TranAmt/ns3:Cur"/>
+                                    </pfx2:Currency>
+                                </xsl:if>
+                                <xsl:if test="pfx:RejectReason">
+                                    <pfx2:DenialCode>
+                                        <xsl:value-of select="pfx:RejectReason"/>
+                                    </pfx2:DenialCode>
+                                </xsl:if>
+                                <xsl:if test="pfx:TranType">
+                                    <pfx2:TXNType>
+                                        <xsl:value-of select="pfx:TranType"/>
+                                    </pfx2:TXNType>
+                                </xsl:if>
+                                <xsl:if test="ns5:TranCtry">
+                                    <pfx2:TeminalCtryCode>
+                                        <xsl:value-of select="ns5:TranCtry"/>
+                                    </pfx2:TeminalCtryCode>
+                                </xsl:if>
+                                <xsl:if test="ns3:OrigTermId">
+                                    <pfx2:OrigTerminalID>
+                                        <xsl:value-of select="ns3:OrigTermId"/>
+                                    </pfx2:OrigTerminalID>
+                                </xsl:if>
+                                <xsl:if test="ns3:OrigTermLoc">
+                                    <pfx2:TerminalLocation>
+                                        <xsl:value-of select="ns3:OrigTermLoc"/>
+                                    </pfx2:TerminalLocation>
+                                </xsl:if>
+                                <xsl:if test="ns3:Card/ns3:CardId">
+                                    <pfx2:CardID>
+                                        <xsl:value-of select="ns3:Card/ns3:CardId"/>
+                                    </pfx2:CardID>
+                                </xsl:if>
+                                <xsl:if test="ns3:CustName/ns3:FullName">
+                                    <pfx2:CUST_NAME>
+                                        <xsl:value-of select="ns3:CustName/ns3:FullName"/>
+                                    </pfx2:CUST_NAME>
+                                </xsl:if>
+                                <xsl:if test="ns3:Card/ns3:ProdType">
+                                    <pfx2:CARD_TYPE>
+                                        <xsl:value-of select="ns3:Card/ns3:ProdType"/>
+                                    </pfx2:CARD_TYPE>
+                                </xsl:if>
+                                <xsl:if test="ns3:Phone/ns3:PhoneNum">
+                                    <pfx2:TELEPHONE1>
+                                        <xsl:value-of select="ns3:Phone/ns3:PhoneNum"/>
+                                    </pfx2:TELEPHONE1>
+                                </xsl:if>
+                                <xsl:if test="ns4:CustDoc/ns4:DocNum">
+                                    <pfx2:HKID>
+                                        <xsl:value-of select="ns4:CustDoc/ns4:DocNum"/>
+                                    </pfx2:HKID>
+                                </xsl:if>
+                            </pfx2:TXNDetailsOutput>
+                        </xsl:for-each>
+                    </pfx2:TXNDetails>
+                    <pfx2:CustomerDetails>
+                        <pfx2:CustomerDetailsOutput>
+                            <xsl:if test="$Start/pfx:CaseMgmtRqAdd/ns3:CustName/ns3:FullName">
+                                <pfx2:CustName>
+                                    <xsl:value-of select="$Start/pfx:CaseMgmtRqAdd/ns3:CustName/ns3:FullName"/>
+                                </pfx2:CustName>
+                            </xsl:if>
+                            <pfx2:CustCIN>
+                                <xsl:value-of select="$Start/pfx:CaseMgmtRqAdd/ns4:CustDoc/ns4:DocNum"/>
+                            </pfx2:CustCIN>
+                            <xsl:if test="$Start/pfx:CaseMgmtRqAdd/ns3:Phone/ns3:PhoneNum">
+                                <pfx2:CustNumPrimary>
+                                    <xsl:value-of select="$Start/pfx:CaseMgmtRqAdd/ns3:Phone/ns3:PhoneNum"/>
+                                </pfx2:CustNumPrimary>
+                            </xsl:if>
+                            <xsl:if test="$Start/pfx:CaseMgmtRqAdd/ns3:Card/ns3:CardId">
+                                <pfx2:CardNumber>
+                                    <xsl:value-of select="$Start/pfx:CaseMgmtRqAdd/ns3:Card/ns3:CardId"/>
+                                </pfx2:CardNumber>
+                            </xsl:if>
+                            <xsl:if test="$Start/pfx:CaseMgmtRqAdd/ns3:Card/ns3:ProdType">
+                                <pfx2:CardType>
+                                    <xsl:value-of select="$Start/pfx:CaseMgmtRqAdd/ns3:Card/ns3:ProdType"/>
+                                </pfx2:CardType>
+                            </xsl:if>
+                            <xsl:if test="$Start/pfx:CaseMgmtRqAdd/ns3:DepAcctId/ns3:AcctId">
+                                <pfx2:AccountNumber>
+                                    <xsl:value-of select="$Start/pfx:CaseMgmtRqAdd/ns3:DepAcctId/ns3:AcctId"/>
+                                </pfx2:AccountNumber>
+                            </xsl:if>
+                            <xsl:if test="$Start/pfx:CaseMgmtRqAdd/ns3:DepAcctId/ns3:ProdType">
+                                <pfx2:AccountType>
+                                    <xsl:value-of select="$Start/pfx:CaseMgmtRqAdd/ns3:DepAcctId/ns3:ProdType"/>
+                                </pfx2:AccountType>
+                            </xsl:if>
+                        </pfx2:CustomerDetailsOutput>
+                    </pfx2:CustomerDetails>
+                </pfx2:HFA_CaseDetails_output>
+            </pd:inputBindings>
+        </pd:activity>
+        <pd:activity name="CallAMXBPMHFA">
+            <pd:type>com.tibco.plugin.soap.SOAPSendReceiveActivity</pd:type>
+            <pd:resourceType>ae.activities.SOAPSendReceiveUI</pd:resourceType>
+            <pd:x>1348</pd:x>
+            <pd:y>244</pd:y>
+            <config>
+                <timeout>%%BPM/AMX/timeout%%</timeout>
+                <soapAttachmentStyle>SwA</soapAttachmentStyle>
+                <timeoutType>Seconds</timeoutType>
+                <service>pfx5:iwf_hfa_process_start_contract_wsp</service>
+                <servicePort>iwf_hfa_process_start_contract_EP</servicePort>
+                <operation>StartHFACase</operation>
+                <soapAction>StartHFACase</soapAction>
+                <endpointURL>http://%%BPM/AMX/host%%:%%BPM/AMX/port%%/iwf_hfa_process_start_contract/iwf_hfa_process_start_contractSOAP</endpointURL>
+                <authScheme>NONE</authScheme>
+            </config>
+            <pd:inputBindings>
+                <inputMessage>
+                    <headers>
+                        <Header.SAMLHeader>
+                            <ns6:Security>
+                                <xsl:copy-of select="$Parse-XML/pfx3:Assertion"/>
+                            </ns6:Security>
+                        </Header.SAMLHeader>
+                    </headers>
+                    <ns7:StartHFACase>
+                        <ALERT_ID>
+                            <xsl:value-of select="''"/>
+                        </ALERT_ID>
+                        <ALERT_STATUS>
+                            <xsl:value-of select="''"/>
+                        </ALERT_STATUS>
+                        <ARRIVAL_DATE_TIME>
+                            <xsl:value-of select="current-dateTime()"/>
+                        </ARRIVAL_DATE_TIME>
+                        <CASE_NUMBER>
+                            <xsl:value-of select="''"/>
+                        </CASE_NUMBER>
+                        <CIF>
+                            <xsl:value-of select="''"/>
+                        </CIF>
+                        <COUNTRY_CODE>
+                            <xsl:value-of select="''"/>
+                        </COUNTRY_CODE>
+                        <CUSTOMER_NAME>
+                            <xsl:value-of select="''"/>
+                        </CUSTOMER_NAME>
+                        <PROJECT_CODE>
+                            <xsl:value-of select="''"/>
+                        </PROJECT_CODE>
+                        <RULE_DESCRIPTION>
+                            <xsl:value-of select="''"/>
+                        </RULE_DESCRIPTION>
+                        <RULE_ID>
+                            <xsl:value-of select="''"/>
+                        </RULE_ID>
+                        <PRIORITY>
+                            <xsl:value-of select="1"/>
+                        </PRIORITY>
+                        <CARD_NUMBER>
+                            <xsl:value-of select="''"/>
+                        </CARD_NUMBER>
+                        <TRANSACTION_AMOUNT>
+                            <xsl:value-of select="1"/>
+                        </TRANSACTION_AMOUNT>
+                        <TRANSACTION_CURRENCY>
+                            <xsl:value-of select="''"/>
+                        </TRANSACTION_CURRENCY>
+                        <CHANNEL_TYPE>
+                            <xsl:value-of select="''"/>
+                        </CHANNEL_TYPE>
+                        <DOC_NUM>
+                            <xsl:value-of select="''"/>
+                        </DOC_NUM>
+                    </ns7:StartHFACase>
+                </inputMessage>
+            </pd:inputBindings>
+        </pd:activity>
+        <pd:activity name="UpdateInstanceID">
+            <pd:type>com.tibco.plugin.jdbc.JDBCUpdateActivity</pd:type>
+            <pd:resourceType>ae.activities.JDBCUpdateActivity</pd:resourceType>
+            <pd:x>1570</pd:x>
+            <pd:y>243</pd:y>
+            <config>
+                <timeout>%%Connections/JDBC/QueryTimeout%%</timeout>
+                <commit>false</commit>
+                <emptyStrAsNil>false</emptyStrAsNil>
+                <jdbcSharedConfig>/SharedResources/Connections/JDBC/IWFDB.sharedjdbc</jdbcSharedConfig>
+                <statement>update HFA_CASE_DATA
+SET INSTANCE_ID = ?
+WHERE CASE_NUM = ?</statement>
+                <Prepared_Param_DataType>
+                    <parameter>
+                        <parameterName>INSTANCE_ID</parameterName>
+                        <dataType>VARCHAR</dataType>
+                    </parameter>
+                    <parameter>
+                        <parameterName>CASE_NUM</parameterName>
+                        <dataType>VARCHAR</dataType>
+                    </parameter>
+                </Prepared_Param_DataType>
+            </config>
+            <pd:inputBindings>
+                <jdbcUpdateActivityInput>
+                    <INSTANCE_ID>
+                        <xsl:value-of select="$CallAMXBPMHFA/outputMessage/ns7:StartHFACaseResponse/ProcessId"/>
+                    </INSTANCE_ID>
+                    <CASE_NUM>
+                        <xsl:copy-of select="$Get-CaseNum/resultSet/outputSet/P_RESULT/@xsi:nil"/>
+                        <xsl:value-of select="$Get-CaseNum/resultSet/outputSet/P_RESULT"/>
+                    </CASE_NUM>
+                </jdbcUpdateActivityInput>
+            </pd:inputBindings>
+        </pd:activity>
+    </pd:group>
+    <pd:transition>
+        <pd:from>Start</pd:from>
+        <pd:to>RequestLog</pd:to>
+        <pd:lineType>Default</pd:lineType>
+        <pd:lineColor>-16777216</pd:lineColor>
+        <pd:conditionType>always</pd:conditionType>
+    </pd:transition>
+    <pd:transition>
+        <pd:from>ResponseLog</pd:from>
+        <pd:to>End</pd:to>
+        <pd:lineType>Default</pd:lineType>
+        <pd:lineColor>-16777216</pd:lineColor>
+        <pd:conditionType>always</pd:conditionType>
+    </pd:transition>
+    <pd:transition>
+        <pd:from>RequestLog</pd:from>
+        <pd:to>FetchRuleDesc</pd:to>
+        <pd:lineType>Default</pd:lineType>
+        <pd:lineColor>-16777216</pd:lineColor>
+        <pd:conditionType>always</pd:conditionType>
+    </pd:transition>
+    <pd:transition>
+        <pd:from>FetchRuleDesc</pd:from>
+        <pd:to>GetToken</pd:to>
+        <pd:lineType>Default</pd:lineType>
+        <pd:lineColor>-16777216</pd:lineColor>
+        <pd:conditionType>always</pd:conditionType>
+    </pd:transition>
+    <pd:transition>
+        <pd:from>GetToken</pd:from>
+        <pd:to>Parse XML</pd:to>
+        <pd:lineType>Default</pd:lineType>
+        <pd:lineColor>-16777216</pd:lineColor>
+        <pd:conditionType>always</pd:conditionType>
+    </pd:transition>
+    <pd:transition>
+        <pd:from>Parse XML</pd:from>
+        <pd:to>Get CaseNum</pd:to>
+        <pd:lineType>Default</pd:lineType>
+        <pd:lineColor>-16777216</pd:lineColor>
+        <pd:conditionType>always</pd:conditionType>
+    </pd:transition>
+    <pd:transition>
+        <pd:from>Get CaseNum</pd:from>
+        <pd:to>Group</pd:to>
+        <pd:lineType>One Bend</pd:lineType>
+        <pd:lineColor>-16777216</pd:lineColor>
+        <pd:conditionType>always</pd:conditionType>
+    </pd:transition>
+    <pd:transition>
+        <pd:from>Group</pd:from>
+        <pd:to>ResponseLog</pd:to>
+        <pd:lineType>One Bend</pd:lineType>
+        <pd:lineColor>-16777216</pd:lineColor>
+        <pd:conditionType>always</pd:conditionType>
+    </pd:transition>
+</pd:ProcessDefinition>

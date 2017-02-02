@@ -1,0 +1,18 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<BWSharedResource xmlns:SOAP-ENV="http://schemas.xmlsoap.org/soap/envelope/" xmlns:ns1="http://docs.oasis-open.org/wss/2004/01/oasis-200401-wss-wssecurity-utility-1.0.xsd" xmlns:inLine="http://www.tibco.com/bs3.0/_i3L3QN8sEeSkQqj1-ZOMvA/iwf_atm_fraudsalert_process_ws" xmlns:ns0="http://docs.oasis-open.org/wss/2004/01/oasis-200401-wss-wssecurity-secext-1.0.xsd" xmlns:pfx3="http://www.dbs.com.sg/iwf_hfa_process_start_contract/iwf_hfa_process_start_contract_wsp" xmlns:pfx2="urn:oasis:names:tc:SAML:2.0:assertion" xmlns:pfx="www.tibco.com/plugin/staffware/iProcessStartCaseActivityInput">
+    <name>ATMSPA</name>
+    <resourceType>ws.security.policy.association.resource</resourceType>
+    <config>
+        <applyTo>/xUT/HFACreateCaseTest.process/CallHFACreateCase</applyTo>
+        <systemSecuritySubject>/xUT/HFACreateCaseTest.process/iwf_hfa_process_start_contract_EP/StartHFACase</systemSecuritySubject>
+        <inbound>
+            <selectSignatureParts/>
+            <selectEncryptionParts/>
+        </inbound>
+        <outbound>
+            <selectSignatureParts>headers/Header.SAMLHeader/pfx4:Security/pfx2:Assertion and SOAP-ENV:Body</selectSignatureParts>
+            <selectEncryptionParts/>
+        </outbound>
+        <outboundMessagePolicy>/SharedResources/Connections/Security/Security Policy.securityPolicy</outboundMessagePolicy>
+    </config>
+</BWSharedResource>

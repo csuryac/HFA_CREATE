@@ -1,0 +1,29 @@
+<?xml version = "1.0" encoding = "UTF-8"?>
+<repository xmlns:xsi = "http://www.w3.org/2001/XMLSchema-instance" xmlns = "http://www.tibco.com/xmlns/repo/types/2002">
+	<globalVariables>
+		<globalVariable>
+			<name>FaultStatus</name>
+			<value>0</value>
+			<deploymentSettable>true</deploymentSettable>
+			<serviceSettable>false</serviceSettable>
+			<type>String</type>
+			<modTime>1454665292389</modTime>
+		</globalVariable>
+		<globalVariable>
+			<name>IntervalMs</name>
+			<value>600000</value>
+			<deploymentSettable>true</deploymentSettable>
+			<serviceSettable>false</serviceSettable>
+			<type>String</type>
+			<modTime>1454664720718</modTime>
+		</globalVariable>
+		<globalVariable>
+			<name>MaxRetry</name>
+			<value>3</value>
+			<deploymentSettable>true</deploymentSettable>
+			<serviceSettable>false</serviceSettable>
+			<type>String</type>
+			<modTime>1454664866998</modTime>
+		</globalVariable>
+	</globalVariables>
+</repository>

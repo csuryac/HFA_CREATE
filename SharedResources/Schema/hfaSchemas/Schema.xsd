@@ -1,0 +1,136 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<xsd:schema xmlns="http://xmlns.example.com/unique/default/namespace/1303354441086"
+	 xmlns:xsd="http://www.w3.org/2001/XMLSchema"
+	 targetNamespace="http://xmlns.example.com/unique/default/namespace/1303354441086"
+	 elementFormDefault="qualified"
+	 attributeFormDefault="unqualified">
+	<xsd:element name="Input">
+		<xsd:complexType>
+			<xsd:sequence>
+				<xsd:element ref="MessageID" minOccurs="0"/>
+				<xsd:element ref="DelayedReleased_ID" minOccurs="0"/>
+				<xsd:element ref="CaseNumber" minOccurs="0"/>
+			</xsd:sequence>
+		</xsd:complexType>
+	</xsd:element>
+	<xsd:element name="MessageID" type="xsd:string"/>
+	<xsd:element name="GetCustCINByLKeyRequest">
+		<xsd:complexType>
+			<xsd:sequence>
+				<xsd:element ref="MessageID" minOccurs="0"/>
+				<xsd:element ref="Lkey" minOccurs="0"/>
+				<xsd:element ref="DelayedReleased_ID" minOccurs="0"/>
+				<xsd:element ref="CaseNumber" minOccurs="0"/>
+			</xsd:sequence>
+		</xsd:complexType>
+	</xsd:element>
+	<xsd:element name="Lkey" type="xsd:string"/>
+	<xsd:element name="DelayedReleased_ID" type="xsd:string"/>
+	<xsd:element name="CIN" type="xsd:string"/>
+	<xsd:element name="CINSfx" type="xsd:string"/>
+	<xsd:element name="CheckCustomerOwnerCode">
+		<xsd:complexType>
+			<xsd:sequence>
+				<xsd:element ref="MessageID" minOccurs="0"/>
+				<xsd:element ref="Lkey" minOccurs="0"/>
+				<xsd:element ref="DelayedReleased_ID" minOccurs="0"/>
+				<xsd:element ref="CaseNumber" minOccurs="0"/>
+			</xsd:sequence>
+		</xsd:complexType>
+	</xsd:element>
+	<xsd:element name="CheckStatDateRequest">
+		<xsd:complexType>
+			<xsd:sequence>
+				<xsd:element ref="MessageID" minOccurs="0"/>
+				<xsd:element ref="CIN" minOccurs="0"/>
+				<xsd:element ref="CINSfx" minOccurs="0"/>
+				<xsd:element ref="B_POSTALCODE" minOccurs="0"/>
+				<xsd:element ref="DelayedReleased_ID" minOccurs="0"/>
+				<xsd:element ref="StatementDate" minOccurs="0"/>
+				<xsd:element ref="CaseNumber" minOccurs="0"/>
+			</xsd:sequence>
+		</xsd:complexType>
+	</xsd:element>
+	<xsd:element name="StatementDate" type="xsd:string"/>
+	<xsd:element name="B_POSTALCODE" type="xsd:string"/>
+	<xsd:element name="CaseNumber" type="xsd:string"/>
+	<xsd:element name="UpdateCISRequest">
+		<xsd:complexType>
+			<xsd:sequence>
+				<xsd:element ref="MessageID" minOccurs="0"/>
+				<xsd:element ref="DelayedReleased_ID" minOccurs="0"/>
+				<xsd:element ref="CaseNumber" minOccurs="0"/>
+				<xsd:element ref="CIN" minOccurs="0"/>
+			</xsd:sequence>
+		</xsd:complexType>
+	</xsd:element>
+	<xsd:element name="UpdateCaseDataRequest">
+		<xsd:complexType>
+			<xsd:sequence>
+				<xsd:element ref="PROJ_CODE" minOccurs="0"/>
+				<xsd:element ref="ACTED_BY" minOccurs="0"/>
+				<xsd:element ref="ACTED_DT" minOccurs="0"/>
+				<xsd:element ref="Case_Status" minOccurs="0"/>
+				<xsd:element ref="STEP_ACTION" minOccurs="0"/>
+				<xsd:element ref="USER_ID" minOccurs="0"/>
+				<xsd:element ref="CaseNumber" minOccurs="0"/>
+				<xsd:element ref="STEP_NAME_RMK" minOccurs="0"/>
+				<xsd:element ref="STEP_DESC_RMK" minOccurs="0"/>
+				<xsd:element ref="REMARK" minOccurs="0"/>
+				<xsd:element ref="DelayedReleased_ID" minOccurs="0"/>
+				<xsd:element ref="IS_RMK_REQ" minOccurs="0"/>
+				<xsd:element ref="IS_HIST_REQ" minOccurs="0"/>
+				<xsd:element ref="IS_STATUS_REQ" minOccurs="0"/>
+				<xsd:element ref="IS_FROM_BW" minOccurs="0"/>
+				<xsd:element ref="STEP_NAME_HIST" minOccurs="0"/>
+				<xsd:element ref="STEP_DESC_HIST" minOccurs="0"/>
+			</xsd:sequence>
+		</xsd:complexType>
+	</xsd:element>
+	<xsd:element name="USER_ID" type="xsd:string"/>
+	<xsd:element name="STEP_NAME_RMK" type="xsd:string"/>
+	<xsd:element name="STEP_DESC_RMK" type="xsd:string"/>
+	<xsd:element name="REMARK" type="xsd:string"/>
+	<xsd:element name="VisionPlusRequest">
+		<xsd:complexType>
+			<xsd:sequence>
+				<xsd:element ref="CaseNumber" minOccurs="0"/>
+				<xsd:element ref="StatementDate" minOccurs="0"/>
+				<xsd:element ref="RelationShipNumber" minOccurs="0"/>
+				<xsd:element ref="MessageID" minOccurs="0"/>
+				<xsd:element ref="DelayedReleased_ID" minOccurs="0"/>
+			</xsd:sequence>
+		</xsd:complexType>
+	</xsd:element>
+	<xsd:element name="RelationShipNumber" type="xsd:string"/>
+	<xsd:element name="AlertRqAddRequest">
+		<xsd:complexType>
+			<xsd:sequence>
+				<xsd:element ref="CIN" minOccurs="0"/>
+				<xsd:element ref="CINSfx" minOccurs="0"/>
+				<xsd:element ref="CaseNumber" minOccurs="0"/>
+				<xsd:element ref="smsMessage" minOccurs="0"/>
+				<xsd:element ref="DelayedReleased_ID" minOccurs="0"/>
+			</xsd:sequence>
+		</xsd:complexType>
+	</xsd:element>
+	<xsd:element name="AlertRqAddResponse">
+		<xsd:complexType/>
+	</xsd:element>
+	<xsd:element name="smsMessage" type="xsd:string"/>
+	<xsd:element name="CaseCreatedDT" type="xsd:string"/>
+	<xsd:element name="Case_Status" type="xsd:string"/>
+	<xsd:element name="PRODUCT_TYPE" type="xsd:string"/>
+	<xsd:element name="CUST_NAME" type="xsd:string"/>
+	<xsd:element name="PROJ_CODE" type="xsd:string"/>
+	<xsd:element name="STEP_ACTION" type="xsd:string"/>
+	<xsd:element name="ACTED_BY" type="xsd:string"/>
+	<xsd:element name="ACTED_DT" type="xsd:string"/>
+	<xsd:element name="IS_RMK_REQ" type="xsd:string"/>
+	<xsd:element name="IS_HIST_REQ" type="xsd:string"/>
+	<xsd:element name="IS_STATUS_REQ" type="xsd:string"/>
+	<xsd:element name="IS_FROM_BW" type="xsd:string"/>
+	<xsd:element name="STEP_DESC_HIST" type="xsd:string"/>
+	<xsd:element name="STEP_NAME_HIST" type="xsd:string"/>
+</xsd:schema>

@@ -1,0 +1,37 @@
+<?xml version = "1.0" encoding = "UTF-8"?>
+<repository xmlns:xsi = "http://www.w3.org/2001/XMLSchema-instance" xmlns = "http://www.tibco.com/xmlns/repo/types/2002">
+	<globalVariables>
+		<globalVariable>
+			<name>Package</name>
+			<value>IWF_PKG</value>
+			<deploymentSettable>true</deploymentSettable>
+			<serviceSettable>false</serviceSettable>
+			<type>String</type>
+			<modTime>1454499483075</modTime>
+		</globalVariable>
+		<globalVariable>
+			<name>ProcName_CaseHist</name>
+			<value>UPDATE_CASE_HISTORY</value>
+			<deploymentSettable>true</deploymentSettable>
+			<serviceSettable>false</serviceSettable>
+			<type>String</type>
+			<modTime>1454499483162</modTime>
+		</globalVariable>
+		<globalVariable>
+			<name>ProcName_CaseStat</name>
+			<value>UPDATE_CASE_STATUS</value>
+			<deploymentSettable>true</deploymentSettable>
+			<serviceSettable>false</serviceSettable>
+			<type>String</type>
+			<modTime>1454499483245</modTime>
+		</globalVariable>
+		<globalVariable>
+			<name>Schema</name>
+			<value>IWFDB</value>
+			<deploymentSettable>true</deploymentSettable>
+			<serviceSettable>false</serviceSettable>
+			<type>String</type>
+			<modTime>1454499482976</modTime>
+		</globalVariable>
+	</globalVariables>
+</repository>

@@ -1,0 +1,288 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<pd:ProcessDefinition xmlns:pfx6="http://schemas.dbs.com/icc/BasicSvc" xmlns:pfx7="http://www.tibco.com/bs3.0/_IfQRQOS-EeS1Z9zi9Np1Zw/iwf_cc_fraudsalert_process_wsp" xmlns:pfx8="www.tibco.com/plugin/staffware/iProcessStartCaseActivityInput" xmlns:pfx="urn:oasis:names:tc:SAML:2.0:assertion" xmlns:pfx9="http://www.tibco.com/bs3.0/_i3L3QN8sEeSkQqj1-ZOMvA/iwf_atm_fraudsalert_process_ws" xmlns:pfx2="http://www.dbs.com/iwf/bpm/services/token" xmlns:ns="http://www.tibco.com/pe/EngineTypes" xmlns:pfx3="http://www.dbs.com/iwf/bpm/token" xmlns:pfx4="http://www.tibco.com/pe/WriteToLogActivitySchema" xmlns:pfx5="http://xmlns.example.com/1429342289226" xmlns:xsd="http://www.w3.org/2001/XMLSchema" xmlns:tib="http://www.tibco.com/bw/xslt/custom-functions" xmlns:ns1="http://www.tibco.com/pe/GenerateErrorActivity/InputSchema" xmlns:xsl="http://www.w3.org/1999/XSL/Transform" xmlns:wsdl="http://schemas.xmlsoap.org/wsdl/" xmlns:pd="http://xmlns.tibco.com/bw/process/2003">
+    <wsdl:import namespace="http://www.dbs.com/iwf/bpm/services/token" location="/SharedResources/WSDL/Concrete/TokenService.wsdl"/>
+    <pd:name>HFA/BPM/getSamlToken.process</pd:name>
+    <pd:startName>Start</pd:startName>
+    <pd:startType>
+        <xsd:element name="root">
+            <xsd:complexType>
+                <xsd:sequence>
+                    <xsd:element name="SOEID" type="xsd:string"/>
+                    <xsd:element name="duration" type="xsd:string" minOccurs="0"/>
+                </xsd:sequence>
+            </xsd:complexType>
+        </xsd:element>
+    </pd:startType>
+    <pd:startX>28</pd:startX>
+    <pd:startY>81</pd:startY>
+    <pd:returnBindings>
+        <xsl:copy-of select="$Parse-XML/pfx:Assertion"/>
+    </pd:returnBindings>
+    <pd:endName>End</pd:endName>
+    <pd:endType ref="pfx:Assertion"/>
+    <pd:endX>609</pd:endX>
+    <pd:endY>84</pd:endY>
+    <pd:errorSchemas>
+        <BPMUtilityError>
+            <xsd:element name="BPMUtilityError">
+                <xsd:complexType>
+                    <xsd:sequence>
+                        <xsd:element name="ErrorMessage" type="xsd:string" minOccurs="0"/>
+                        <xsd:element name="logMessage" type="xsd:string" minOccurs="0"/>
+                    </xsd:sequence>
+                </xsd:complexType>
+            </xsd:element>
+        </BPMUtilityError>
+    </pd:errorSchemas>
+    <pd:processVariables/>
+    <pd:targetNamespace>http://xmlns.example.com/1435649139023</pd:targetNamespace>
+    <pd:activity name="Parse XML">
+        <pd:type>com.tibco.plugin.xml.XMLParseActivity</pd:type>
+        <pd:resourceType>ae.activities.XMLParseActivity</pd:resourceType>
+        <pd:x>373</pd:x>
+        <pd:y>81</pd:y>
+        <config>
+            <inputStyle>text</inputStyle>
+            <xsdVersion>default</xsdVersion>
+            <validateOutput>true</validateOutput>
+            <term ref="pfx:Assertion"/>
+        </config>
+        <pd:inputBindings>
+            <xmlString>
+                <xsl:value-of select="$SOAPRequestReply/outputMessage/pfx3:GetTokenRes/pfx3:SAMLToken"/>
+            </xmlString>
+        </pd:inputBindings>
+    </pd:activity>
+    <pd:activity name="SOAPRequestReply">
+        <pd:type>com.tibco.plugin.soap.SOAPSendReceiveActivity</pd:type>
+        <pd:resourceType>ae.activities.SOAPSendReceiveUI</pd:resourceType>
+        <pd:x>224</pd:x>
+        <pd:y>80</pd:y>
+        <config>
+            <timeout>%%BPM/AMX/timeout%%</timeout>
+            <soapAttachmentStyle>SwA</soapAttachmentStyle>
+            <timeoutType>Seconds</timeoutType>
+            <service>pfx2:TokenService</service>
+            <servicePort>HTTPEP</servicePort>
+            <operation>GetTokenOp</operation>
+            <soapAction>/iwf/bpm/services/token/GetTokenOp</soapAction>
+            <endpointURL>http://%%BPM/Token/host%%:%%BPM/Token/port%%/iwf/bpm/services/token</endpointURL>
+            <authScheme>NONE</authScheme>
+        </config>
+        <pd:inputBindings>
+            <inputMessage>
+                <pfx3:GetTokenReq>
+                    <pfx3:ID>
+                        <xsl:value-of select="$Start/root/SOEID"/>
+                    </pfx3:ID>
+                    <xsl:if test="$Start/root/duration">
+                        <pfx3:expiry>
+                            <xsl:value-of select="$Start/root/duration"/>
+                        </pfx3:expiry>
+                    </xsl:if>
+                </pfx3:GetTokenReq>
+            </inputMessage>
+        </pd:inputBindings>
+    </pd:activity>
+    <pd:activity name="BPMUtilityError">
+        <pd:type>com.tibco.pe.core.GenerateErrorActivity</pd:type>
+        <pd:resourceType>ae.activities.throw</pd:resourceType>
+        <pd:x>503</pd:x>
+        <pd:y>170</pd:y>
+        <config>
+            <faultName>BPMUtilityError</faultName>
+        </config>
+        <pd:inputBindings>
+            <ns1:ActivityInput>
+                <message>
+                    <xsl:value-of select="&quot;Error occured in BPM Utility Call: GetTokenOp service&quot;"/>
+                </message>
+                <messageCode>
+                    <xsl:value-of select="tib:render-xml($_error_SOAPRequestReply)"/>
+                </messageCode>
+                <data>
+                    <BPMUtilityError>
+                        <ErrorMessage>
+                            <xsl:value-of select="&quot;Error occured in BPM Utility Call: GetTokenOp service&quot;"/>
+                        </ErrorMessage>
+                        <logMessage>
+                            <xsl:value-of select="tib:render-xml($_error/*)"/>
+                        </logMessage>
+                    </BPMUtilityError>
+                </data>
+            </ns1:ActivityInput>
+        </pd:inputBindings>
+    </pd:activity>
+    <pd:activity name="Log-1">
+        <pd:type>com.tibco.pe.core.WriteToLogActivity</pd:type>
+        <pd:resourceType>ae.activities.log</pd:resourceType>
+        <pd:x>379</pd:x>
+        <pd:y>170</pd:y>
+        <config>
+            <role>User</role>
+        </config>
+        <pd:inputBindings>
+            <pfx4:ActivityInput>
+                <message>
+                    <xsl:value-of select="concat(&quot;Error occured in BPM Utility Call: GetTokenOp service, Error stack trace is &quot;, $_error_SOAPRequestReply)"/>
+                </message>
+            </pfx4:ActivityInput>
+        </pd:inputBindings>
+    </pd:activity>
+    <pd:activity name="CBPMUtilityError">
+        <pd:type>com.tibco.pe.core.CatchActivity</pd:type>
+        <pd:resourceType>ae.activities.catch</pd:resourceType>
+        <pd:x>262</pd:x>
+        <pd:y>281</pd:y>
+        <pd:handler>true</pd:handler>
+        <config>
+            <fault>localname=BPMUtilityError</fault>
+        </config>
+        <pd:inputBindings/>
+    </pd:activity>
+    <pd:activity name="Rethrow">
+        <pd:type>com.tibco.pe.core.RethrowActivity</pd:type>
+        <pd:resourceType>ae.activities.rethrow</pd:resourceType>
+        <pd:x>405</pd:x>
+        <pd:y>282</pd:y>
+        <config/>
+        <pd:inputBindings/>
+    </pd:activity>
+    <pd:activity name="CatchAll">
+        <pd:type>com.tibco.pe.core.CatchActivity</pd:type>
+        <pd:resourceType>ae.activities.catch</pd:resourceType>
+        <pd:x>115</pd:x>
+        <pd:y>381</pd:y>
+        <pd:handler>true</pd:handler>
+        <config>
+            <catchAll>true</catchAll>
+        </config>
+        <pd:inputBindings/>
+    </pd:activity>
+    <pd:activity name="Log-2">
+        <pd:type>com.tibco.pe.core.WriteToLogActivity</pd:type>
+        <pd:resourceType>ae.activities.log</pd:resourceType>
+        <pd:x>276</pd:x>
+        <pd:y>383</pd:y>
+        <config>
+            <role>User</role>
+        </config>
+        <pd:inputBindings>
+            <pfx4:ActivityInput>
+                <message>
+                    <xsl:value-of select="concat(&quot;Error occured in getSamlToken.process. Error stack trace is &quot;, $CatchAll/exceptiondata)"/>
+                </message>
+            </pfx4:ActivityInput>
+        </pd:inputBindings>
+    </pd:activity>
+    <pd:activity name="Rethrow-1">
+        <pd:type>com.tibco.pe.core.RethrowActivity</pd:type>
+        <pd:resourceType>ae.activities.rethrow</pd:resourceType>
+        <pd:x>404</pd:x>
+        <pd:y>384</pd:y>
+        <config/>
+        <pd:inputBindings/>
+    </pd:activity>
+    <pd:activity name="Log-3">
+        <pd:type>com.tibco.pe.core.WriteToLogActivity</pd:type>
+        <pd:resourceType>ae.activities.log</pd:resourceType>
+        <pd:x>110</pd:x>
+        <pd:y>81</pd:y>
+        <config>
+            <role>User</role>
+        </config>
+        <pd:inputBindings>
+            <pfx4:ActivityInput>
+                <message>
+                    <xsl:value-of select="&quot;Inside getSamlToken.process&quot;"/>
+                </message>
+            </pfx4:ActivityInput>
+        </pd:inputBindings>
+    </pd:activity>
+    <pd:activity name="Log-4">
+        <pd:type>com.tibco.pe.core.WriteToLogActivity</pd:type>
+        <pd:resourceType>ae.activities.log</pd:resourceType>
+        <pd:x>498</pd:x>
+        <pd:y>84</pd:y>
+        <config>
+            <role>User</role>
+        </config>
+        <pd:inputBindings>
+            <pfx4:ActivityInput>
+                <message>
+                    <xsl:value-of select="concat(&quot;Saml token for &quot;, $Start/root/SOEID  , &quot; is &quot;, $Parse-XML/pfx:Assertion)"/>
+                </message>
+            </pfx4:ActivityInput>
+        </pd:inputBindings>
+    </pd:activity>
+    <pd:transition>
+        <pd:from>Start</pd:from>
+        <pd:to>Log-3</pd:to>
+        <pd:lineType>Default</pd:lineType>
+        <pd:lineColor>-16777216</pd:lineColor>
+        <pd:conditionType>always</pd:conditionType>
+    </pd:transition>
+    <pd:transition>
+        <pd:from>SOAPRequestReply</pd:from>
+        <pd:to>Parse XML</pd:to>
+        <pd:lineType>Default</pd:lineType>
+        <pd:lineColor>-16777216</pd:lineColor>
+        <pd:conditionType>always</pd:conditionType>
+    </pd:transition>
+    <pd:transition>
+        <pd:from>Parse XML</pd:from>
+        <pd:to>Log-4</pd:to>
+        <pd:lineType>Default</pd:lineType>
+        <pd:lineColor>-16777216</pd:lineColor>
+        <pd:conditionType>always</pd:conditionType>
+    </pd:transition>
+    <pd:transition>
+        <pd:from>SOAPRequestReply</pd:from>
+        <pd:to>Log-1</pd:to>
+        <pd:lineType>Multiple Bends</pd:lineType>
+        <pd:lineColor>-65485</pd:lineColor>
+        <pd:conditionType>error</pd:conditionType>
+    </pd:transition>
+    <pd:transition>
+        <pd:from>Log-1</pd:from>
+        <pd:to>BPMUtilityError</pd:to>
+        <pd:lineType>Default</pd:lineType>
+        <pd:lineColor>-65485</pd:lineColor>
+        <pd:conditionType>always</pd:conditionType>
+    </pd:transition>
+    <pd:transition>
+        <pd:from>CBPMUtilityError</pd:from>
+        <pd:to>Rethrow</pd:to>
+        <pd:lineType>Default</pd:lineType>
+        <pd:lineColor>-16777216</pd:lineColor>
+        <pd:conditionType>always</pd:conditionType>
+    </pd:transition>
+    <pd:transition>
+        <pd:from>CatchAll</pd:from>
+        <pd:to>Log-2</pd:to>
+        <pd:lineType>Default</pd:lineType>
+        <pd:lineColor>-16777216</pd:lineColor>
+        <pd:conditionType>always</pd:conditionType>
+    </pd:transition>
+    <pd:transition>
+        <pd:from>Log-2</pd:from>
+        <pd:to>Rethrow-1</pd:to>
+        <pd:lineType>Default</pd:lineType>
+        <pd:lineColor>-16777216</pd:lineColor>
+        <pd:conditionType>always</pd:conditionType>
+    </pd:transition>
+    <pd:transition>
+        <pd:from>Log-3</pd:from>
+        <pd:to>SOAPRequestReply</pd:to>
+        <pd:lineType>Default</pd:lineType>
+        <pd:lineColor>-16777216</pd:lineColor>
+        <pd:conditionType>always</pd:conditionType>
+    </pd:transition>
+    <pd:transition>
+        <pd:from>Log-4</pd:from>
+        <pd:to>End</pd:to>
+        <pd:lineType>Default</pd:lineType>
+        <pd:lineColor>-16777216</pd:lineColor>
+        <pd:conditionType>always</pd:conditionType>
+    </pd:transition>
+</pd:ProcessDefinition>

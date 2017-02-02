@@ -1,0 +1,205 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<!-- edited with XMLSpy v2007 rel. 3 sp1 (http://www.altova.com) by DBS BANK LIMITED (DBS BANK LIMITED) -->
+<!-- edited with XMLSPY v2004 rel. 3 U (http://www.xmlspy.com) by ADC (DBS Bank, ITG-AMG Integration CC (0519)) -->
+<!-- edited with XML Spy v4.4 U (http://www.xmlspy.com) by ITG-Business Management Office (DBS Bank) -->
+<xs:schema xmlns="http://schemas.dbs.com/icc/ems"
+	 xmlns:xs="http://www.w3.org/2001/XMLSchema"
+	 xmlns:tns="http://schemas.xmlsoap.org/soap/envelope/"
+	 targetNamespace="http://schemas.dbs.com/icc/ems"
+	 elementFormDefault="qualified"
+	 attributeFormDefault="unqualified">
+	<xs:annotation>
+		<xs:documentation>Version 1.0 (2009-11-18): Group IP EMS header elements 3.0 into single schema</xs:documentation>
+	</xs:annotation>
+	<xs:annotation>
+		<xs:documentation>Version 1.0 (2009-11-25): Update annotation; remove MsgCtrlOut from MsgRecCtrl aggregate</xs:documentation>
+	</xs:annotation>
+	<xs:annotation>
+		<xs:documentation>Version 1.0 (2009-12-14): Update annotation, make MatchedRec optional in MsgCtrlOut</xs:documentation>
+	</xs:annotation>
+	<xs:annotation>
+		<xs:documentation>Version 1.1 (2011-01-27): Include CommAggregate3_v1.1</xs:documentation>
+	</xs:annotation>
+	<xs:include schemaLocation="CommAggregate3_v1.5.xsd"/>
+	<xs:element name="EMSDetail">
+		<xs:annotation>
+			<xs:documentation>Message Set Details Header</xs:documentation>
+		</xs:annotation>
+		<xs:complexType>
+			<xs:sequence>
+				<xs:element name="MsgVersion" minOccurs="0">
+					<xs:annotation>
+						<xs:documentation>Message Version
+</xs:documentation>
+						<xs:documentation>The version of message set specifications used. 
+All messages in the same document must refer to the same message specification version.
+E.g. <MsgVersion>1.1</MsgVersion>
+						</xs:documentation>
+					</xs:annotation>
+					<xs:simpleType>
+						<xs:restriction base="xs:string">
+							<xs:maxLength value="20"/>
+						</xs:restriction>
+					</xs:simpleType>
+				</xs:element>
+				<xs:element name="MsgUID">
+					<xs:annotation>
+						<xs:documentation>Message Identifier</xs:documentation>
+						<xs:documentation>This uniquely identifies the message from the Requesting Client.
+Unique Universal Identifier (UUID) recommended. 
+This element has the same value in both the request and response message.
+</xs:documentation>
+					</xs:annotation>
+					<xs:simpleType>
+						<xs:restriction base="xs:string">
+							<xs:maxLength value="36"/>
+						</xs:restriction>
+					</xs:simpleType>
+				</xs:element>
+				<xs:element name="SvcVersion" minOccurs="0">
+					<xs:annotation>
+						<xs:documentation>Service Version</xs:documentation>
+						<xs:documentation>The version of the service being requested. 
+All messages in the same document must refer to the same service version.  
+E.g. <SvcVersion>1.0</SvcVersion>
+						</xs:documentation>
+					</xs:annotation>
+					<xs:simpleType>
+						<xs:restriction base="xs:string">
+							<xs:maxLength value="20"/>
+						</xs:restriction>
+					</xs:simpleType>
+				</xs:element>
+			</xs:sequence>
+			<xs:attribute name="mustUnderstand" type="xs:boolean" default="false"/>
+		</xs:complexType>
+	</xs:element>
+	<xs:element name="InfoWarn">
+		<xs:annotation>
+			<xs:documentation>Information or Warning Header</xs:documentation>
+			<xs:documentation>Applicable to any processing where additional information is to be returned.
+Note that the elements defined for this aggregate are identical to SOAP fault
+</xs:documentation>
+		</xs:annotation>
+		<xs:complexType>
+			<xs:sequence>
+				<xs:any namespace="##any" processContents="strict"/>
+			</xs:sequence>
+		</xs:complexType>
+	</xs:element>
+	<xs:element name="MsgRecCtrl">
+		<xs:annotation>
+			<xs:documentation>Message Record Control Header</xs:documentation>
+		</xs:annotation>
+		<xs:complexType>
+			<xs:choice>
+				<xs:element ref="RecCtrlIn"/>
+				<xs:element ref="RecCtrlOut"/>
+			</xs:choice>
+		</xs:complexType>
+	</xs:element>
+	<xs:element name="RqClient">
+		<xs:annotation>
+			<xs:documentation>Requesting Client Information </xs:documentation>
+		</xs:annotation>
+		<xs:complexType>
+			<xs:sequence>
+				<xs:element ref="RqClientId"/>
+				<xs:element name="RqClientOrg" minOccurs="0">
+					<xs:annotation>
+						<xs:documentation>Requesting Client Organization Code</xs:documentation>
+						<xs:documentation>Entity within the DBS Group that the Requesting Client is initiating the request for. 
+For a multi-entity Requesting Client running on a single version of the software, this would refer to the applicable instance of that software.
+E.g. I2 runs instances for SG, HK, IN, CN on a single version of its software in SG. A message arising from the HK instance would bear the HK organization code ‘2006’
+Refer to Organisation code in Foundation for IP Message Set - Codes document</xs:documentation>
+					</xs:annotation>
+					<xs:simpleType>
+						<xs:restriction base="xs:string">
+							<xs:maxLength value="4"/>
+						</xs:restriction>
+					</xs:simpleType>
+				</xs:element>
+				<xs:element name="RqClientCtry" minOccurs="0">
+					<xs:annotation>
+						<xs:documentation>Requesting Client Country Code</xs:documentation>
+						<xs:documentation>Refer to Country code in Foundation for IP Message Set - Codes document</xs:documentation>
+					</xs:annotation>
+					<xs:simpleType>
+						<xs:restriction base="xs:string">
+							<xs:maxLength value="3"/>
+						</xs:restriction>
+					</xs:simpleType>
+				</xs:element>
+			</xs:sequence>
+		</xs:complexType>
+	</xs:element>
+	<xs:element name="Security">
+		<xs:annotation>
+			<xs:documentation>Security Header Block</xs:documentation>
+		</xs:annotation>
+		<xs:complexType>
+			<xs:sequence>
+				<xs:element ref="MsgIntegrity" minOccurs="0">
+					<xs:annotation>
+						<xs:documentation>Message Integrity</xs:documentation>
+						<xs:documentation>It may be aggregates for hash values, checksum or digital signature.  To be determined. </xs:documentation>
+					</xs:annotation>
+				</xs:element>
+				<xs:element ref="SecurityContext" minOccurs="0"/>
+			</xs:sequence>
+		</xs:complexType>
+	</xs:element>
+	<xs:element name="Trace">
+		<xs:annotation>
+			<xs:documentation>Trace Information Header</xs:documentation>
+		</xs:annotation>
+		<xs:complexType>
+			<xs:sequence>
+				<xs:element name="RqDateTime" type="xs:dateTime">
+					<xs:annotation>
+						<xs:documentation>Request Date and Time</xs:documentation>
+						<xs:documentation>Date and time the request was initiated</xs:documentation>
+					</xs:annotation>
+				</xs:element>
+				<xs:element ref="RqClient"/>
+				<xs:choice minOccurs="0">
+					<xs:element ref="Operator"/>
+					<xs:element name="ServiceProvider" maxOccurs="5">
+						<xs:annotation>
+							<xs:documentation>Service Provider Information</xs:documentation>
+							<xs:documentation>This refers to the main Service Provider who may coordinate requests among many sub Service Providers.
+For orchestration by the Integration Platform (IP), this would reflect the various Service Providers called by IP, in the order in which they were invoked.
+Required in Response message only
+</xs:documentation>
+						</xs:annotation>
+						<xs:complexType>
+							<xs:sequence>
+								<xs:element name="SPUID" minOccurs="0">
+									<xs:annotation>
+										<xs:documentation>Service Provider Unique Universal Identifier (UUID)</xs:documentation>
+										<xs:documentation>This is to uniquely identify the message for the Service Provider. It is similar to MsgUID but from the Service Provider’s point of view.</xs:documentation>
+									</xs:annotation>
+									<xs:simpleType>
+										<xs:restriction base="xs:string">
+											<xs:maxLength value="36"/>
+										</xs:restriction>
+									</xs:simpleType>
+								</xs:element>
+								<xs:element ref="SPId"/>
+								<xs:element name="SPDateTime" type="xs:dateTime">
+									<xs:annotation>
+										<xs:documentation>Service Provider Date and Time</xs:documentation>
+										<xs:documentation>Date and time of the response from the Service Provider, as provided by the Service Provider</xs:documentation>
+									</xs:annotation>
+								</xs:element>
+							</xs:sequence>
+							<xs:attribute name="mustUnderstand" type="xs:boolean" default="true"/>
+						</xs:complexType>
+					</xs:element>
+				</xs:choice>
+			</xs:sequence>
+			<xs:attribute name="mustUnderstand" type="xs:boolean" default="false"/>
+		</xs:complexType>
+	</xs:element>
+</xs:schema>

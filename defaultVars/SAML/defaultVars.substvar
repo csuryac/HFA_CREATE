@@ -1,0 +1,53 @@
+<?xml version = "1.0" encoding = "UTF-8"?>
+<repository xmlns:xsi = "http://www.w3.org/2001/XMLSchema-instance" xmlns = "http://www.tibco.com/xmlns/repo/types/2002">
+	<globalVariables>
+		<globalVariable>
+			<name>Expiry</name>
+			<value>60</value>
+			<deploymentSettable>true</deploymentSettable>
+			<serviceSettable>false</serviceSettable>
+			<type>String</type>
+			<modTime>1453977750415</modTime>
+		</globalVariable>
+		<globalVariable>
+			<name>Issuer</name>
+			<value>CN=bpmserver, C=US, ST=CA, L=Palo Alto, OU=BPM, O=TIBCO Inc</value>
+			<deploymentSettable>true</deploymentSettable>
+			<serviceSettable>false</serviceSettable>
+			<type>String</type>
+			<modTime>1453977753338</modTime>
+		</globalVariable>
+		<globalVariable>
+			<name>KeystoreLocation</name>
+			<value>D:\project\tibco\keystores\dev\amx-bpm-wss-keystore.jks</value>
+			<deploymentSettable>true</deploymentSettable>
+			<serviceSettable>false</serviceSettable>
+			<type>String</type>
+			<modTime>1458218237426</modTime>
+		</globalVariable>
+		<globalVariable>
+			<name>Password</name>
+			<value>#!3KkUpEy3rdBvlJGgt4IigrSw1J+LWn1Pq5PderCTscE=</value>
+			<deploymentSettable>true</deploymentSettable>
+			<serviceSettable>false</serviceSettable>
+			<type>Password</type>
+			<modTime>1471428163459</modTime>
+		</globalVariable>
+		<globalVariable>
+			<name>PrivateKey</name>
+			<value>chill</value>
+			<deploymentSettable>true</deploymentSettable>
+			<serviceSettable>false</serviceSettable>
+			<type>String</type>
+			<modTime>1453977751663</modTime>
+		</globalVariable>
+		<globalVariable>
+			<name>User</name>
+			<value>tibco-admin</value>
+			<deploymentSettable>true</deploymentSettable>
+			<serviceSettable>false</serviceSettable>
+			<type>String</type>
+			<modTime>1453977751052</modTime>
+		</globalVariable>
+	</globalVariables>
+</repository>

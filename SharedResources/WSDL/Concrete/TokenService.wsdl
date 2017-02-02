@@ -1,0 +1,66 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!--Created by TIBCO WSDL-->
+<wsdl:definitions xmlns:wsdl="http://schemas.xmlsoap.org/wsdl/" xmlns:tns="http://www.dbs.com/iwf/bpm/services/token" xmlns:ns0="http://www.dbs.com/iwf/bpm/token" xmlns:soap="http://schemas.xmlsoap.org/wsdl/soap/" name="Untitled" targetNamespace="http://www.dbs.com/iwf/bpm/services/token">
+    <wsdl:types>
+        <xs:schema xmlns="http://www.dbs.com/iwf/bpm/token" xmlns:xs="http://www.w3.org/2001/XMLSchema" targetNamespace="http://www.dbs.com/iwf/bpm/token" elementFormDefault="qualified" attributeFormDefault="unqualified">
+            <xs:element name="GetTokenReq">
+                <xs:complexType>
+                    <xs:sequence>
+                        <xs:element ref="ns0:ID"/>
+                        <xs:element ref="ns0:expiry" minOccurs="0"/>
+                    </xs:sequence>
+                </xs:complexType>
+            </xs:element>
+            <xs:element name="GetTokenRes">
+                <xs:complexType>
+                    <xs:sequence>
+                        <xs:element ref="ns0:Response"/>
+                        <xs:element ref="ns0:SAMLToken" minOccurs="0"/>
+                    </xs:sequence>
+                </xs:complexType>
+            </xs:element>
+            <xs:element name="ID" type="xs:string"/>
+            <xs:element name="Response">
+                <xs:complexType>
+                    <xs:sequence>
+                        <xs:element ref="ns0:ResponseCode" minOccurs="0"/>
+                        <xs:element ref="ns0:ResponseMessage" minOccurs="0"/>
+                    </xs:sequence>
+                </xs:complexType>
+            </xs:element>
+            <xs:element name="ResponseCode" type="xs:string"/>
+            <xs:element name="ResponseMessage" type="xs:string"/>
+            <xs:element name="SAMLToken" type="xs:string"/>
+            <xs:element name="expiry" type="xs:string"/>
+        </xs:schema>
+    </wsdl:types>
+    <wsdl:service name="TokenService">
+        <wsdl:port name="HTTPEP" binding="tns:HTTPEPBinding">
+            <soap:address location="http://localhost:8787/iwf/bpm/services/token"/>
+        </wsdl:port>
+    </wsdl:service>
+    <wsdl:portType name="TokenPortType">
+        <wsdl:operation name="GetTokenOp">
+            <wsdl:input message="tns:GetTokenReq"/>
+            <wsdl:output message="tns:GetTokenRes"/>
+        </wsdl:operation>
+    </wsdl:portType>
+    <wsdl:binding name="HTTPEPBinding" type="tns:TokenPortType">
+        <soap:binding style="document" transport="http://schemas.xmlsoap.org/soap/http"/>
+        <wsdl:operation name="GetTokenOp">
+            <soap:operation style="document" soapAction="/iwf/bpm/services/token/GetTokenOp"/>
+            <wsdl:input>
+                <soap:body use="literal" parts="Request"/>
+            </wsdl:input>
+            <wsdl:output>
+                <soap:body use="literal" parts="Response"/>
+            </wsdl:output>
+        </wsdl:operation>
+    </wsdl:binding>
+    <wsdl:message name="GetTokenReq">
+        <wsdl:part name="Request" element="ns0:GetTokenReq"/>
+    </wsdl:message>
+    <wsdl:message name="GetTokenRes">
+        <wsdl:part name="Response" element="ns0:GetTokenRes"/>
+    </wsdl:message>
+</wsdl:definitions>

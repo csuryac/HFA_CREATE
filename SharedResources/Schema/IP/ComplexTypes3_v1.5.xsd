@@ -1,0 +1,746 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<!-- edited with XMLSpy v2007 rel. 3 sp1 (http://www.altova.com) by ICC (DBS BANK LIMITED) -->
+<!-- edited with XMLSPY v2004 rel. 3 U (http://www.xmlspy.com) by ADC (DBS Bank, ITG-AMG Integration CC (0519)) -->
+<!-- edited with XML Spy v4.4 U (http://www.xmlspy.com) by ITG-Business Management Office (DBS Bank) -->
+<xs:schema xmlns="http://schemas.dbs.com/icc/ems"
+	 xmlns:xs="http://www.w3.org/2001/XMLSchema"
+	 targetNamespace="http://schemas.dbs.com/icc/ems"
+	 elementFormDefault="qualified"
+	 attributeFormDefault="unqualified">
+	<xs:annotation>
+		<xs:documentation>Version 1.5 (2013-09-24) Expand AddrLine to maxlen-200</xs:documentation>
+	</xs:annotation>
+	<xs:element name="AcctId">
+		<xs:annotation>
+			<xs:documentation>Account Identifier</xs:documentation>
+			<xs:documentation>Sometimes known as account number, but not restricted to numeric characters.</xs:documentation>
+			<xs:documentation>Note: An International Bank Account Number (IBAN) can be used here to replace the domestic account number.</xs:documentation>
+		</xs:annotation>
+		<xs:simpleType>
+			<xs:restriction base="xs:string">
+				<xs:maxLength value="36"/>
+			</xs:restriction>
+		</xs:simpleType>
+	</xs:element>
+	<xs:element name="AcctCur">
+		<xs:annotation>
+			<xs:documentation>Currency of account</xs:documentation>
+			<xs:documentation>Mandatory for single-currency accounts </xs:documentation>
+			<xs:documentation>May be necessary to uniquely identify sub-accounts of a multi-currency account </xs:documentation>
+			<xs:documentation>Refer to Currency code in Foundation for IP Message Set - Codes document </xs:documentation>
+		</xs:annotation>
+		<xs:simpleType>
+			<xs:restriction base="xs:string">
+				<xs:maxLength value="3"/>
+			</xs:restriction>
+		</xs:simpleType>
+	</xs:element>
+	<xs:element name="AcctName">
+		<xs:annotation>
+			<xs:documentation>Account Name</xs:documentation>
+		</xs:annotation>
+		<xs:simpleType>
+			<xs:restriction base="xs:string">
+				<xs:maxLength value="100"/>
+			</xs:restriction>
+		</xs:simpleType>
+	</xs:element>
+	<xs:element name="AddrLine">
+		<xs:annotation>
+			<xs:documentation>Street address</xs:documentation>
+		</xs:annotation>
+		<xs:simpleType>
+			<xs:restriction base="xs:string">
+				<xs:maxLength value="200"/>
+			</xs:restriction>
+		</xs:simpleType>
+	</xs:element>
+	<xs:element name="BankIdType">
+		<xs:annotation>
+			<xs:documentation>Bank Identifier Type</xs:documentation>
+			<xs:documentation>This identifies the type of code used in the BankId tag</xs:documentation>
+			<xs:documentation>Refer to Bank Identifier Type code in Foundation for IP Message Set – Codes document</xs:documentation>
+		</xs:annotation>
+		<xs:simpleType>
+			<xs:restriction base="xs:string">
+				<xs:maxLength value="5"/>
+			</xs:restriction>
+		</xs:simpleType>
+	</xs:element>
+	<xs:element name="BankId">
+		<xs:annotation>
+			<xs:documentation>Bank Identifier</xs:documentation>
+		</xs:annotation>
+		<xs:simpleType>
+			<xs:restriction base="xs:string">
+				<xs:maxLength value="4"/>
+			</xs:restriction>
+		</xs:simpleType>
+	</xs:element>
+	<xs:element name="BankName">
+		<xs:annotation>
+			<xs:documentation>Bank Name</xs:documentation>
+		</xs:annotation>
+		<xs:simpleType>
+			<xs:restriction base="xs:string">
+				<xs:maxLength value="40"/>
+			</xs:restriction>
+		</xs:simpleType>
+	</xs:element>
+	<xs:element name="Block">
+		<xs:annotation>
+			<xs:documentation>Block number</xs:documentation>
+		</xs:annotation>
+		<xs:simpleType>
+			<xs:restriction base="xs:string">
+				<xs:maxLength value="5"/>
+			</xs:restriction>
+		</xs:simpleType>
+	</xs:element>
+	<xs:element name="BranchId">
+		<xs:annotation>
+			<xs:documentation>Branch Identifier</xs:documentation>
+			<xs:documentation>Refer to  Branch code and Department code in Foundation for IP Message Set - Codes document</xs:documentation>
+		</xs:annotation>
+		<xs:simpleType>
+			<xs:restriction base="xs:string">
+				<xs:maxLength value="4"/>
+			</xs:restriction>
+		</xs:simpleType>
+	</xs:element>
+	<xs:element name="BranchName">
+		<xs:annotation>
+			<xs:documentation>Branch Name</xs:documentation>
+		</xs:annotation>
+		<xs:simpleType>
+			<xs:restriction base="xs:string">
+				<xs:maxLength value="40"/>
+			</xs:restriction>
+		</xs:simpleType>
+	</xs:element>
+	<xs:element name="Building">
+		<xs:annotation>
+			<xs:documentation>Building Name</xs:documentation>
+		</xs:annotation>
+		<xs:simpleType>
+			<xs:restriction base="xs:string">
+				<xs:maxLength value="30"/>
+			</xs:restriction>
+		</xs:simpleType>
+	</xs:element>
+	<xs:element name="CardBrand">
+		<xs:annotation>
+			<xs:documentation>Type of card</xs:documentation>
+		</xs:annotation>
+		<xs:simpleType>
+			<xs:restriction base="xs:string">
+				<xs:maxLength value="15"/>
+			</xs:restriction>
+		</xs:simpleType>
+	</xs:element>
+	<xs:element name="ChipIndicator">
+		<xs:annotation>
+			<xs:documentation>EMV or Non EMV</xs:documentation>
+			<xs:documentation>In internal format</xs:documentation>
+		</xs:annotation>
+		<xs:simpleType>
+			<xs:restriction base="xs:string">
+				<xs:maxLength value="36"/>
+			</xs:restriction>
+		</xs:simpleType>
+	</xs:element>
+	<xs:element name="CardId">
+		<xs:annotation>
+			<xs:documentation>Card identifier (number)</xs:documentation>
+			<xs:documentation>In internal format</xs:documentation>
+		</xs:annotation>
+		<xs:simpleType>
+			<xs:restriction base="xs:string">
+				<xs:maxLength value="36"/>
+			</xs:restriction>
+		</xs:simpleType>
+	</xs:element>
+	<xs:element name="CardIdSfx">
+		<xs:annotation>
+			<xs:documentation>Card identifier suffix</xs:documentation>
+			<xs:documentation>This, together with CardId, will uniquely identify the card in HK</xs:documentation>
+		</xs:annotation>
+		<xs:simpleType>
+			<xs:restriction base="xs:string">
+				<xs:maxLength value="2"/>
+			</xs:restriction>
+		</xs:simpleType>
+	</xs:element>
+	<xs:element name="ChannelId">
+		<xs:annotation>
+			<xs:documentation>Channel Identifier</xs:documentation>
+			<xs:documentation>The code representing the channel through which the transaction initiating the request is performed</xs:documentation>
+			<xs:documentation>Refer to Channel Type code in Foundation for IP Message Set - Codes document</xs:documentation>
+		</xs:annotation>
+		<xs:simpleType>
+			<xs:restriction base="xs:string">
+				<xs:maxLength value="2"/>
+			</xs:restriction>
+		</xs:simpleType>
+	</xs:element>
+	<xs:element name="ChannelName">
+		<xs:annotation>
+			<xs:documentation>Name / description of the channel</xs:documentation>
+		</xs:annotation>
+		<xs:simpleType>
+			<xs:restriction base="xs:string">
+				<xs:maxLength value="40"/>
+			</xs:restriction>
+		</xs:simpleType>
+	</xs:element>
+	<xs:element name="CISCIN">
+		<xs:annotation>
+			<xs:documentation>CIS Customer Identification Number</xs:documentation>
+		</xs:annotation>
+		<xs:simpleType>
+			<xs:restriction base="xs:string">
+				<xs:maxLength value="20"/>
+			</xs:restriction>
+		</xs:simpleType>
+	</xs:element>
+	<xs:element name="CISCINsfx">
+		<xs:annotation>
+			<xs:documentation>CIS CIN Suffix</xs:documentation>
+			<xs:documentation>2-byte system-generated numeric value used to ensure uniqueness of CIN</xs:documentation>
+		</xs:annotation>
+		<xs:simpleType>
+			<xs:restriction base="xs:string">
+				<xs:maxLength value="2"/>
+			</xs:restriction>
+		</xs:simpleType>
+	</xs:element>
+	<xs:element name="City">
+		<xs:annotation>
+			<xs:documentation>City</xs:documentation>
+		</xs:annotation>
+		<xs:simpleType>
+			<xs:restriction base="xs:string">
+				<xs:maxLength value="20"/>
+			</xs:restriction>
+		</xs:simpleType>
+	</xs:element>
+	<xs:element name="Ctry">
+		<xs:annotation>
+			<xs:documentation>Country</xs:documentation>
+			<xs:documentation>Refer to Country code in Foundation for IP Message Set - Codes document</xs:documentation>
+		</xs:annotation>
+		<xs:simpleType>
+			<xs:restriction base="xs:string">
+				<xs:maxLength value="3"/>
+			</xs:restriction>
+		</xs:simpleType>
+	</xs:element>
+	<xs:element name="CtryDesc">
+		<xs:annotation>
+			<xs:documentation>Country description</xs:documentation>
+		</xs:annotation>
+		<xs:simpleType>
+			<xs:restriction base="xs:string">
+				<xs:maxLength value="40"/>
+			</xs:restriction>
+		</xs:simpleType>
+	</xs:element>
+	<xs:element name="Cur">
+		<xs:annotation>
+			<xs:documentation>Currency</xs:documentation>
+			<xs:documentation>Refer to Currency code in Foundation for IP Message Set – Codes document </xs:documentation>
+		</xs:annotation>
+		<xs:simpleType>
+			<xs:restriction base="xs:string">
+				<xs:maxLength value="3"/>
+			</xs:restriction>
+		</xs:simpleType>
+	</xs:element>
+	<xs:element name="DayOfMth" type="xs:integer">
+		<xs:annotation>
+			<xs:documentation>Day of month</xs:documentation>
+		</xs:annotation>
+	</xs:element>
+	<xs:element name="DayOfWeek">
+		<xs:annotation>
+			<xs:documentation>Day of week</xs:documentation>
+			<xs:documentation>SUN: Sunday                                 
+MON: Monday                                 
+TUE: Tuesday                               
+WED: Wednesday                            
+THU: Thursday                                 
+FRI: Friday                                       
+SAT: Saturday</xs:documentation>
+		</xs:annotation>
+		<xs:simpleType>
+			<xs:restriction base="xs:string">
+				<xs:maxLength value="3"/>
+				<xs:enumeration value="SUN"/>
+				<xs:enumeration value="MON"/>
+				<xs:enumeration value="TUE"/>
+				<xs:enumeration value="WED"/>
+				<xs:enumeration value="THU"/>
+				<xs:enumeration value="FRI"/>
+				<xs:enumeration value="SAT"/>
+			</xs:restriction>
+		</xs:simpleType>
+	</xs:element>
+	<xs:element name="District">
+		<xs:annotation>
+			<xs:documentation>District</xs:documentation>
+		</xs:annotation>
+		<xs:simpleType>
+			<xs:restriction base="xs:string">
+				<xs:maxLength value="40"/>
+			</xs:restriction>
+		</xs:simpleType>
+	</xs:element>
+	<xs:element name="Estate">
+		<xs:annotation>
+			<xs:documentation>Estate</xs:documentation>
+		</xs:annotation>
+		<xs:simpleType>
+			<xs:restriction base="xs:string">
+				<xs:maxLength value="60"/>
+			</xs:restriction>
+		</xs:simpleType>
+	</xs:element>
+	<xs:element name="FreqType">
+		<xs:annotation>
+			<xs:documentation>Frequency type</xs:documentation>
+			<xs:documentation>Refer to Frequency Type code in Foundation for IP Message Set – Codes document</xs:documentation>
+		</xs:annotation>
+		<xs:simpleType>
+			<xs:restriction base="xs:string">
+				<xs:maxLength value="2"/>
+			</xs:restriction>
+		</xs:simpleType>
+	</xs:element>
+	<xs:element name="Level">
+		<xs:annotation>
+			<xs:documentation>Level number</xs:documentation>
+			<xs:documentation>Applicable to high-rise addresses only</xs:documentation>
+		</xs:annotation>
+		<xs:simpleType>
+			<xs:restriction base="xs:string">
+				<xs:maxLength value="3"/>
+			</xs:restriction>
+		</xs:simpleType>
+	</xs:element>
+	<xs:element name="MainSuppInd">
+		<xs:annotation>
+			<xs:documentation>Main / Supplementary Card indicator</xs:documentation>
+			<xs:documentation>Indicates if the card is a main or supplementary card.</xs:documentation>
+			<xs:documentation>Valid values are 'P' and 'S'
+P: Principle / Main card
+S: Supplementary card</xs:documentation>
+		</xs:annotation>
+		<xs:simpleType>
+			<xs:restriction base="xs:string">
+				<xs:length value="1"/>
+				<xs:enumeration value="P"/>
+				<xs:enumeration value="S"/>
+			</xs:restriction>
+		</xs:simpleType>
+	</xs:element>
+	<xs:element name="OrgCode">
+		<xs:annotation>
+			<xs:documentation>Organisation code</xs:documentation>
+			<xs:documentation>Refer to Organisation code in Foundation for IP Message Set - Codes document</xs:documentation>
+		</xs:annotation>
+		<xs:simpleType>
+			<xs:restriction base="xs:string">
+				<xs:maxLength value="4"/>
+			</xs:restriction>
+		</xs:simpleType>
+	</xs:element>
+	<xs:element name="PostalCode">
+		<xs:annotation>
+			<xs:documentation>Postal code/zip</xs:documentation>
+		</xs:annotation>
+		<xs:simpleType>
+			<xs:restriction base="xs:string">
+				<xs:maxLength value="10"/>
+			</xs:restriction>
+		</xs:simpleType>
+	</xs:element>
+	<xs:element name="ProdCode">
+		<xs:annotation>
+			<xs:documentation>Product Code</xs:documentation>
+			<xs:documentation>Refer to Product Code in Foundation for IP Message Set - Codes document </xs:documentation>
+		</xs:annotation>
+		<xs:simpleType>
+			<xs:restriction base="xs:string">
+				<xs:maxLength value="4"/>
+			</xs:restriction>
+		</xs:simpleType>
+	</xs:element>
+	<xs:element name="ProdName">
+		<xs:annotation>
+			<xs:documentation>Product Name</xs:documentation>
+		</xs:annotation>
+		<xs:simpleType>
+			<xs:restriction base="xs:string">
+				<xs:maxLength value="40"/>
+			</xs:restriction>
+		</xs:simpleType>
+	</xs:element>
+	<xs:element name="ProdType">
+		<xs:annotation>
+			<xs:documentation>Product Type</xs:documentation>
+			<xs:documentation>Refer to Product Type code in Foundation for IP Message Set – Codes document </xs:documentation>
+		</xs:annotation>
+		<xs:simpleType>
+			<xs:restriction base="xs:string">
+				<xs:maxLength value="8"/>
+			</xs:restriction>
+		</xs:simpleType>
+	</xs:element>
+	<xs:element name="ProdSubType">
+		<xs:annotation>
+			<xs:documentation>Product Sub Type</xs:documentation>
+			<xs:documentation>Refer to Product Sub Type code in Foundation for IP Message Set - Codes document  </xs:documentation>
+		</xs:annotation>
+		<xs:simpleType>
+			<xs:restriction base="xs:string">
+				<xs:maxLength value="8"/>
+			</xs:restriction>
+		</xs:simpleType>
+	</xs:element>
+	<xs:element name="StateProvince">
+		<xs:annotation>
+			<xs:documentation>State/Province</xs:documentation>
+		</xs:annotation>
+		<xs:simpleType>
+			<xs:restriction base="xs:string">
+				<xs:maxLength value="20"/>
+			</xs:restriction>
+		</xs:simpleType>
+	</xs:element>
+	<xs:element name="Unit">
+		<xs:annotation>
+			<xs:documentation>Unit number</xs:documentation>
+			<xs:documentation>Applicable to high-rise addresses only</xs:documentation>
+		</xs:annotation>
+		<xs:simpleType>
+			<xs:restriction base="xs:string">
+				<xs:maxLength value="7"/>
+			</xs:restriction>
+		</xs:simpleType>
+	</xs:element>
+	<xs:element name="Week">
+		<xs:annotation>
+			<xs:documentation>Week of month</xs:documentation>
+			<xs:documentation>Not applicable for FreqType DY, WK and FN</xs:documentation>
+			<xs:documentation>For all other FreqType values, applicable only for the first month of the period </xs:documentation>
+			<xs:documentation>Refer to Week code in Foundation for IP Mesasge Set – Codes document</xs:documentation>
+		</xs:annotation>
+		<xs:simpleType>
+			<xs:restriction base="xs:string">
+				<xs:maxLength value="1"/>
+			</xs:restriction>
+		</xs:simpleType>
+	</xs:element>
+	<xs:complexType name="Address">
+		<xs:annotation>
+			<xs:documentation>Address Complex Type</xs:documentation>
+		</xs:annotation>
+		<xs:sequence>
+			<xs:element ref="AddrLine" maxOccurs="5"/>
+			<xs:element ref="Building" minOccurs="0"/>
+			<xs:element ref="Block" minOccurs="0"/>
+			<xs:element ref="Level" minOccurs="0"/>
+			<xs:element ref="Unit" minOccurs="0"/>
+			<xs:element ref="PostalCode" minOccurs="0"/>
+			<xs:element ref="Estate" minOccurs="0"/>
+			<xs:element ref="City" minOccurs="0"/>
+			<xs:element ref="District" minOccurs="0"/>
+			<xs:element ref="StateProvince" minOccurs="0"/>
+			<xs:element ref="Ctry" minOccurs="0"/>
+			<xs:element ref="CtryDesc" minOccurs="0"/>
+		</xs:sequence>
+	</xs:complexType>
+	<xs:complexType name="Amount">
+		<xs:annotation>
+			<xs:documentation>Amount Complex Type</xs:documentation>
+		</xs:annotation>
+		<xs:sequence>
+			<xs:element name="Amt" type="xs:decimal">
+				<xs:annotation>
+					<xs:documentation>Amount</xs:documentation>
+				</xs:annotation>
+			</xs:element>
+			<xs:element ref="Cur"/>
+		</xs:sequence>
+	</xs:complexType>
+	<xs:complexType name="Card">
+		<xs:annotation>
+			<xs:documentation>Card Type</xs:documentation>
+			<xs:documentation>Used to unique identify a card account</xs:documentation>
+		</xs:annotation>
+		<xs:sequence>
+			<xs:element ref="ChipIndicator" minOccurs="0"/>
+			<xs:element ref="ProdType"/>
+			<xs:element ref="CardId"/>
+			<xs:element ref="MainSuppInd" minOccurs="0"/>
+			<xs:element ref="CardBrand" minOccurs="0"/>
+			<xs:element ref="OrgCode" minOccurs="0"/>
+			<xs:element ref="BankId" minOccurs="0"/>
+			<xs:element ref="Lang" minOccurs="0"/>
+		</xs:sequence>
+	</xs:complexType>
+	<xs:complexType name="CardAcct">
+		<xs:annotation>
+			<xs:documentation>Card Account Type</xs:documentation>
+		</xs:annotation>
+		<xs:sequence>
+			<xs:element ref="ProdType"/>
+			<xs:element ref="AcctId"/>
+			<xs:element ref="AcctCur" minOccurs="0"/>
+			<xs:element ref="OrgCode" minOccurs="0"/>
+			<xs:element ref="BankId" minOccurs="0"/>
+			<xs:element ref="BranchId" minOccurs="0"/>
+		</xs:sequence>
+	</xs:complexType>
+	<xs:complexType name="ChannelAcct">
+		<xs:annotation>
+			<xs:documentation>Channel Account Type</xs:documentation>
+		</xs:annotation>
+		<xs:sequence>
+			<xs:element ref="ChannelId"/>
+			<xs:element ref="AcctId"/>
+			<xs:element ref="OrgCode" minOccurs="0"/>
+			<xs:element ref="BankId" minOccurs="0"/>
+		</xs:sequence>
+	</xs:complexType>
+	<xs:complexType name="CISCustId">
+		<xs:annotation>
+			<xs:documentation>Customer Identification (CIS) Type</xs:documentation>
+		</xs:annotation>
+		<xs:sequence>
+			<xs:element ref="CISCIN"/>
+			<xs:element ref="CISCINsfx"/>
+		</xs:sequence>
+	</xs:complexType>
+	<xs:complexType name="DateRange">
+		<xs:annotation>
+			<xs:documentation>Range of dates</xs:documentation>
+		</xs:annotation>
+		<xs:sequence>
+			<xs:element name="StartDate" type="xs:date" minOccurs="0">
+				<xs:annotation>
+					<xs:documentation>Starting date of range</xs:documentation>
+				</xs:annotation>
+			</xs:element>
+			<xs:element name="EndDate" type="xs:date" minOccurs="0">
+				<xs:annotation>
+					<xs:documentation>End date of range</xs:documentation>
+				</xs:annotation>
+			</xs:element>
+		</xs:sequence>
+	</xs:complexType>
+	<xs:complexType name="DepAcct">
+		<xs:annotation>
+			<xs:documentation>Deposit Account Type</xs:documentation>
+		</xs:annotation>
+		<xs:sequence>
+			<xs:element ref="ProdType"/>
+			<xs:element ref="ProdCode" minOccurs="0"/>
+			<xs:element ref="AcctId"/>
+			<xs:element ref="AcctCur" minOccurs="0"/>
+			<xs:element ref="OrgCode" minOccurs="0"/>
+			<xs:element ref="BankId" minOccurs="0"/>
+			<xs:element ref="BranchId" minOccurs="0"/>
+		</xs:sequence>
+	</xs:complexType>
+	<xs:complexType name="ExchgRate">
+		<xs:annotation>
+			<xs:documentation>Exchange Rate Type </xs:documentation>
+		</xs:annotation>
+		<xs:sequence>
+			<xs:element name="Rate" type="xs:decimal">
+				<xs:annotation>
+					<xs:documentation>Exchange rate</xs:documentation>
+				</xs:annotation>
+			</xs:element>
+			<xs:element name="RefCur" minOccurs="0">
+				<xs:annotation>
+					<xs:documentation>Reference currency for exchange rate</xs:documentation>
+					<xs:documentation>Refer to Currency code in Foundation for IP Message Set – Codes document </xs:documentation>
+				</xs:annotation>
+				<xs:simpleType>
+					<xs:restriction base="xs:string">
+						<xs:length value="3"/>
+					</xs:restriction>
+				</xs:simpleType>
+			</xs:element>
+		</xs:sequence>
+	</xs:complexType>
+	<xs:complexType name="FinAcct">
+		<xs:annotation>
+			<xs:documentation>Financing Account Type</xs:documentation>
+		</xs:annotation>
+		<xs:sequence>
+			<xs:element ref="ProdType" minOccurs="0"/>
+			<xs:element ref="ProdSubType" minOccurs="0"/>
+			<xs:element ref="ProdCode" minOccurs="0"/>
+			<xs:element ref="AcctId">
+				<xs:annotation>
+					<xs:documentation>Financing account identifier</xs:documentation>
+				</xs:annotation>
+			</xs:element>
+			<xs:element ref="AcctCur" minOccurs="0"/>
+			<xs:element ref="OrgCode" minOccurs="0"/>
+			<xs:element ref="BankId" minOccurs="0"/>
+			<xs:element ref="BranchId" minOccurs="0"/>
+		</xs:sequence>
+	</xs:complexType>
+	<xs:complexType name="Freq">
+		<xs:annotation>
+			<xs:documentation>Frequency</xs:documentation>
+		</xs:annotation>
+		<xs:sequence>
+			<xs:element ref="FreqType"/>
+			<xs:choice minOccurs="0">
+				<xs:sequence>
+					<xs:element ref="Week" minOccurs="0"/>
+					<xs:element ref="DayOfWeek" minOccurs="0"/>
+				</xs:sequence>
+				<xs:element ref="DayOfMth"/>
+			</xs:choice>
+		</xs:sequence>
+	</xs:complexType>
+	<xs:complexType name="Language">
+		<xs:annotation>
+			<xs:documentation>Language</xs:documentation>
+		</xs:annotation>
+		<xs:sequence>
+			<xs:element name="LanguageType">
+				<xs:annotation>
+					<xs:documentation>Type of Language</xs:documentation>
+					<xs:documentation>Refer to Language Type code in Foundation for IP Message Set - Codes document</xs:documentation>
+				</xs:annotation>
+				<xs:simpleType>
+					<xs:restriction base="xs:string">
+						<xs:maxLength value="20"/>
+					</xs:restriction>
+				</xs:simpleType>
+			</xs:element>
+			<xs:element name="CtryOfLanguage" minOccurs="0">
+				<xs:annotation>
+					<xs:documentation>Country where language is used</xs:documentation>
+					<xs:documentation>Refer to Country code in Foundation for IP Message Set - Codes document</xs:documentation>
+				</xs:annotation>
+				<xs:simpleType>
+					<xs:restriction base="xs:string">
+						<xs:maxLength value="3"/>
+					</xs:restriction>
+				</xs:simpleType>
+			</xs:element>
+		</xs:sequence>
+	</xs:complexType>
+	<xs:complexType name="OthBankAcct">
+		<xs:annotation>
+			<xs:documentation>Other Bank's Account Complex type</xs:documentation>
+		</xs:annotation>
+		<xs:sequence>
+			<xs:element ref="AcctId"/>
+			<xs:element ref="AcctName" minOccurs="0">
+				<xs:annotation>
+					<xs:documentation>Account Name</xs:documentation>
+				</xs:annotation>
+			</xs:element>
+			<xs:element ref="AcctCur" minOccurs="0"/>
+			<xs:element ref="BankIdType" minOccurs="0"/>
+			<xs:element name="BankId" minOccurs="0">
+				<xs:annotation>
+					<xs:documentation>Bank Identifier</xs:documentation>
+				</xs:annotation>
+				<xs:simpleType>
+					<xs:restriction base="xs:string">
+						<xs:maxLength value="8"/>
+					</xs:restriction>
+				</xs:simpleType>
+			</xs:element>
+			<xs:element ref="BankName" minOccurs="0"/>
+			<xs:element name="BranchId" minOccurs="0">
+				<xs:annotation>
+					<xs:documentation>Branch Identifier</xs:documentation>
+				</xs:annotation>
+				<xs:simpleType>
+					<xs:restriction base="xs:string">
+						<xs:maxLength value="8"/>
+					</xs:restriction>
+				</xs:simpleType>
+			</xs:element>
+			<xs:element ref="BranchName" minOccurs="0"/>
+		</xs:sequence>
+	</xs:complexType>
+	<xs:complexType name="Period">
+		<xs:annotation>
+			<xs:documentation>Period Complex Type</xs:documentation>
+		</xs:annotation>
+		<xs:sequence>
+			<xs:element name="PeriodCount">
+				<xs:annotation>
+					<xs:documentation>Length of period</xs:documentation>
+					<xs:documentation>E.g. to specify a period of 3 months: 
+PeriodCount is set to 3, PeriodType is set to MONTH</xs:documentation>
+				</xs:annotation>
+				<xs:simpleType>
+					<xs:restriction base="xs:integer">
+						<xs:totalDigits value="7"/>
+					</xs:restriction>
+				</xs:simpleType>
+			</xs:element>
+			<xs:element name="PeriodType">
+				<xs:annotation>
+					<xs:documentation>Period Type</xs:documentation>
+					<xs:documentation>Refer to Period Type code in Foundation for IP Message Set - Codes document</xs:documentation>
+				</xs:annotation>
+				<xs:simpleType>
+					<xs:restriction base="xs:string">
+						<xs:maxLength value="10"/>
+					</xs:restriction>
+				</xs:simpleType>
+			</xs:element>
+		</xs:sequence>
+	</xs:complexType>
+	<xs:complexType name="TimeRange">
+		<xs:annotation>
+			<xs:documentation>Time range</xs:documentation>
+		</xs:annotation>
+		<xs:sequence>
+			<xs:element name="StartTime" type="xs:time" minOccurs="0">
+				<xs:annotation>
+					<xs:documentation>Starting time of range</xs:documentation>
+				</xs:annotation>
+			</xs:element>
+			<xs:element name="EndTime" type="xs:time" minOccurs="0">
+				<xs:annotation>
+					<xs:documentation>Ending time of range</xs:documentation>
+				</xs:annotation>
+			</xs:element>
+		</xs:sequence>
+	</xs:complexType>
+	<xs:complexType name="TradeAcct">
+		<xs:annotation>
+			<xs:documentation>Trading Account Type</xs:documentation>
+		</xs:annotation>
+		<xs:sequence>
+			<xs:element ref="ProdType"/>
+			<xs:element ref="ProdCode" minOccurs="0"/>
+			<xs:element ref="AcctId"/>
+			<xs:element ref="AcctCur" minOccurs="0"/>
+			<xs:element ref="OrgCode" minOccurs="0"/>
+			<xs:element ref="BankId" minOccurs="0"/>
+			<xs:element ref="BranchId" minOccurs="0">
+				<xs:annotation>
+					<xs:documentation>Branch Identifier</xs:documentation>
+				</xs:annotation>
+			</xs:element>
+		</xs:sequence>
+	</xs:complexType>
+	<xs:element name="Lang" type="xs:string"/>
+</xs:schema>

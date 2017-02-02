@@ -1,0 +1,141 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<pd:ProcessDefinition xmlns:xsl="http://www.w3.org/1999/XSL/Transform" xmlns:pfx="http://schemas.dbs.com/icc/BasicSvc" xmlns:pd="http://xmlns.tibco.com/bw/process/2003" xmlns:ns="http://xmlns.tibco.com/bw/activity/xml/render/bytesEnvelope/2003/05" xmlns:xsd="http://www.w3.org/2001/XMLSchema" xmlns:ns2="http://schemas.dbs.com/icc/ems">
+    <xsd:import namespace="http://schemas.dbs.com/icc/BasicSvc" schemaLocation="/SharedResources/Schema/IP/CaseMgmtRqAddOp_v1.1.xsd"/>
+    <pd:name>xUT/TestInsertBLOB.process</pd:name>
+    <pd:startName>Start</pd:startName>
+    <pd:startX>158</pd:startX>
+    <pd:startY>131</pd:startY>
+    <pd:returnBindings/>
+    <pd:endName>End</pd:endName>
+    <pd:endX>880</pd:endX>
+    <pd:endY>132</pd:endY>
+    <pd:errorSchemas/>
+    <pd:processVariables/>
+    <pd:targetNamespace>http://xmlns.example.com/1454659588891</pd:targetNamespace>
+    <pd:activity name="Create Request Schema">
+        <pd:type>com.tibco.plugin.mapper.MapperActivity</pd:type>
+        <pd:resourceType>ae.activities.MapperActivity</pd:resourceType>
+        <pd:x>297</pd:x>
+        <pd:y>141</pd:y>
+        <config>
+            <element>
+                <xsd:element name="root">
+                    <xsd:complexType>
+                        <xsd:sequence>
+                            <xsd:element ref="pfx:CaseMgmtRqAdd" minOccurs="0"/>
+                        </xsd:sequence>
+                    </xsd:complexType>
+                </xsd:element>
+            </element>
+        </config>
+        <pd:inputBindings>
+            <root>
+                <pfx:CaseMgmtRqAdd>
+                    <ns2:CommonRq>
+                        <ns2:OrgCode>
+                            <xsl:value-of select="'001'"/>
+                        </ns2:OrgCode>
+                        <ns2:ChannelId>
+                            <xsl:value-of select="'CC'"/>
+                        </ns2:ChannelId>
+                    </ns2:CommonRq>
+                    <pfx:CaseType>
+                        <xsl:value-of select="'CC'"/>
+                    </pfx:CaseType>
+                    <ns2:CustName>
+                        <ns2:FullName>
+                            <xsl:value-of select="'TestName'"/>
+                        </ns2:FullName>
+                    </ns2:CustName>
+                </pfx:CaseMgmtRqAdd>
+            </root>
+        </pd:inputBindings>
+    </pd:activity>
+    <pd:activity name="Render XML">
+        <pd:type>com.tibco.plugin.xml.XMLRendererActivity</pd:type>
+        <pd:resourceType>ae.activities.XMLRendererActivity</pd:resourceType>
+        <pd:x>484</pd:x>
+        <pd:y>131</pd:y>
+        <config>
+            <renderAsText>binary</renderAsText>
+            <validateInput>false</validateInput>
+            <term ref="pfx:CaseMgmtRqAdd"/>
+        </config>
+        <pd:inputBindings>
+            <ns:xmlInput>
+                <xsl:copy-of select="$Create-Request-Schema/root/pfx:CaseMgmtRqAdd"/>
+            </ns:xmlInput>
+        </pd:inputBindings>
+    </pd:activity>
+    <pd:activity name="JDBC Update">
+        <pd:type>com.tibco.plugin.jdbc.JDBCUpdateActivity</pd:type>
+        <pd:resourceType>ae.activities.JDBCUpdateActivity</pd:resourceType>
+        <pd:x>669</pd:x>
+        <pd:y>132</pd:y>
+        <config>
+            <timeout>10</timeout>
+            <commit>false</commit>
+            <emptyStrAsNil>false</emptyStrAsNil>
+            <jdbcSharedConfig>/SharedResources/Connections/JDBC/IWFDB.sharedjdbc</jdbcSharedConfig>
+            <statement>insert into HFA_ALERT_FAULT
+(ID, CONTENT, CREATED_DATE, RETRY, STATUS, ERR_MESSAGE)
+values
+(?, ?, systimestamp, 0, 0, ?)</statement>
+            <Prepared_Param_DataType>
+                <parameter>
+                    <parameterName>ID</parameterName>
+                    <dataType>VARCHAR</dataType>
+                </parameter>
+                <parameter>
+                    <parameterName>CONTENT</parameterName>
+                    <dataType>BLOB</dataType>
+                </parameter>
+                <parameter>
+                    <parameterName>MESSAGE</parameterName>
+                    <dataType>VARCHAR</dataType>
+                </parameter>
+            </Prepared_Param_DataType>
+        </config>
+        <pd:inputBindings>
+            <jdbcUpdateActivityInput>
+                <ID>
+                    <xsl:value-of select="'2'"/>
+                </ID>
+                <CONTENT>
+                    <xsl:value-of select="$Render-XML/xmlBytes"/>
+                </CONTENT>
+                <MESSAGE>
+                    <xsl:value-of select="'test'"/>
+                </MESSAGE>
+            </jdbcUpdateActivityInput>
+        </pd:inputBindings>
+    </pd:activity>
+    <pd:transition>
+        <pd:from>Start</pd:from>
+        <pd:to>Create Request Schema</pd:to>
+        <pd:lineType>Default</pd:lineType>
+        <pd:lineColor>-16777216</pd:lineColor>
+        <pd:conditionType>always</pd:conditionType>
+    </pd:transition>
+    <pd:transition>
+        <pd:from>Create Request Schema</pd:from>
+        <pd:to>Render XML</pd:to>
+        <pd:lineType>Default</pd:lineType>
+        <pd:lineColor>-16777216</pd:lineColor>
+        <pd:conditionType>always</pd:conditionType>
+    </pd:transition>
+    <pd:transition>
+        <pd:from>Render XML</pd:from>
+        <pd:to>JDBC Update</pd:to>
+        <pd:lineType>Default</pd:lineType>
+        <pd:lineColor>-16777216</pd:lineColor>
+        <pd:conditionType>always</pd:conditionType>
+    </pd:transition>
+    <pd:transition>
+        <pd:from>JDBC Update</pd:from>
+        <pd:to>End</pd:to>
+        <pd:lineType>Default</pd:lineType>
+        <pd:lineColor>-16777216</pd:lineColor>
+        <pd:conditionType>always</pd:conditionType>
+    </pd:transition>
+</pd:ProcessDefinition>

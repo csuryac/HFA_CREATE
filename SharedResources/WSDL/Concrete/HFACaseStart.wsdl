@@ -1,0 +1,96 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!--Created by TIBCO WSDL-->
+<wsdl:definitions xmlns:ns="http://docs.oasis-open.org/wss/2004/01/oasis-200401-wss-wssecurity-secext-1.0.xsd" xmlns:wsdl="http://schemas.xmlsoap.org/wsdl/" xmlns:tns="http://www.dbs.com.sg/iwf_hfa_process_start_contract/iwf_hfa_process_start_contract_wsp" xmlns:ns0="http://www.dbs.com.sg/iwf_hfa_process_start_contract/" xmlns:soap="http://schemas.xmlsoap.org/wsdl/soap/" name="iwf_hfa_process_start_contract_wsp" targetNamespace="http://www.dbs.com.sg/iwf_hfa_process_start_contract/iwf_hfa_process_start_contract_wsp">
+    <wsdl:import namespace="http://docs.oasis-open.org/wss/2004/01/oasis-200401-wss-wssecurity-secext-1.0.xsd" location="../../Schema/saml/wss-wssecurity-secext.xsd"/>
+    <wsdl:types>
+        <xs:schema xmlns:xs="http://www.w3.org/2001/XMLSchema" targetNamespace="http://www.dbs.com.sg/iwf_hfa_process_start_contract/" elementFormDefault="qualified" attributeFormDefault="unqualified">
+            <xs:element name="MergeAlertsContract">
+                <xs:complexType>
+                    <xs:sequence>
+                        <xs:element name="MERGE_ALERT_CIF" form="unqualified" type="xs:string"/>
+                        <xs:element name="MERGE_ALERT_CASE_NUMBER" form="unqualified" type="xs:string"/>
+                        <xs:element name="MERGE_ALERT_COUNT" form="unqualified" type="xs:string"/>
+                        <xs:element name="MERGE_ALERT_PROCESS_INSTANCE_ID" form="unqualified" type="xs:string"/>
+                    </xs:sequence>
+                </xs:complexType>
+            </xs:element>
+            <xs:element name="StartHFACase">
+                <xs:complexType>
+                    <xs:sequence>
+                        <xs:element name="ALERT_ID" form="unqualified" type="xs:string"/>
+                        <xs:element name="ALERT_STATUS" form="unqualified" type="xs:string"/>
+                        <xs:element name="ARRIVAL_DATE_TIME" form="unqualified" type="xs:dateTime"/>
+                        <xs:element name="CASE_NUMBER" form="unqualified" type="xs:string"/>
+                        <xs:element name="CIF" form="unqualified" type="xs:string"/>
+                        <xs:element name="COUNTRY_CODE" form="unqualified" type="xs:string"/>
+                        <xs:element name="CUSTOMER_NAME" form="unqualified" type="xs:string"/>
+                        <xs:element name="PROJECT_CODE" form="unqualified" type="xs:string"/>
+                        <xs:element name="RULE_DESCRIPTION" form="unqualified" type="xs:string"/>
+                        <xs:element name="RULE_ID" form="unqualified" type="xs:string"/>
+                        <xs:element name="PRIORITY" form="unqualified" type="xs:string"/>
+                        <xs:element name="CARD_NUMBER" form="unqualified" type="xs:string"/>
+                        <xs:element name="TRANSACTION_AMOUNT" form="unqualified" type="xs:double"/>
+                        <xs:element name="TRANSACTION_CURRENCY" form="unqualified" type="xs:string"/>
+                        <xs:element name="CHANNEL_TYPE" form="unqualified" type="xs:string"/>
+                        <xs:element name="DOC_NUM" form="unqualified" type="xs:string"/>
+                    </xs:sequence>
+                </xs:complexType>
+            </xs:element>
+            <xs:element name="StartHFACaseResponse">
+                <xs:complexType>
+                    <xs:sequence>
+                        <xs:element name="ProcessId" form="unqualified" type="xs:string"/>
+                    </xs:sequence>
+                </xs:complexType>
+            </xs:element>
+        </xs:schema>
+    </wsdl:types>
+    <wsdl:message name="MergeHFACaseRequest">
+        <wsdl:part name="parameters" element="ns0:MergeAlertsContract"/>
+    </wsdl:message>
+    <wsdl:message name="StartHFACaseRequest">
+        <wsdl:part name="parameters" element="ns0:StartHFACase"/>
+    </wsdl:message>
+    <wsdl:message name="StartHFACaseResponse">
+        <wsdl:part element="ns0:StartHFACaseResponse" name="parameters"/>
+    </wsdl:message>
+    <wsdl:message name="Header">
+        <wsdl:part name="SAMLHeader" element="ns:Security"/>
+    </wsdl:message>
+    <wsdl:portType name="iwf_hfa_process_start_contract">
+        <wsdl:operation name="MergeHFACase">
+            <wsdl:input message="tns:MergeHFACaseRequest"/>
+        </wsdl:operation>
+        <wsdl:operation name="StartHFACase">
+            <wsdl:input message="tns:StartHFACaseRequest"/>
+            <wsdl:output message="tns:StartHFACaseResponse"/>
+        </wsdl:operation>
+    </wsdl:portType>
+    <wsdl:binding name="iwf_hfa_process_start_contract_EP" type="tns:iwf_hfa_process_start_contract">
+        <soap:binding style="document" transport="http://schemas.xmlsoap.org/soap/http"/>
+        <wsdl:operation name="MergeHFACase">
+            <wsdl:documentation/>
+            <soap:operation style="document" soapAction="MergeHFACase"/>
+            <wsdl:input>
+				<soap:header message="Header" part="SAMLHeader" use="literal"/>
+                <soap:body use="literal" parts="parameters"/>
+            </wsdl:input>
+        </wsdl:operation>
+        <wsdl:operation name="StartHFACase">
+            <wsdl:documentation/>
+            <soap:operation style="document" soapAction="StartHFACase"/>
+            <wsdl:input>
+                <soap:header message="Header" part="SAMLHeader" use="literal"/>
+                <soap:body parts="parameters" use="literal"/>
+            </wsdl:input>
+            <wsdl:output>
+                <soap:body use="literal" parts="parameters"/>
+            </wsdl:output>
+        </wsdl:operation>
+    </wsdl:binding>
+    <wsdl:service name="iwf_hfa_process_start_contract_wsp">
+        <wsdl:port binding="tns:iwf_hfa_process_start_contract_EP" name="iwf_hfa_process_start_contract_EP">
+            <soap:address location="http://10.91.35.169:50009/iwf_hfa_process_start_contract/iwf_hfa_process_start_contractSOAP"/>
+        </wsdl:port>
+    </wsdl:service>
+</wsdl:definitions>

@@ -1,0 +1,1749 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<pd:ProcessDefinition xmlns:op="http://schemas.dbs.com/icc/BasicSvc" xmlns:pfx2="http://www.tibco.com/pe/WriteToLogActivitySchema" xmlns:ns="http://www.tibco.com/namespaces/tnt/plugins/jms" xmlns:pfx3="http://schemas.dbs.com/wis/hfaFaultSchema" xmlns:pfx4="http://schemas.xmlsoap.org/soap/envelope/" xmlns:pfx5="http://www.tibco.com/pe/DeployedVarsType" xmlns:xsd="http://www.w3.org/2001/XMLSchema" xmlns:ems="http://schemas.dbs.com/icc/ems" xmlns:ns2="http://www.tibco.com/pe/EngineTypes" xmlns:tib="http://www.tibco.com/bw/xslt/custom-functions" xmlns:ns4="http://xmlns.tibco.com/bw/activity/xml/render/bytesEnvelope/2003/05" xmlns:ns3="http://www.dbs.com/sg/wis/hfa/xsd/hfaCaseDetails" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns:xsl="http://www.w3.org/1999/XSL/Transform" xmlns:ns6="http://schemas.dbs.com/icc/CustomerSvc" xmlns:ns5="http://schemas.dbs.com/icc/CardSvc" xmlns:pd="http://xmlns.tibco.com/bw/process/2003">
+    <xsd:import namespace="http://schemas.dbs.com/wis/hfaFaultSchema"/>
+    <xsd:import namespace="http://schemas.dbs.com/icc/ems" schemaLocation="/SharedResources/Schema/IP/EMSHeader3_v1_1.xsd"/>
+    <xsd:import namespace="http://schemas.dbs.com/icc/BasicSvc" schemaLocation="/SharedResources/Schema/IP/CaseMgmtRqAddOp_v1.1.xsd"/>
+    <xsd:import namespace="http://schemas.xmlsoap.org/soap/envelope/" schemaLocation="/SharedResources/Schema/IP/HFASchema.xsd"/>
+    <pd:name>Starter/ReceiveAlert.process</pd:name>
+    <pd:startName>ReceiveAlertMsg</pd:startName>
+    <pd:startX>0</pd:startX>
+    <pd:startY>0</pd:startY>
+    <pd:returnBindings/>
+    <pd:starter name="ReceiveAlertMsg">
+        <pd:type>com.tibco.plugin.jms.JMSQueueEventSource</pd:type>
+        <pd:resourceType>ae.activities.JMSQueueEventSource</pd:resourceType>
+        <pd:x>62</pd:x>
+        <pd:y>110</pd:y>
+        <config>
+            <PermittedMessageType>Text</PermittedMessageType>
+            <SessionAttributes>
+                <transacted>false</transacted>
+                <acknowledgeMode>2</acknowledgeMode>
+                <maxSessions>%%Application/CaseCreate/MaxSession%%</maxSessions>
+                <destination>%%Connections/JMS/RequestQueue%%</destination>
+            </SessionAttributes>
+            <ConfigurableHeaders>
+                <JMSDeliveryMode>PERSISTENT</JMSDeliveryMode>
+                <JMSExpiration>0</JMSExpiration>
+                <JMSPriority>4</JMSPriority>
+            </ConfigurableHeaders>
+            <ConnectionReference>/SharedResources/Connections/JMS/HFAJMS.sharedjmscon</ConnectionReference>
+        </config>
+        <pd:inputBindings/>
+    </pd:starter>
+    <pd:endName>End</pd:endName>
+    <pd:endX>1800</pd:endX>
+    <pd:endY>125</pd:endY>
+    <pd:errorSchemas/>
+    <pd:processVariables/>
+    <pd:targetNamespace>http://xmlns.example.com/1377745455370</pd:targetNamespace>
+    <pd:activity name="LogStart">
+        <pd:type>com.tibco.pe.core.WriteToLogActivity</pd:type>
+        <pd:resourceType>ae.activities.log</pd:resourceType>
+        <pd:x>181</pd:x>
+        <pd:y>109</pd:y>
+        <config>
+            <role>User</role>
+        </config>
+        <pd:inputBindings>
+            <pfx2:ActivityInput>
+                <message>
+                    <xsl:value-of select="concat(&quot;Receive Alert Process Start : &quot;,$ReceiveAlertMsg/ns:ActivityOutput/Body)"/>
+                </message>
+            </pfx2:ActivityInput>
+        </pd:inputBindings>
+    </pd:activity>
+    <pd:activity name="ParseAlertReq">
+        <pd:type>com.tibco.plugin.xml.XMLParseActivity</pd:type>
+        <pd:resourceType>ae.activities.XMLParseActivity</pd:resourceType>
+        <pd:x>296</pd:x>
+        <pd:y>112</pd:y>
+        <config>
+            <inputStyle>text</inputStyle>
+            <xsdVersion>default</xsdVersion>
+            <validateOutput>true</validateOutput>
+            <term ref="op:CaseMgmtRqAdd"/>
+        </config>
+        <pd:inputBindings>
+            <xmlString>
+                <xsl:value-of select="$ReceiveAlertMsg/ns:ActivityOutput/Body"/>
+            </xmlString>
+        </pd:inputBindings>
+    </pd:activity>
+    <pd:activity name="validateAlertRequest">
+        <pd:type>com.tibco.pe.core.CallProcessActivity</pd:type>
+        <pd:resourceType>ae.process.subprocess</pd:resourceType>
+        <pd:x>396</pd:x>
+        <pd:y>113</pd:y>
+        <config>
+            <processName>/HFA/SubProcesses/ValidateAlertRequest.process</processName>
+        </config>
+        <pd:inputBindings>
+            <xsl:copy-of select="$ParseAlertReq/op:CaseMgmtRqAdd"/>
+        </pd:inputBindings>
+    </pd:activity>
+    <pd:activity name="LogEnd">
+        <pd:type>com.tibco.pe.core.WriteToLogActivity</pd:type>
+        <pd:resourceType>ae.activities.log</pd:resourceType>
+        <pd:x>1473</pd:x>
+        <pd:y>123</pd:y>
+        <config>
+            <role>User</role>
+        </config>
+        <pd:inputBindings>
+            <pfx2:ActivityInput>
+                <message>
+                    <xsl:value-of select="concat(&quot;Receive HFA Alert Process End for Alert ID: &quot;, $ParseAlertReq/op:CaseMgmtRqAdd/op:AlertDetl[1]/op:AlertId,&quot;&#xD;&#xA;&quot;,&#xA;&quot;Success reply sent as follows: &quot;,(tib:trim($Render-XML-CaseSucess-1/xmlString)), &quot;&#xD;&#xA;&quot;, &quot;Response Queue is: &quot; ,&#xA;if (contains($ReceiveAlertMsg/ns:ActivityOutput/JMSHeaders/ns:JMSReplyTo, &quot;?targetClient&quot;)) then&#xA;tib:substring-before-last(tib:substring-after-last($ReceiveAlertMsg/ns:ActivityOutput/JMSHeaders/ns:JMSReplyTo, &quot;/&quot;), &quot;?&quot;)&#xA;else if (string-length(tib:substring-after-last($ReceiveAlertMsg/ns:ActivityOutput/JMSHeaders/ns:JMSReplyTo, &quot;/&quot;)!=0)) then &#xA;tib:substring-after-last($ReceiveAlertMsg/ns:ActivityOutput/JMSHeaders/ns:JMSReplyTo, &quot;/&quot;) else concat(&quot; global variable value: &quot;,$_globalVariables/pfx5:GlobalVariables/Connections/JMS/ReplyQueue))"/>
+                </message>
+            </pfx2:ActivityInput>
+        </pd:inputBindings>
+    </pd:activity>
+    <pd:activity name="Catch">
+        <pd:type>com.tibco.pe.core.CatchActivity</pd:type>
+        <pd:resourceType>ae.activities.catch</pd:resourceType>
+        <pd:x>301</pd:x>
+        <pd:y>264</pd:y>
+        <pd:handler>true</pd:handler>
+        <config>
+            <catchAll>true</catchAll>
+        </config>
+        <pd:inputBindings/>
+    </pd:activity>
+    <pd:activity name="LogError">
+        <pd:type>com.tibco.pe.core.WriteToLogActivity</pd:type>
+        <pd:resourceType>ae.activities.log</pd:resourceType>
+        <pd:x>912</pd:x>
+        <pd:y>267</pd:y>
+        <config>
+            <role>User</role>
+        </config>
+        <pd:inputBindings>
+            <pfx2:ActivityInput>
+                <message>
+                    <xsl:value-of select="concat(&quot;Error in Receive Alert Process. Alert ID: &quot;,$ParseAlertReq/op:CaseMgmtRqAdd/op:AlertDetl[1]/op:AlertId,&quot;&#xD;&#xA;&quot;, &quot;Error Report: &quot; , tib:render-xml($_error/ns2:ErrorReport, 1, 1)&#xA;,&quot;&#xD;&#xA;&quot;, &quot;Error reply sent is: &quot;,(tib:trim($RenderTxnData/xmlString)))"/>
+                </message>
+            </pfx2:ActivityInput>
+        </pd:inputBindings>
+    </pd:activity>
+    <pd:activity name="MapError">
+        <pd:type>com.tibco.plugin.mapper.MapperActivity</pd:type>
+        <pd:resourceType>ae.activities.MapperActivity</pd:resourceType>
+        <pd:x>669</pd:x>
+        <pd:y>266</pd:y>
+        <config>
+            <element ref="pfx4:Fault"/>
+        </config>
+        <pd:inputBindings excludePrefixes="xsl ns ns5 ns6 pd ns2 ns4 ns3 pfx5 xsd tib pfx4 pfx3 pfx2 xsi">
+            <pfx4:Fault>
+                <xsl:choose>
+                    <xsl:when test="exists($_error_ParseAlertReq/ActivityErrors)">
+                        <faultcode>
+                            <xsl:value-of select="string(&quot;100&quot;)"/>
+                        </faultcode>
+                    </xsl:when>
+                    <xsl:otherwise>
+                        <faultcode>
+                            <xsl:value-of select="string($ParseAlertReq/op:CaseMgmtRqAdd/ems:CommonRq/ems:RqSysRef)"/>
+                        </faultcode>
+                    </xsl:otherwise>
+                </xsl:choose>
+                <faultstring>
+                    <xsl:value-of select="$_error/ns2:ErrorReport/Msg"/>
+                </faultstring>
+                <faultactor>
+                    <xsl:value-of select="&quot;HFA&quot;"/>
+                </faultactor>
+                <detail>
+                    <ems:DetailInfo>
+                        <ems:Severity>
+                            <xsl:value-of select="&quot;Error&quot;"/>
+                        </ems:Severity>
+                        <ems:StatusCode>
+                            <xsl:value-of select="if (exists($_error_UpdateAlertHeader/ActivityErrors) or&#xA;exists($_error_UpdateTXNData/ActivityErrors))  then &quot;110&quot; else if(exists($_error_ParseAlertReq/ActivityErrors)) &#xA;then &quot;S801&quot;&#xA;else &quot;0001&quot;"/>
+                        </ems:StatusCode>
+                        <ems:StatusDesc>
+                            <xsl:value-of select="if (exists($_error_UpdateAlertHeader/ActivityErrors) or&#xA;exists($_error_UpdateTXNData/ActivityErrors))  &#xA;then &quot;System database error&quot; else &#xA;if(exists($_error_ParseAlertReq/ActivityErrors)) then &quot;Validation error&quot; else&#xA;concat(&quot;Service program error – details available. Error Msg: &quot;, substring($_error/ns2:ErrorReport/Msg, 1, 200))"/>
+                        </ems:StatusDesc>
+                    </ems:DetailInfo>
+                </detail>
+            </pfx4:Fault>
+        </pd:inputBindings>
+    </pd:activity>
+    <pd:activity name="Render XML">
+        <pd:type>com.tibco.plugin.xml.XMLRendererActivity</pd:type>
+        <pd:resourceType>ae.activities.XMLRendererActivity</pd:resourceType>
+        <pd:x>779</pd:x>
+        <pd:y>268</pd:y>
+        <config>
+            <renderAsText>text</renderAsText>
+            <validateInput>false</validateInput>
+            <term ref="pfx4:Envelope"/>
+        </config>
+        <pd:inputBindings excludePrefixes="xsl ns ns5 ns6 pd ns2 ns4 ns3 pfx5 xsd tib pfx4 pfx3 pfx2 xsi">
+            <pfx4:Envelope>
+                <pfx4:Body>
+                    <xsl:copy-of select="$MapError/pfx4:Fault"/>
+                </pfx4:Body>
+            </pfx4:Envelope>
+        </pd:inputBindings>
+    </pd:activity>
+    <pd:activity name="UpdateAlertHeaderDup">
+        <pd:type>com.tibco.plugin.jdbc.JDBCUpdateActivity</pd:type>
+        <pd:resourceType>ae.activities.JDBCUpdateActivity</pd:resourceType>
+        <pd:x>665</pd:x>
+        <pd:y>416</pd:y>
+        <config>
+            <timeout>%%Connections/JDBC/QueryTimeout%%</timeout>
+            <commit>false</commit>
+            <emptyStrAsNil>false</emptyStrAsNil>
+            <jdbcSharedConfig>/SharedResources/Connections/JDBC/IWFDB.sharedjdbc</jdbcSharedConfig>
+            <statement>INSERT INTO HFA_ALERT_HEADER (REC_ID, ALERT_ID, CARD_NUMBER, CUST_CIN, CUST_NAME, ALERT_RULE_ID, ALERT_RULE_DESC, ALERT_DATE_TIME,
+CUST_ALERT_SENT, CONTACT_MODE, CHANNEL_ID,  ORG_CODE, CUST_SUFFIX,CASE_ID, CASE_STATUS) VALUES
+(HFA_TXN_HEADER_S.nextval,?,?,?,?,?,?,?,?,?,?,?,?,?,?)</statement>
+            <Prepared_Param_DataType>
+                <parameter>
+                    <parameterName>ALERT_ID</parameterName>
+                    <dataType>VARCHAR</dataType>
+                </parameter>
+                <parameter>
+                    <parameterName>CARD_NUMBER</parameterName>
+                    <dataType>VARCHAR</dataType>
+                </parameter>
+                <parameter>
+                    <parameterName>CUST_CIN</parameterName>
+                    <dataType>VARCHAR</dataType>
+                </parameter>
+                <parameter>
+                    <parameterName>CUST_NAME</parameterName>
+                    <dataType>VARCHAR</dataType>
+                </parameter>
+                <parameter>
+                    <parameterName>ALERT_RULE_ID</parameterName>
+                    <dataType>VARCHAR</dataType>
+                </parameter>
+                <parameter>
+                    <parameterName>ALERT_RULE_DESC</parameterName>
+                    <dataType>VARCHAR</dataType>
+                </parameter>
+                <parameter>
+                    <parameterName>ALERT_DATE_TIME</parameterName>
+                    <dataType>VARCHAR</dataType>
+                </parameter>
+                <parameter>
+                    <parameterName>CUST_ALERT_SENT</parameterName>
+                    <dataType>VARCHAR</dataType>
+                </parameter>
+                <parameter>
+                    <parameterName>CONTACT_MODE</parameterName>
+                    <dataType>VARCHAR</dataType>
+                </parameter>
+                <parameter>
+                    <parameterName>CHANNEL_ID</parameterName>
+                    <dataType>VARCHAR</dataType>
+                </parameter>
+                <parameter>
+                    <parameterName>ORG_CODE</parameterName>
+                    <dataType>VARCHAR</dataType>
+                </parameter>
+                <parameter>
+                    <parameterName>CUST_SUFFIX</parameterName>
+                    <dataType>VARCHAR</dataType>
+                </parameter>
+                <parameter>
+                    <parameterName>CASE_ID</parameterName>
+                    <dataType>VARCHAR</dataType>
+                </parameter>
+                <parameter>
+                    <parameterName>CASE_STATUS</parameterName>
+                    <dataType>VARCHAR</dataType>
+                </parameter>
+            </Prepared_Param_DataType>
+        </config>
+        <pd:inputBindings>
+            <jdbcUpdateActivityInput>
+                <ALERT_ID>
+                    <xsl:choose>
+                        <xsl:when test="exists($ParseAlertReq/op:CaseMgmtRqAdd/op:AlertDetl[1]/op:AlertId)">
+                            <xsl:value-of select="$ParseAlertReq/op:CaseMgmtRqAdd/op:AlertDetl[1]/op:AlertId"/>
+                        </xsl:when>
+                        <xsl:otherwise>
+                            <xsl:attribute name="xsi:nil">true</xsl:attribute>
+                        </xsl:otherwise>
+                    </xsl:choose>
+                </ALERT_ID>
+                <CARD_NUMBER>
+                    <xsl:choose>
+                        <xsl:when test="exists($ParseAlertReq/op:CaseMgmtRqAdd/op:Cards/ems:Card[1]/ems:CardId)">
+                            <xsl:value-of select="$ParseAlertReq/op:CaseMgmtRqAdd/op:Cards/ems:Card[1]/ems:CardId"/>
+                        </xsl:when>
+                        <xsl:otherwise>
+                            <xsl:attribute name="xsi:nil">true</xsl:attribute>
+                        </xsl:otherwise>
+                    </xsl:choose>
+                </CARD_NUMBER>
+                <CUST_CIN>
+                    <xsl:choose>
+                        <xsl:when test="exists($ParseAlertReq/op:CaseMgmtRqAdd/ems:CISInternalId/ems:CISCIN)">
+                            <xsl:value-of select="$ParseAlertReq/op:CaseMgmtRqAdd/ems:CISInternalId/ems:CISCIN"/>
+                        </xsl:when>
+                        <xsl:otherwise>
+                            <xsl:attribute name="xsi:nil">true</xsl:attribute>
+                        </xsl:otherwise>
+                    </xsl:choose>
+                </CUST_CIN>
+                <CUST_NAME>
+                    <xsl:value-of select="$ParseAlertReq/op:CaseMgmtRqAdd/ems:CustName/ems:FullName"/>
+                </CUST_NAME>
+                <ALERT_RULE_ID>
+                    <xsl:choose>
+                        <xsl:when test="exists($ParseAlertReq/op:CaseMgmtRqAdd/op:AlertDetl[1]/op:AlertRuleId)">
+                            <xsl:value-of select="$ParseAlertReq/op:CaseMgmtRqAdd/op:AlertDetl[1]/op:AlertRuleId"/>
+                        </xsl:when>
+                        <xsl:otherwise>
+                            <xsl:attribute name="xsi:nil">true</xsl:attribute>
+                        </xsl:otherwise>
+                    </xsl:choose>
+                </ALERT_RULE_ID>
+                <ALERT_RULE_DESC>
+                    <xsl:choose>
+                        <xsl:when test="exists($ParseAlertReq/op:CaseMgmtRqAdd/op:AlertDetl[1]/op:AlertRuleDesc)">
+                            <xsl:value-of select="$ParseAlertReq/op:CaseMgmtRqAdd/op:AlertDetl[1]/op:AlertRuleDesc"/>
+                        </xsl:when>
+                        <xsl:otherwise>
+                            <xsl:attribute name="xsi:nil">true</xsl:attribute>
+                        </xsl:otherwise>
+                    </xsl:choose>
+                </ALERT_RULE_DESC>
+                <ALERT_DATE_TIME>
+                    <xsl:choose>
+                        <xsl:when test="exists($ParseAlertReq/op:CaseMgmtRqAdd/op:AlertDetl[1]/op:AlertDateTime)">
+                            <xsl:value-of select="$ParseAlertReq/op:CaseMgmtRqAdd/op:AlertDetl[1]/op:AlertDateTime"/>
+                        </xsl:when>
+                        <xsl:otherwise>
+                            <xsl:attribute name="xsi:nil">true</xsl:attribute>
+                        </xsl:otherwise>
+                    </xsl:choose>
+                </ALERT_DATE_TIME>
+                <CUST_ALERT_SENT>
+                    <xsl:choose>
+                        <xsl:when test="exists($ParseAlertReq/op:CaseMgmtRqAdd/op:AlertDetl[1]/op:AlertSent)">
+                            <xsl:value-of select="$ParseAlertReq/op:CaseMgmtRqAdd/op:AlertDetl[1]/op:AlertSent"/>
+                        </xsl:when>
+                        <xsl:otherwise>
+                            <xsl:attribute name="xsi:nil">true</xsl:attribute>
+                        </xsl:otherwise>
+                    </xsl:choose>
+                </CUST_ALERT_SENT>
+                <CONTACT_MODE>
+                    <xsl:choose>
+                        <xsl:when test="exists(tib:concat-sequence-format($ParseAlertReq/op:CaseMgmtRqAdd/op:AlertDetl/op:ContactMode, &quot;, &quot;, 1))">
+                            <xsl:value-of select="tib:concat-sequence-format($ParseAlertReq/op:CaseMgmtRqAdd/op:AlertDetl/op:ContactMode, &quot;, &quot;, 1)"/>
+                        </xsl:when>
+                        <xsl:otherwise>
+                            <xsl:attribute name="xsi:nil">true</xsl:attribute>
+                        </xsl:otherwise>
+                    </xsl:choose>
+                </CONTACT_MODE>
+                <CHANNEL_ID>
+                    <xsl:choose>
+                        <xsl:when test="exists($ParseAlertReq/op:CaseMgmtRqAdd/ems:CommonRq/ems:ChannelId)">
+                            <xsl:value-of select="$ParseAlertReq/op:CaseMgmtRqAdd/ems:CommonRq/ems:ChannelId"/>
+                        </xsl:when>
+                        <xsl:otherwise>
+                            <xsl:attribute name="xsi:nil">true</xsl:attribute>
+                        </xsl:otherwise>
+                    </xsl:choose>
+                </CHANNEL_ID>
+                <ORG_CODE>
+                    <xsl:value-of select="$ParseAlertReq/op:CaseMgmtRqAdd/ems:CommonRq/ems:OrgCode"/>
+                </ORG_CODE>
+                <CUST_SUFFIX>
+                    <xsl:choose>
+                        <xsl:when test="exists($ParseAlertReq/op:CaseMgmtRqAdd/ems:CISInternalId/ems:CISCINsfx)">
+                            <xsl:value-of select="$ParseAlertReq/op:CaseMgmtRqAdd/ems:CISInternalId/ems:CISCINsfx"/>
+                        </xsl:when>
+                        <xsl:otherwise>
+                            <xsl:attribute name="xsi:nil">true</xsl:attribute>
+                        </xsl:otherwise>
+                    </xsl:choose>
+                </CUST_SUFFIX>
+                <CASE_ID>
+                    <xsl:value-of select="&quot;XXXXXX&quot;"/>
+                </CASE_ID>
+                <CASE_STATUS>
+                    <xsl:value-of select="&quot;DUPLICATE&quot;"/>
+                </CASE_STATUS>
+            </jdbcUpdateActivityInput>
+        </pd:inputBindings>
+    </pd:activity>
+    <pd:activity name="LogDuplicate">
+        <pd:type>com.tibco.pe.core.WriteToLogActivity</pd:type>
+        <pd:resourceType>ae.activities.log</pd:resourceType>
+        <pd:x>806</pd:x>
+        <pd:y>415</pd:y>
+        <config>
+            <role>User</role>
+        </config>
+        <pd:inputBindings>
+            <pfx2:ActivityInput>
+                <message>
+                    <xsl:value-of select="$_error/ns2:ErrorReport/Msg"/>
+                </message>
+                <xsl:if test="$_error/ns2:ErrorReport/MsgCode">
+                    <msgCode>
+                        <xsl:value-of select="$_error/ns2:ErrorReport/MsgCode"/>
+                    </msgCode>
+                </xsl:if>
+            </pfx2:ActivityInput>
+        </pd:inputBindings>
+    </pd:activity>
+    <pd:activity name="FormDupReply">
+        <pd:type>com.tibco.plugin.xml.XMLRendererActivity</pd:type>
+        <pd:resourceType>ae.activities.XMLRendererActivity</pd:resourceType>
+        <pd:x>913</pd:x>
+        <pd:y>416</pd:y>
+        <config>
+            <renderAsText>text</renderAsText>
+            <validateInput>false</validateInput>
+            <term ref="pfx4:Envelope"/>
+        </config>
+        <pd:inputBindings excludePrefixes="xsl ns ns5 ns6 pd ns2 ns4 ns3 pfx5 xsd tib pfx4 pfx3 pfx2 xsi">
+            <pfx4:Envelope>
+                <pfx4:Body>
+                    <Fault>
+                        <faultcode>
+                            <xsl:value-of select="string($ParseAlertReq/op:CaseMgmtRqAdd/ems:CommonRq/ems:RqSysRef)"/>
+                        </faultcode>
+                        <faultstring>
+                            <xsl:value-of select="&quot;Duplicate request&quot;"/>
+                        </faultstring>
+                        <detail>
+                            <ems:DetailInfo>
+                                <ems:Severity>
+                                    <xsl:value-of select="&quot;Error&quot;"/>
+                                </ems:Severity>
+                                <ems:StatusCode>
+                                    <xsl:value-of select="&quot;210&quot;"/>
+                                </ems:StatusCode>
+                                <xsl:if test="$_error/ns2:ErrorReport/Msg">
+                                    <ems:StatusDesc>
+                                        <xsl:value-of select="$_error/ns2:ErrorReport/Msg"/>
+                                    </ems:StatusDesc>
+                                </xsl:if>
+                            </ems:DetailInfo>
+                        </detail>
+                    </Fault>
+                </pfx4:Body>
+            </pfx4:Envelope>
+        </pd:inputBindings>
+    </pd:activity>
+    <pd:activity name="JMS Queue Sender">
+        <pd:type>com.tibco.plugin.jms.JMSQueueSendActivity</pd:type>
+        <pd:resourceType>ae.activities.JMSQueueSendActivity</pd:resourceType>
+        <pd:x>1344</pd:x>
+        <pd:y>122</pd:y>
+        <config>
+            <PermittedMessageType>Text</PermittedMessageType>
+            <SessionAttributes>
+                <transacted>false</transacted>
+                <acknowledgeMode>1</acknowledgeMode>
+                <maxSessions>1</maxSessions>
+                <destination>%%Connections/JMS/ReplyQueue%%</destination>
+            </SessionAttributes>
+            <ConfigurableHeaders>
+                <JMSDeliveryMode>PERSISTENT</JMSDeliveryMode>
+                <JMSExpiration>%%Connections/JMS/Expiry%%</JMSExpiration>
+                <JMSPriority>4</JMSPriority>
+            </ConfigurableHeaders>
+            <ConnectionReference>/SharedResources/Connections/JMS/HFAJMS.sharedjmscon</ConnectionReference>
+        </config>
+        <pd:inputBindings>
+            <ns:ActivityInput>
+                <destinationQueue>
+                    <xsl:value-of select="if (contains($ReceiveAlertMsg/ns:ActivityOutput/JMSHeaders/ns:JMSReplyTo, &quot;?targetClient&quot;)) then&#xA;&#xA;tib:substring-before-last(tib:substring-after-last($ReceiveAlertMsg/ns:ActivityOutput/JMSHeaders/ns:JMSReplyTo, &quot;/&quot;), &quot;?&quot;)&#xA;&#xA;else&#xA;&#xA;tib:substring-after-last($ReceiveAlertMsg/ns:ActivityOutput/JMSHeaders/ns:JMSReplyTo, &quot;/&quot;)"/>
+                </destinationQueue>
+                <xsl:if test="$ReceiveAlertMsg/ns:ActivityOutput/JMSHeaders/ns:JMSMessageID">
+                    <JMSCorrelationID>
+                        <xsl:value-of select="$ReceiveAlertMsg/ns:ActivityOutput/JMSHeaders/ns:JMSMessageID"/>
+                    </JMSCorrelationID>
+                </xsl:if>
+                <Body>
+                    <xsl:value-of select="$Render-XML-CaseSucess-1/xmlString"/>
+                </Body>
+            </ns:ActivityInput>
+        </pd:inputBindings>
+    </pd:activity>
+    <pd:activity name="Confirm">
+        <pd:type>com.tibco.pe.core.ConfirmActivity</pd:type>
+        <pd:resourceType>activity.confirm</pd:resourceType>
+        <pd:x>1604</pd:x>
+        <pd:y>124</pd:y>
+        <config>
+            <ConfirmEvent>ReceiveAlertMsg</ConfirmEvent>
+        </config>
+        <pd:inputBindings/>
+    </pd:activity>
+    <pd:activity name="Confirm-1">
+        <pd:type>com.tibco.pe.core.ConfirmActivity</pd:type>
+        <pd:resourceType>activity.confirm</pd:resourceType>
+        <pd:x>1555</pd:x>
+        <pd:y>274</pd:y>
+        <config>
+            <ConfirmEvent>ReceiveAlertMsg</ConfirmEvent>
+        </config>
+        <pd:inputBindings/>
+    </pd:activity>
+    <pd:activity name="Confirm-2">
+        <pd:type>com.tibco.pe.core.ConfirmActivity</pd:type>
+        <pd:resourceType>activity.confirm</pd:resourceType>
+        <pd:x>1337</pd:x>
+        <pd:y>418</pd:y>
+        <config>
+            <ConfirmEvent>ReceiveAlertMsg</ConfirmEvent>
+        </config>
+        <pd:inputBindings/>
+    </pd:activity>
+    <pd:activity name="JMS-Queue-Sender-1">
+        <pd:type>com.tibco.plugin.jms.JMSQueueSendActivity</pd:type>
+        <pd:resourceType>ae.activities.JMSQueueSendActivity</pd:resourceType>
+        <pd:x>1087</pd:x>
+        <pd:y>270</pd:y>
+        <config>
+            <PermittedMessageType>Text</PermittedMessageType>
+            <SessionAttributes>
+                <transacted>false</transacted>
+                <acknowledgeMode>1</acknowledgeMode>
+                <maxSessions>1</maxSessions>
+                <destination>%%Connections/JMS/ReplyQueue%%</destination>
+            </SessionAttributes>
+            <ConfigurableHeaders>
+                <JMSDeliveryMode>PERSISTENT</JMSDeliveryMode>
+                <JMSExpiration>0</JMSExpiration>
+                <JMSPriority>4</JMSPriority>
+            </ConfigurableHeaders>
+            <ConnectionReference>/SharedResources/Connections/JMS/HFAJMS.sharedjmscon</ConnectionReference>
+        </config>
+        <pd:inputBindings>
+            <ns:ActivityInput>
+                <destinationQueue>
+                    <xsl:value-of select="if (contains($ReceiveAlertMsg/ns:ActivityOutput/JMSHeaders/ns:JMSReplyTo, &quot;?targetClient&quot;)) then&#xA;&#xA;tib:substring-before-last(tib:substring-after-last($ReceiveAlertMsg/ns:ActivityOutput/JMSHeaders/ns:JMSReplyTo, &quot;/&quot;), &quot;?&quot;)&#xA;&#xA;else&#xA;&#xA;tib:substring-after-last($ReceiveAlertMsg/ns:ActivityOutput/JMSHeaders/ns:JMSReplyTo, &quot;/&quot;)"/>
+                </destinationQueue>
+                <xsl:if test="$ReceiveAlertMsg/ns:ActivityOutput/JMSHeaders/ns:JMSMessageID">
+                    <JMSCorrelationID>
+                        <xsl:value-of select="$ReceiveAlertMsg/ns:ActivityOutput/JMSHeaders/ns:JMSMessageID"/>
+                    </JMSCorrelationID>
+                </xsl:if>
+                <Body>
+                    <xsl:value-of select="$Render-XML/xmlString"/>
+                </Body>
+            </ns:ActivityInput>
+        </pd:inputBindings>
+    </pd:activity>
+    <pd:activity name="JMS-Queue-Sender-2">
+        <pd:type>com.tibco.plugin.jms.JMSQueueSendActivity</pd:type>
+        <pd:resourceType>ae.activities.JMSQueueSendActivity</pd:resourceType>
+        <pd:x>1186</pd:x>
+        <pd:y>416</pd:y>
+        <config>
+            <PermittedMessageType>Text</PermittedMessageType>
+            <SessionAttributes>
+                <transacted>false</transacted>
+                <acknowledgeMode>1</acknowledgeMode>
+                <maxSessions>1</maxSessions>
+                <destination>%%Connections/JMS/ReplyQueue%%</destination>
+            </SessionAttributes>
+            <ConfigurableHeaders>
+                <JMSDeliveryMode>PERSISTENT</JMSDeliveryMode>
+                <JMSExpiration>0</JMSExpiration>
+                <JMSPriority>4</JMSPriority>
+            </ConfigurableHeaders>
+            <ConnectionReference>/SharedResources/Connections/JMS/HFAJMS.sharedjmscon</ConnectionReference>
+        </config>
+        <pd:inputBindings>
+            <ns:ActivityInput>
+                <destinationQueue>
+                    <xsl:value-of select="if (contains($ReceiveAlertMsg/ns:ActivityOutput/JMSHeaders/ns:JMSReplyTo, &quot;?targetClient&quot;)) then&#xA;&#xA;tib:substring-before-last(tib:substring-after-last($ReceiveAlertMsg/ns:ActivityOutput/JMSHeaders/ns:JMSReplyTo, &quot;/&quot;), &quot;?&quot;)&#xA;&#xA;else&#xA;&#xA;tib:substring-after-last($ReceiveAlertMsg/ns:ActivityOutput/JMSHeaders/ns:JMSReplyTo, &quot;/&quot;)"/>
+                </destinationQueue>
+                <xsl:if test="$ReceiveAlertMsg/ns:ActivityOutput/JMSHeaders/ns:JMSMessageID">
+                    <JMSCorrelationID>
+                        <xsl:value-of select="$ReceiveAlertMsg/ns:ActivityOutput/JMSHeaders/ns:JMSMessageID"/>
+                    </JMSCorrelationID>
+                </xsl:if>
+                <Body>
+                    <xsl:value-of select="$FormDupReply/xmlString"/>
+                </Body>
+            </ns:ActivityInput>
+        </pd:inputBindings>
+    </pd:activity>
+    <pd:activity name="Render-XML-CaseSucess-1">
+        <pd:type>com.tibco.plugin.xml.XMLRendererActivity</pd:type>
+        <pd:resourceType>ae.activities.XMLRendererActivity</pd:resourceType>
+        <pd:x>1204</pd:x>
+        <pd:y>122</pd:y>
+        <config>
+            <renderAsText>text</renderAsText>
+            <validateInput>false</validateInput>
+            <term ref="pfx4:Envelope"/>
+        </config>
+        <pd:inputBindings excludePrefixes="xsl ns ns5 ns6 pd ns2 ns4 ns3 pfx5 xsd tib pfx4 pfx3 pfx2 xsi">
+            <pfx4:Envelope>
+                <pfx4:Body>
+                    <op:CaseMgmtRqAddResponse>
+                        <ems:CommonRs>
+                            <ems:OrgCode>
+                                <xsl:value-of select="$ParseAlertReq/op:CaseMgmtRqAdd/ems:CommonRq/ems:OrgCode"/>
+                            </ems:OrgCode>
+                            <ems:RqSysRef>
+                                <xsl:value-of select="$ParseAlertReq/op:CaseMgmtRqAdd/ems:CommonRq/ems:RqSysRef"/>
+                            </ems:RqSysRef>
+                        </ems:CommonRs>
+                        <op:CaseType>
+                            <xsl:value-of select="$ParseAlertReq/op:CaseMgmtRqAdd/op:CaseType"/>
+                        </op:CaseType>
+                        <op:CaseId>
+                            <xsl:value-of select="$StartAlertCase/ns3:HFA_CaseDetails_output/ns3:CaseInformation/ns3:CASE_NUM"/>
+                        </op:CaseId>
+                        <op:CaseStatus>
+                            <xsl:value-of select="$StartAlertCase/ns3:HFA_CaseDetails_output/ns3:CaseInformation/ns3:CASE_STATUS"/>
+                        </op:CaseStatus>
+                    </op:CaseMgmtRqAddResponse>
+                </pfx4:Body>
+            </pfx4:Envelope>
+        </pd:inputBindings>
+    </pd:activity>
+    <pd:activity name="LogDupReply">
+        <pd:type>com.tibco.pe.core.WriteToLogActivity</pd:type>
+        <pd:resourceType>ae.activities.log</pd:resourceType>
+        <pd:x>1036</pd:x>
+        <pd:y>418</pd:y>
+        <config>
+            <role>User</role>
+        </config>
+        <pd:inputBindings>
+            <pfx2:ActivityInput>
+                <message>
+                    <xsl:value-of select="concat(&quot;Duplicate message reply sent. Reply string is: &quot;, (tib:trim($FormDupReply/xmlString)))"/>
+                </message>
+            </pfx2:ActivityInput>
+        </pd:inputBindings>
+    </pd:activity>
+    <pd:activity name="LogUnableToReply">
+        <pd:type>com.tibco.pe.core.WriteToLogActivity</pd:type>
+        <pd:resourceType>ae.activities.log</pd:resourceType>
+        <pd:x>1215</pd:x>
+        <pd:y>351</pd:y>
+        <config>
+            <role>User</role>
+        </config>
+        <pd:inputBindings>
+            <pfx2:ActivityInput>
+                <message>
+                    <xsl:value-of select="concat(&quot;Unable to reply on response queue for Alert Id: &quot;, $ParseAlertReq/op:CaseMgmtRqAdd/op:AlertDetl[1]/op:AlertId,&quot;&#xD;&quot;, 'Error: ', tib:render-xml($_error/ns2:ErrorReport))"/>
+                </message>
+            </pfx2:ActivityInput>
+        </pd:inputBindings>
+    </pd:activity>
+    <pd:group name="Group (1)">
+        <pd:type>com.tibco.pe.core.LoopGroup</pd:type>
+        <pd:resourceType>ae.process.group</pd:resourceType>
+        <pd:x>463</pd:x>
+        <pd:y>11</pd:y>
+        <pd:width>679</pd:width>
+        <pd:height>211</pd:height>
+        <pd:collapsedWidth>57</pd:collapsedWidth>
+        <pd:collapsedHeight>70</pd:collapsedHeight>
+        <pd:groupVariables/>
+        <pd:joinToggle>inherit</pd:joinToggle>
+        <config>
+            <pd:groupType>simpleGroup</pd:groupType>
+            <pd:serializable>false</pd:serializable>
+        </config>
+        <pd:inputBindings/>
+        <pd:expanded>true</pd:expanded>
+        <pd:transition>
+            <pd:from>start</pd:from>
+            <pd:to>UpdateAlertHeader</pd:to>
+            <pd:lineType>Default</pd:lineType>
+            <pd:lineColor>-16777216</pd:lineColor>
+            <pd:conditionType>always</pd:conditionType>
+        </pd:transition>
+        <pd:transition>
+            <pd:from>StartAlertCase</pd:from>
+            <pd:to>end</pd:to>
+            <pd:lineType>Default</pd:lineType>
+            <pd:lineColor>-16777216</pd:lineColor>
+            <pd:conditionType>always</pd:conditionType>
+        </pd:transition>
+        <pd:transition>
+            <pd:from>UpdateAlertHeader</pd:from>
+            <pd:to>Group</pd:to>
+            <pd:lineType>Default</pd:lineType>
+            <pd:lineColor>-16777216</pd:lineColor>
+            <pd:conditionType>always</pd:conditionType>
+        </pd:transition>
+        <pd:transition>
+            <pd:from>Group</pd:from>
+            <pd:to>StartAlertCase</pd:to>
+            <pd:lineType>Default</pd:lineType>
+            <pd:lineColor>-16777216</pd:lineColor>
+            <pd:conditionType>always</pd:conditionType>
+        </pd:transition>
+        <pd:activity name="UpdateAlertHeader">
+            <pd:type>com.tibco.plugin.jdbc.JDBCUpdateActivity</pd:type>
+            <pd:resourceType>ae.activities.JDBCUpdateActivity</pd:resourceType>
+            <pd:x>548</pd:x>
+            <pd:y>113</pd:y>
+            <config>
+                <timeout>%%Connections/JDBC/QueryTimeout%%</timeout>
+                <commit>false</commit>
+                <emptyStrAsNil>false</emptyStrAsNil>
+                <jdbcSharedConfig>/SharedResources/Connections/JDBC/IWFDB.sharedjdbc</jdbcSharedConfig>
+                <statement>INSERT INTO HFA_ALERT_HEADER (REC_ID, ALERT_ID, CARD_NUMBER, CUST_CIN, CUST_NAME, ALERT_RULE_ID, ALERT_RULE_DESC, ALERT_DATE_TIME,
+CUST_ALERT_SENT, CONTACT_MODE, CHANNEL_ID,  ORG_CODE, CUST_SUFFIX, ALERTRULEPRIORITY) VALUES
+(HFA_TXN_HEADER_S.nextval,?,?,?,?,?,?,?,?,?,?,?,?,?)</statement>
+                <Prepared_Param_DataType>
+                    <parameter>
+                        <parameterName>ALERT_ID</parameterName>
+                        <dataType>VARCHAR</dataType>
+                    </parameter>
+                    <parameter>
+                        <parameterName>CARD_NUMBER</parameterName>
+                        <dataType>VARCHAR</dataType>
+                    </parameter>
+                    <parameter>
+                        <parameterName>CUST_CIN</parameterName>
+                        <dataType>VARCHAR</dataType>
+                    </parameter>
+                    <parameter>
+                        <parameterName>CUST_NAME</parameterName>
+                        <dataType>VARCHAR</dataType>
+                    </parameter>
+                    <parameter>
+                        <parameterName>ALERT_RULE_ID</parameterName>
+                        <dataType>VARCHAR</dataType>
+                    </parameter>
+                    <parameter>
+                        <parameterName>ALERT_RULE_DESC</parameterName>
+                        <dataType>VARCHAR</dataType>
+                    </parameter>
+                    <parameter>
+                        <parameterName>ALERT_DATE_TIME</parameterName>
+                        <dataType>VARCHAR</dataType>
+                    </parameter>
+                    <parameter>
+                        <parameterName>CUST_ALERT_SENT</parameterName>
+                        <dataType>VARCHAR</dataType>
+                    </parameter>
+                    <parameter>
+                        <parameterName>CONTACT_MODE</parameterName>
+                        <dataType>VARCHAR</dataType>
+                    </parameter>
+                    <parameter>
+                        <parameterName>CHANNEL_ID</parameterName>
+                        <dataType>VARCHAR</dataType>
+                    </parameter>
+                    <parameter>
+                        <parameterName>ORG_CODE</parameterName>
+                        <dataType>VARCHAR</dataType>
+                    </parameter>
+                    <parameter>
+                        <parameterName>CUST_SUFFIX</parameterName>
+                        <dataType>VARCHAR</dataType>
+                    </parameter>
+                    <parameter>
+                        <parameterName>ALERT_RULE_PRIORITY</parameterName>
+                        <dataType>VARCHAR</dataType>
+                    </parameter>
+                </Prepared_Param_DataType>
+            </config>
+            <pd:inputBindings>
+                <jdbcUpdateActivityInput>
+                    <ALERT_ID>
+                        <xsl:value-of select="$ParseAlertReq/op:CaseMgmtRqAdd/op:AlertDetl[1]/op:AlertId"/>
+                    </ALERT_ID>
+                    <CARD_NUMBER>
+                        <xsl:choose>
+                            <xsl:when test="exists($ParseAlertReq/op:CaseMgmtRqAdd/op:Cards/ems:Card[1]/ems:CardId)">
+                                <xsl:value-of select="$ParseAlertReq/op:CaseMgmtRqAdd/op:Cards/ems:Card[1]/ems:CardId"/>
+                            </xsl:when>
+                            <xsl:otherwise>
+                                <xsl:attribute name="xsi:nil">true</xsl:attribute>
+                            </xsl:otherwise>
+                        </xsl:choose>
+                    </CARD_NUMBER>
+                    <xsl:choose>
+                        <xsl:when test="$ParseAlertReq/op:CaseMgmtRqAdd/ns6:CustDoc/ns6:DocNum">
+                            <CUST_CIN>
+                                <xsl:choose>
+                                    <xsl:when test="exists($ParseAlertReq/op:CaseMgmtRqAdd/ns6:CustDoc/ns6:DocNum)">
+                                        <xsl:value-of select="$ParseAlertReq/op:CaseMgmtRqAdd/ns6:CustDoc/ns6:DocNum"/>
+                                    </xsl:when>
+                                    <xsl:otherwise>
+                                        <xsl:attribute name="xsi:nil">true</xsl:attribute>
+                                    </xsl:otherwise>
+                                </xsl:choose>
+                            </CUST_CIN>
+                        </xsl:when>
+                        <xsl:otherwise>
+                            <CUST_CIN>
+                                <xsl:choose>
+                                    <xsl:when test="exists($ParseAlertReq/op:CaseMgmtRqAdd/op:TranDetl[1]/ns6:CustDoc/ns6:DocNum)">
+                                        <xsl:value-of select="$ParseAlertReq/op:CaseMgmtRqAdd/op:TranDetl[1]/ns6:CustDoc/ns6:DocNum"/>
+                                    </xsl:when>
+                                    <xsl:otherwise>
+                                        <xsl:attribute name="xsi:nil">true</xsl:attribute>
+                                    </xsl:otherwise>
+                                </xsl:choose>
+                            </CUST_CIN>
+                        </xsl:otherwise>
+                    </xsl:choose>
+                    <CUST_NAME>
+                        <xsl:choose>
+                            <xsl:when test="exists($ParseAlertReq/op:CaseMgmtRqAdd/ems:CustName/ems:FullName)">
+                                <xsl:value-of select="$ParseAlertReq/op:CaseMgmtRqAdd/ems:CustName/ems:FullName"/>
+                            </xsl:when>
+                            <xsl:otherwise>
+                                <xsl:attribute name="xsi:nil">true</xsl:attribute>
+                            </xsl:otherwise>
+                        </xsl:choose>
+                    </CUST_NAME>
+                    <ALERT_RULE_ID>
+                        <xsl:choose>
+                            <xsl:when test="exists($ParseAlertReq/op:CaseMgmtRqAdd/op:AlertDetl[1]/op:AlertRuleId)">
+                                <xsl:value-of select="$ParseAlertReq/op:CaseMgmtRqAdd/op:AlertDetl[1]/op:AlertRuleId"/>
+                            </xsl:when>
+                            <xsl:otherwise>
+                                <xsl:attribute name="xsi:nil">true</xsl:attribute>
+                            </xsl:otherwise>
+                        </xsl:choose>
+                    </ALERT_RULE_ID>
+                    <ALERT_RULE_DESC>
+                        <xsl:choose>
+                            <xsl:when test="exists($ParseAlertReq/op:CaseMgmtRqAdd/op:AlertDetl[1]/op:AlertRuleDesc)">
+                                <xsl:value-of select="$ParseAlertReq/op:CaseMgmtRqAdd/op:AlertDetl[1]/op:AlertRuleDesc"/>
+                            </xsl:when>
+                            <xsl:otherwise>
+                                <xsl:attribute name="xsi:nil">true</xsl:attribute>
+                            </xsl:otherwise>
+                        </xsl:choose>
+                    </ALERT_RULE_DESC>
+                    <ALERT_DATE_TIME>
+                        <xsl:choose>
+                            <xsl:when test="exists($ParseAlertReq/op:CaseMgmtRqAdd/op:AlertDetl[1]/op:AlertDateTime)">
+                                <xsl:value-of select="$ParseAlertReq/op:CaseMgmtRqAdd/op:AlertDetl[1]/op:AlertDateTime"/>
+                            </xsl:when>
+                            <xsl:otherwise>
+                                <xsl:attribute name="xsi:nil">true</xsl:attribute>
+                            </xsl:otherwise>
+                        </xsl:choose>
+                    </ALERT_DATE_TIME>
+                    <CUST_ALERT_SENT>
+                        <xsl:choose>
+                            <xsl:when test="exists($ParseAlertReq/op:CaseMgmtRqAdd/op:AlertDetl[1]/op:AlertSent)">
+                                <xsl:value-of select="$ParseAlertReq/op:CaseMgmtRqAdd/op:AlertDetl[1]/op:AlertSent"/>
+                            </xsl:when>
+                            <xsl:otherwise>
+                                <xsl:attribute name="xsi:nil">true</xsl:attribute>
+                            </xsl:otherwise>
+                        </xsl:choose>
+                    </CUST_ALERT_SENT>
+                    <CONTACT_MODE>
+                        <xsl:choose>
+                            <xsl:when test="exists(tib:concat-sequence-format($ParseAlertReq/op:CaseMgmtRqAdd/op:AlertDetl/op:ContactMode, ', ',1))">
+                                <xsl:value-of select="tib:concat-sequence-format($ParseAlertReq/op:CaseMgmtRqAdd/op:AlertDetl/op:ContactMode, ', ',1)"/>
+                            </xsl:when>
+                            <xsl:otherwise>
+                                <xsl:attribute name="xsi:nil">true</xsl:attribute>
+                            </xsl:otherwise>
+                        </xsl:choose>
+                    </CONTACT_MODE>
+                    <CHANNEL_ID>
+                        <xsl:choose>
+                            <xsl:when test="exists($ParseAlertReq/op:CaseMgmtRqAdd/ems:CommonRq/ems:ChannelId)">
+                                <xsl:value-of select="$ParseAlertReq/op:CaseMgmtRqAdd/ems:CommonRq/ems:ChannelId"/>
+                            </xsl:when>
+                            <xsl:otherwise>
+                                <xsl:attribute name="xsi:nil">true</xsl:attribute>
+                            </xsl:otherwise>
+                        </xsl:choose>
+                    </CHANNEL_ID>
+                    <ORG_CODE>
+                        <xsl:value-of select="$ParseAlertReq/op:CaseMgmtRqAdd/ems:CommonRq/ems:OrgCode"/>
+                    </ORG_CODE>
+                    <CUST_SUFFIX>
+                        <xsl:choose>
+                            <xsl:when test="exists(&quot;&quot;)">
+                                <xsl:value-of select="&quot;&quot;"/>
+                            </xsl:when>
+                            <xsl:otherwise>
+                                <xsl:attribute name="xsi:nil">true</xsl:attribute>
+                            </xsl:otherwise>
+                        </xsl:choose>
+                    </CUST_SUFFIX>
+                    <ALERT_RULE_PRIORITY>
+                        <xsl:choose>
+                            <xsl:when test="exists($ParseAlertReq/op:CaseMgmtRqAdd/op:AlertDetl[1]/op:AlertRulePriority)">
+                                <xsl:value-of select="$ParseAlertReq/op:CaseMgmtRqAdd/op:AlertDetl[1]/op:AlertRulePriority"/>
+                            </xsl:when>
+                            <xsl:otherwise>
+                                <xsl:attribute name="xsi:nil">true</xsl:attribute>
+                            </xsl:otherwise>
+                        </xsl:choose>
+                    </ALERT_RULE_PRIORITY>
+                </jdbcUpdateActivityInput>
+            </pd:inputBindings>
+        </pd:activity>
+        <pd:activity name="StartAlertCase">
+            <pd:type>com.tibco.pe.core.CallProcessActivity</pd:type>
+            <pd:resourceType>ae.process.subprocess</pd:resourceType>
+            <pd:x>1026</pd:x>
+            <pd:y>148</pd:y>
+            <config>
+                <processName>/HFA/StartAlertCase.process</processName>
+            </config>
+            <pd:inputBindings>
+                <xsl:copy-of select="$ParseAlertReq/op:CaseMgmtRqAdd"/>
+            </pd:inputBindings>
+        </pd:activity>
+        <pd:group name="Group">
+            <pd:type>com.tibco.pe.core.LoopGroup</pd:type>
+            <pd:resourceType>ae.process.group</pd:resourceType>
+            <pd:x>628</pd:x>
+            <pd:y>39</pd:y>
+            <pd:width>306</pd:width>
+            <pd:height>140</pd:height>
+            <pd:collapsedWidth>57</pd:collapsedWidth>
+            <pd:collapsedHeight>70</pd:collapsedHeight>
+            <pd:groupVariables/>
+            <pd:joinToggle>inherit</pd:joinToggle>
+            <config>
+                <pd:groupType>inputLoop</pd:groupType>
+                <pd:serializable>false</pd:serializable>
+                <pd:over>$ParseAlertReq/op:CaseMgmtRqAdd/op:TranDetl</pd:over>
+                <pd:iterationElementSlot>TXNDetail</pd:iterationElementSlot>
+                <pd:indexSlot>i</pd:indexSlot>
+                <pd:activityOutputName/>
+                <pd:accumulateOutput>false</pd:accumulateOutput>
+            </config>
+            <pd:inputBindings/>
+            <pd:expanded>true</pd:expanded>
+            <pd:transition>
+                <pd:from>start</pd:from>
+                <pd:to>RenderTxnData</pd:to>
+                <pd:lineType>Default</pd:lineType>
+                <pd:lineColor>-16777216</pd:lineColor>
+                <pd:conditionType>always</pd:conditionType>
+            </pd:transition>
+            <pd:transition>
+                <pd:from>UpdateTXNData</pd:from>
+                <pd:to>end</pd:to>
+                <pd:lineType>Default</pd:lineType>
+                <pd:lineColor>-16777216</pd:lineColor>
+                <pd:conditionType>always</pd:conditionType>
+            </pd:transition>
+            <pd:transition>
+                <pd:from>RenderTxnData</pd:from>
+                <pd:to>UpdateTXNData</pd:to>
+                <pd:lineType>Default</pd:lineType>
+                <pd:lineColor>-16777216</pd:lineColor>
+                <pd:conditionType>always</pd:conditionType>
+            </pd:transition>
+            <pd:activity name="UpdateTXNData">
+                <pd:type>com.tibco.plugin.jdbc.JDBCUpdateActivity</pd:type>
+                <pd:resourceType>ae.activities.JDBCUpdateActivity</pd:resourceType>
+                <pd:x>840</pd:x>
+                <pd:y>78</pd:y>
+                <config>
+                    <timeout>%%Connections/JDBC/QueryTimeout%%</timeout>
+                    <commit>false</commit>
+                    <emptyStrAsNil>false</emptyStrAsNil>
+                    <jdbcSharedConfig>/SharedResources/Connections/JDBC/IWFDB.sharedjdbc</jdbcSharedConfig>
+                    <statement>INSERT INTO HFA_TXN_DATA (REC_ID, ALERT_ID, TXN_AMT, TXN_TIME, TXN_DATE, 
+TERMINAL_ID, ORIG_CLIENT_ID, ORIG_CLIENT_REF, CURRENCY,DENIAL_CODE, TXN_TYPE, 
+TERM_CTRY_CODE, TXN_TERMINAL_ID, TERMINAL_TYPE, TERMINAL_LOCATION,CARD_NUMBER,CHANNEL,CHIP_INDICATOR, CARD_TYPE,NFCENABLED,PRIVILEGEDCUST,MERCHANTID,MERCHANTNAME,
+RISKSCORE, BILLINGAMOUNT,  MERCHANTCATEGORYCODE,  POSENTRYMODE,  ECIUCAF,CARD_LOGO,CARD_ORG_CODE,CARDBRAND, KEY_NAME_VALUE_MSG, LANGUAGE)
+ VALUES (HFA_TXN_DATA_S.nextval, ?,?,?,to_date(?,'yyyy-mm-dd'),?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?, ?)</statement>
+                    <Prepared_Param_DataType>
+                        <parameter>
+                            <parameterName>ALERT_ID</parameterName>
+                            <dataType>VARCHAR</dataType>
+                        </parameter>
+                        <parameter>
+                            <parameterName>TXN_AMT</parameterName>
+                            <dataType>VARCHAR</dataType>
+                        </parameter>
+                        <parameter>
+                            <parameterName>TXN_TIME</parameterName>
+                            <dataType>VARCHAR</dataType>
+                        </parameter>
+                        <parameter>
+                            <parameterName>TXN_DATE</parameterName>
+                            <dataType>VARCHAR</dataType>
+                        </parameter>
+                        <parameter>
+                            <parameterName>TERMINAL_ID</parameterName>
+                            <dataType>VARCHAR</dataType>
+                        </parameter>
+                        <parameter>
+                            <parameterName>ORIG_CLIENT_ID</parameterName>
+                            <dataType>VARCHAR</dataType>
+                        </parameter>
+                        <parameter>
+                            <parameterName>ORIG_CLIENT_REF</parameterName>
+                            <dataType>VARCHAR</dataType>
+                        </parameter>
+                        <parameter>
+                            <parameterName>CURRENCY</parameterName>
+                            <dataType>VARCHAR</dataType>
+                        </parameter>
+                        <parameter>
+                            <parameterName>DENIAL_CODE</parameterName>
+                            <dataType>VARCHAR</dataType>
+                        </parameter>
+                        <parameter>
+                            <parameterName>TXN_TYPE</parameterName>
+                            <dataType>VARCHAR</dataType>
+                        </parameter>
+                        <parameter>
+                            <parameterName>TERM_CTRY_CODE</parameterName>
+                            <dataType>VARCHAR</dataType>
+                        </parameter>
+                        <parameter>
+                            <parameterName>TXN_TERMINAL_ID</parameterName>
+                            <dataType>VARCHAR</dataType>
+                        </parameter>
+                        <parameter>
+                            <parameterName>TERMINAL_TYPE</parameterName>
+                            <dataType>VARCHAR</dataType>
+                        </parameter>
+                        <parameter>
+                            <parameterName>TERMINAL_LOCATION</parameterName>
+                            <dataType>VARCHAR</dataType>
+                        </parameter>
+                        <parameter>
+                            <parameterName>CARD_NUMBER</parameterName>
+                            <dataType>VARCHAR</dataType>
+                        </parameter>
+                        <parameter>
+                            <parameterName>CHANNEL</parameterName>
+                            <dataType>VARCHAR</dataType>
+                        </parameter>
+                        <parameter>
+                            <parameterName>CHIP_INDICATOR</parameterName>
+                            <dataType>VARCHAR</dataType>
+                        </parameter>
+                        <parameter>
+                            <parameterName>CARD_TYPE</parameterName>
+                            <dataType>VARCHAR</dataType>
+                        </parameter>
+                        <parameter>
+                            <parameterName>NFCENABLED</parameterName>
+                            <dataType>VARCHAR</dataType>
+                        </parameter>
+                        <parameter>
+                            <parameterName>PRIVILEGEDCUST</parameterName>
+                            <dataType>VARCHAR</dataType>
+                        </parameter>
+                        <parameter>
+                            <parameterName>MERCHANTID</parameterName>
+                            <dataType>VARCHAR</dataType>
+                        </parameter>
+                        <parameter>
+                            <parameterName>MERCHANTNAME</parameterName>
+                            <dataType>VARCHAR</dataType>
+                        </parameter>
+                        <parameter>
+                            <parameterName>RISKSCORE</parameterName>
+                            <dataType>VARCHAR</dataType>
+                        </parameter>
+                        <parameter>
+                            <parameterName>BILLINGAMOUNT</parameterName>
+                            <dataType>VARCHAR</dataType>
+                        </parameter>
+                        <parameter>
+                            <parameterName>MERCHANTCATEGORYCODE</parameterName>
+                            <dataType>VARCHAR</dataType>
+                        </parameter>
+                        <parameter>
+                            <parameterName>POSENTRYMODE</parameterName>
+                            <dataType>VARCHAR</dataType>
+                        </parameter>
+                        <parameter>
+                            <parameterName>ECIUCAF</parameterName>
+                            <dataType>VARCHAR</dataType>
+                        </parameter>
+                        <parameter>
+                            <parameterName>CARD_LOGO</parameterName>
+                            <dataType>VARCHAR</dataType>
+                        </parameter>
+                        <parameter>
+                            <parameterName>CARD_ORG_CODE</parameterName>
+                            <dataType>VARCHAR</dataType>
+                        </parameter>
+                        <parameter>
+                            <parameterName>CARDBRAND</parameterName>
+                            <dataType>VARCHAR</dataType>
+                        </parameter>
+                        <parameter>
+                            <parameterName>KEYVALUE</parameterName>
+                            <dataType>CLOB</dataType>
+                        </parameter>
+                        <parameter>
+                            <parameterName>LANGUAGE</parameterName>
+                            <dataType>VARCHAR</dataType>
+                        </parameter>
+                    </Prepared_Param_DataType>
+                </config>
+                <pd:inputBindings>
+                    <jdbcUpdateActivityInput>
+                        <xsl:variable name="TerminalIdToken" select="tib:tokenize-allow-empty($TXNDetail/op:TranDetl/ems:OrigTermId, &quot;|&quot;)"/>
+                        <xsl:variable name="TerminalId" select="$TerminalIdToken[2]"/>
+                        <xsl:variable name="TerminalType" select="$TerminalIdToken[1]"/>
+                        <ALERT_ID>
+                            <xsl:value-of select="$ParseAlertReq/op:CaseMgmtRqAdd/op:AlertDetl[1]/op:AlertId"/>
+                        </ALERT_ID>
+                        <xsl:choose>
+                            <xsl:when test="tib:trim($TXNDetail/op:TranDetl/ems:TranAmt/ems:Amt)!=&quot;&quot;&#xA;and&#xA;string-length($TXNDetail/op:TranDetl/ems:TranAmt/ems:Amt)!=0">
+                                <TXN_AMT>
+                                    <xsl:choose>
+                                        <xsl:when test="exists($TXNDetail/op:TranDetl/ems:TranAmt/ems:Amt)">
+                                            <xsl:value-of select="$TXNDetail/op:TranDetl/ems:TranAmt/ems:Amt"/>
+                                        </xsl:when>
+                                        <xsl:otherwise>
+                                            <xsl:attribute name="xsi:nil">true</xsl:attribute>
+                                        </xsl:otherwise>
+                                    </xsl:choose>
+                                </TXN_AMT>
+                            </xsl:when>
+                            <xsl:otherwise>
+                                <TXN_AMT xsi:nil="true"/>
+                            </xsl:otherwise>
+                        </xsl:choose>
+                        <xsl:choose>
+                            <xsl:when test="tib:trim($TXNDetail/op:TranDetl/ems:TranTime)!=&quot;&quot;&#xA;and&#xA;string-length($TXNDetail/op:TranDetl/ems:TranTime)!=0">
+                                <TXN_TIME>
+                                    <xsl:choose>
+                                        <xsl:when test="exists($TXNDetail/op:TranDetl/ems:TranTime)">
+                                            <xsl:value-of select="$TXNDetail/op:TranDetl/ems:TranTime"/>
+                                        </xsl:when>
+                                        <xsl:otherwise>
+                                            <xsl:attribute name="xsi:nil">true</xsl:attribute>
+                                        </xsl:otherwise>
+                                    </xsl:choose>
+                                </TXN_TIME>
+                            </xsl:when>
+                            <xsl:otherwise>
+                                <TXN_TIME xsi:nil="true"/>
+                            </xsl:otherwise>
+                        </xsl:choose>
+                        <xsl:choose>
+                            <xsl:when test="tib:trim($TXNDetail/op:TranDetl/ems:TranDate)!=&quot;&quot;&#xA;and&#xA;string-length($TXNDetail/op:TranDetl/ems:TranDate)!=0">
+                                <TXN_DATE>
+                                    <xsl:value-of select="$TXNDetail/op:TranDetl/ems:TranDate"/>
+                                </TXN_DATE>
+                            </xsl:when>
+                            <xsl:otherwise>
+                                <TXN_DATE xsi:nil="true"/>
+                            </xsl:otherwise>
+                        </xsl:choose>
+                        <xsl:choose>
+                            <xsl:when test="tib:trim($TXNDetail/op:TranDetl/ems:OrigTermId)!=&quot;&quot;&#xA;and&#xA;string-length($TXNDetail/op:TranDetl/ems:OrigTermId)!=0">
+                                <TERMINAL_ID>
+                                    <xsl:choose>
+                                        <xsl:when test="exists($TXNDetail/op:TranDetl/ems:OrigTermId)">
+                                            <xsl:value-of select="$TXNDetail/op:TranDetl/ems:OrigTermId"/>
+                                        </xsl:when>
+                                        <xsl:otherwise>
+                                            <xsl:attribute name="xsi:nil">true</xsl:attribute>
+                                        </xsl:otherwise>
+                                    </xsl:choose>
+                                </TERMINAL_ID>
+                            </xsl:when>
+                            <xsl:otherwise>
+                                <TERMINAL_ID xsi:nil="true"/>
+                            </xsl:otherwise>
+                        </xsl:choose>
+                        <xsl:choose>
+                            <xsl:when test="tib:trim($TXNDetail/op:TranDetl/ems:OrigClientId)!=&quot;&quot;&#xA;and&#xA;string-length($TXNDetail/op:TranDetl/ems:OrigClientId)!=0">
+                                <ORIG_CLIENT_ID>
+                                    <xsl:choose>
+                                        <xsl:when test="exists($TXNDetail/op:TranDetl/ems:OrigClientId)">
+                                            <xsl:value-of select="$TXNDetail/op:TranDetl/ems:OrigClientId"/>
+                                        </xsl:when>
+                                        <xsl:otherwise>
+                                            <xsl:attribute name="xsi:nil">true</xsl:attribute>
+                                        </xsl:otherwise>
+                                    </xsl:choose>
+                                </ORIG_CLIENT_ID>
+                            </xsl:when>
+                            <xsl:otherwise>
+                                <ORIG_CLIENT_ID xsi:nil="true"/>
+                            </xsl:otherwise>
+                        </xsl:choose>
+                        <xsl:choose>
+                            <xsl:when test="tib:trim($TXNDetail/op:TranDetl/ems:OrigClientRef)!=&quot;&quot;&#xA;and&#xA;string-length($TXNDetail/op:TranDetl/ems:OrigClientRef)!=0">
+                                <ORIG_CLIENT_REF>
+                                    <xsl:choose>
+                                        <xsl:when test="exists($TXNDetail/op:TranDetl/ems:OrigClientRef)">
+                                            <xsl:value-of select="$TXNDetail/op:TranDetl/ems:OrigClientRef"/>
+                                        </xsl:when>
+                                        <xsl:otherwise>
+                                            <xsl:attribute name="xsi:nil">true</xsl:attribute>
+                                        </xsl:otherwise>
+                                    </xsl:choose>
+                                </ORIG_CLIENT_REF>
+                            </xsl:when>
+                            <xsl:otherwise>
+                                <ORIG_CLIENT_REF xsi:nil="true"/>
+                            </xsl:otherwise>
+                        </xsl:choose>
+                        <xsl:choose>
+                            <xsl:when test="string-length($TXNDetail/op:TranDetl/ems:TranAmt/ems:Cur)!=0">
+                                <CURRENCY>
+                                    <xsl:choose>
+                                        <xsl:when test="exists($TXNDetail/op:TranDetl/ems:TranAmt/ems:Cur)">
+                                            <xsl:value-of select="$TXNDetail/op:TranDetl/ems:TranAmt/ems:Cur"/>
+                                        </xsl:when>
+                                        <xsl:otherwise>
+                                            <xsl:attribute name="xsi:nil">true</xsl:attribute>
+                                        </xsl:otherwise>
+                                    </xsl:choose>
+                                </CURRENCY>
+                            </xsl:when>
+                            <xsl:otherwise>
+                                <CURRENCY xsi:nil="true"/>
+                            </xsl:otherwise>
+                        </xsl:choose>
+                        <xsl:choose>
+                            <xsl:when test="string-length(tib:trim($TXNDetail/op:TranDetl/op:RejectReason))!=0">
+                                <DENIAL_CODE>
+                                    <xsl:value-of select="$TXNDetail/op:TranDetl/op:RejectReason"/>
+                                </DENIAL_CODE>
+                            </xsl:when>
+                            <xsl:otherwise>
+                                <DENIAL_CODE xsi:nil="true"/>
+                            </xsl:otherwise>
+                        </xsl:choose>
+                        <xsl:choose>
+                            <xsl:when test="string-length(tib:trim($TXNDetail/op:TranDetl/op:TranType))!=0">
+                                <TXN_TYPE>
+                                    <xsl:value-of select="$TXNDetail/op:TranDetl/op:TranType"/>
+                                </TXN_TYPE>
+                            </xsl:when>
+                            <xsl:otherwise>
+                                <TXN_TYPE xsi:nil="true"/>
+                            </xsl:otherwise>
+                        </xsl:choose>
+                        <xsl:choose>
+                            <xsl:when test="string-length(tib:trim($TXNDetail/op:TranDetl/ns5:TranCtry))!=0">
+                                <TERM_CTRY_CODE>
+                                    <xsl:value-of select="$TXNDetail/op:TranDetl/ns5:TranCtry"/>
+                                </TERM_CTRY_CODE>
+                            </xsl:when>
+                            <xsl:otherwise>
+                                <TERM_CTRY_CODE xsi:nil="true"/>
+                            </xsl:otherwise>
+                        </xsl:choose>
+                        <xsl:choose>
+                            <xsl:when test="string-length(tib:trim($TerminalId))!=0">
+                                <TXN_TERMINAL_ID>
+                                    <xsl:value-of select="$TerminalId"/>
+                                </TXN_TERMINAL_ID>
+                            </xsl:when>
+                            <xsl:otherwise>
+                                <TXN_TERMINAL_ID>
+                                    <xsl:choose>
+                                        <xsl:when test="exists($TXNDetail/op:TranDetl/ems:OrigTermId)">
+                                            <xsl:value-of select="$TXNDetail/op:TranDetl/ems:OrigTermId"/>
+                                        </xsl:when>
+                                        <xsl:otherwise>
+                                            <xsl:attribute name="xsi:nil">true</xsl:attribute>
+                                        </xsl:otherwise>
+                                    </xsl:choose>
+                                </TXN_TERMINAL_ID>
+                            </xsl:otherwise>
+                        </xsl:choose>
+                        <xsl:choose>
+                            <xsl:when test="string-length(tib:trim($TerminalType))!=0">
+                                <TERMINAL_TYPE>
+                                    <xsl:value-of select="$TerminalType"/>
+                                </TERMINAL_TYPE>
+                            </xsl:when>
+                            <xsl:otherwise>
+                                <TERMINAL_TYPE xsi:nil="true"/>
+                            </xsl:otherwise>
+                        </xsl:choose>
+                        <xsl:choose>
+                            <xsl:when test="string-length(tib:trim($TXNDetail/op:TranDetl/ems:OrigTermLoc))!=0">
+                                <TERMINAL_LOCATION>
+                                    <xsl:value-of select="$TXNDetail/op:TranDetl/ems:OrigTermLoc"/>
+                                </TERMINAL_LOCATION>
+                            </xsl:when>
+                            <xsl:otherwise>
+                                <TERMINAL_LOCATION xsi:nil="true"/>
+                            </xsl:otherwise>
+                        </xsl:choose>
+                        <CARD_NUMBER>
+                            <xsl:choose>
+                                <xsl:when test="exists($TXNDetail/op:TranDetl/op:CardRefID)">
+                                    <xsl:value-of select="$TXNDetail/op:TranDetl/op:CardRefID"/>
+                                </xsl:when>
+                                <xsl:otherwise>
+                                    <xsl:attribute name="xsi:nil">true</xsl:attribute>
+                                </xsl:otherwise>
+                            </xsl:choose>
+                        </CARD_NUMBER>
+                        <CHANNEL>
+                            <xsl:choose>
+                                <xsl:when test="exists($TXNDetail/op:TranDetl/ems:Channel)">
+                                    <xsl:value-of select="$TXNDetail/op:TranDetl/ems:Channel"/>
+                                </xsl:when>
+                                <xsl:otherwise>
+                                    <xsl:attribute name="xsi:nil">true</xsl:attribute>
+                                </xsl:otherwise>
+                            </xsl:choose>
+                        </CHANNEL>
+                        <CHIP_INDICATOR>
+                            <xsl:choose>
+                                <xsl:when test="exists($ParseAlertReq/op:CaseMgmtRqAdd/op:Cards/ems:Card[ems:CardId=$TXNDetail/op:TranDetl/op:CardRefID]/ems:ChipIndicator)">
+                                    <xsl:value-of select="$ParseAlertReq/op:CaseMgmtRqAdd/op:Cards/ems:Card[ems:CardId=$TXNDetail/op:TranDetl/op:CardRefID]/ems:ChipIndicator"/>
+                                </xsl:when>
+                                <xsl:otherwise>
+                                    <xsl:attribute name="xsi:nil">true</xsl:attribute>
+                                </xsl:otherwise>
+                            </xsl:choose>
+                        </CHIP_INDICATOR>
+                        <CARD_TYPE>
+                            <xsl:choose>
+                                <xsl:when test="exists($ParseAlertReq/op:CaseMgmtRqAdd/op:Cards/ems:Card[ems:CardId=$TXNDetail/op:TranDetl/op:CardRefID]/ems:ProdType)">
+                                    <xsl:value-of select="$ParseAlertReq/op:CaseMgmtRqAdd/op:Cards/ems:Card[ems:CardId=$TXNDetail/op:TranDetl/op:CardRefID]/ems:ProdType"/>
+                                </xsl:when>
+                                <xsl:otherwise>
+                                    <xsl:attribute name="xsi:nil">true</xsl:attribute>
+                                </xsl:otherwise>
+                            </xsl:choose>
+                        </CARD_TYPE>
+                        <NFCENABLED>
+                            <xsl:choose>
+                                <xsl:when test="exists($TXNDetail/op:TranDetl/op:NFCEnabled)">
+                                    <xsl:value-of select="$TXNDetail/op:TranDetl/op:NFCEnabled"/>
+                                </xsl:when>
+                                <xsl:otherwise>
+                                    <xsl:attribute name="xsi:nil">true</xsl:attribute>
+                                </xsl:otherwise>
+                            </xsl:choose>
+                        </NFCENABLED>
+                        <PRIVILEGEDCUST>
+                            <xsl:choose>
+                                <xsl:when test="exists($TXNDetail/op:TranDetl/op:PrivilegedCust)">
+                                    <xsl:value-of select="$TXNDetail/op:TranDetl/op:PrivilegedCust"/>
+                                </xsl:when>
+                                <xsl:otherwise>
+                                    <xsl:attribute name="xsi:nil">true</xsl:attribute>
+                                </xsl:otherwise>
+                            </xsl:choose>
+                        </PRIVILEGEDCUST>
+                        <MERCHANTID>
+                            <xsl:choose>
+                                <xsl:when test="exists($TXNDetail/op:TranDetl/op:MerchantId)">
+                                    <xsl:value-of select="$TXNDetail/op:TranDetl/op:MerchantId"/>
+                                </xsl:when>
+                                <xsl:otherwise>
+                                    <xsl:attribute name="xsi:nil">true</xsl:attribute>
+                                </xsl:otherwise>
+                            </xsl:choose>
+                        </MERCHANTID>
+                        <MERCHANTNAME>
+                            <xsl:choose>
+                                <xsl:when test="exists($TXNDetail/op:TranDetl/op:MerchantName)">
+                                    <xsl:value-of select="$TXNDetail/op:TranDetl/op:MerchantName"/>
+                                </xsl:when>
+                                <xsl:otherwise>
+                                    <xsl:attribute name="xsi:nil">true</xsl:attribute>
+                                </xsl:otherwise>
+                            </xsl:choose>
+                        </MERCHANTNAME>
+                        <RISKSCORE>
+                            <xsl:choose>
+                                <xsl:when test="exists($TXNDetail/op:TranDetl/op:RiskScore)">
+                                    <xsl:value-of select="$TXNDetail/op:TranDetl/op:RiskScore"/>
+                                </xsl:when>
+                                <xsl:otherwise>
+                                    <xsl:attribute name="xsi:nil">true</xsl:attribute>
+                                </xsl:otherwise>
+                            </xsl:choose>
+                        </RISKSCORE>
+                        <BILLINGAMOUNT>
+                            <xsl:value-of select="''"/>
+                        </BILLINGAMOUNT>
+                        <MERCHANTCATEGORYCODE>
+                            <xsl:choose>
+                                <xsl:when test="exists($TXNDetail/op:TranDetl/op:MerchantCat)">
+                                    <xsl:value-of select="$TXNDetail/op:TranDetl/op:MerchantCat"/>
+                                </xsl:when>
+                                <xsl:otherwise>
+                                    <xsl:attribute name="xsi:nil">true</xsl:attribute>
+                                </xsl:otherwise>
+                            </xsl:choose>
+                        </MERCHANTCATEGORYCODE>
+                        <POSENTRYMODE>
+                            <xsl:choose>
+                                <xsl:when test="exists($TXNDetail/op:TranDetl/op:EntryMode)">
+                                    <xsl:value-of select="$TXNDetail/op:TranDetl/op:EntryMode"/>
+                                </xsl:when>
+                                <xsl:otherwise>
+                                    <xsl:attribute name="xsi:nil">true</xsl:attribute>
+                                </xsl:otherwise>
+                            </xsl:choose>
+                        </POSENTRYMODE>
+                        <ECIUCAF>
+                            <xsl:value-of select="''"/>
+                        </ECIUCAF>
+                        <CARD_LOGO>
+                            <xsl:value-of select="''"/>
+                        </CARD_LOGO>
+                        <CARD_ORG_CODE>
+                            <xsl:choose>
+                                <xsl:when test="exists($ParseAlertReq/op:CaseMgmtRqAdd/op:Cards/ems:Card[ems:CardId=$TXNDetail/op:TranDetl/op:CardRefID]/ems:OrgCode)">
+                                    <xsl:value-of select="$ParseAlertReq/op:CaseMgmtRqAdd/op:Cards/ems:Card[ems:CardId=$TXNDetail/op:TranDetl/op:CardRefID]/ems:OrgCode"/>
+                                </xsl:when>
+                                <xsl:otherwise>
+                                    <xsl:attribute name="xsi:nil">true</xsl:attribute>
+                                </xsl:otherwise>
+                            </xsl:choose>
+                        </CARD_ORG_CODE>
+                        <CARDBRAND>
+                            <xsl:choose>
+                                <xsl:when test="exists($ParseAlertReq/op:CaseMgmtRqAdd/op:Cards/ems:Card[ems:CardId=$TXNDetail/op:TranDetl/op:CardRefID]/ems:CardBrand)">
+                                    <xsl:value-of select="$ParseAlertReq/op:CaseMgmtRqAdd/op:Cards/ems:Card[ems:CardId=$TXNDetail/op:TranDetl/op:CardRefID]/ems:CardBrand"/>
+                                </xsl:when>
+                                <xsl:otherwise>
+                                    <xsl:attribute name="xsi:nil">true</xsl:attribute>
+                                </xsl:otherwise>
+                            </xsl:choose>
+                        </CARDBRAND>
+                        <KEYVALUE>
+                            <xsl:value-of select="$RenderTxnData/xmlString"/>
+                        </KEYVALUE>
+                        <LANGUAGE>
+                            <xsl:value-of select="$ParseAlertReq/op:CaseMgmtRqAdd/op:Cards/ems:Card[ems:CardId=$TXNDetail/op:TranDetl/op:CardRefID]/ems:Lang"/>
+                        </LANGUAGE>
+                    </jdbcUpdateActivityInput>
+                </pd:inputBindings>
+            </pd:activity>
+            <pd:activity name="RenderTxnData">
+                <pd:type>com.tibco.plugin.xml.XMLRendererActivity</pd:type>
+                <pd:resourceType>ae.activities.XMLRendererActivity</pd:resourceType>
+                <pd:x>715</pd:x>
+                <pd:y>77</pd:y>
+                <config>
+                    <renderAsText>text</renderAsText>
+                    <validateInput>false</validateInput>
+                    <textEncoding>UTF-8</textEncoding>
+                    <term>
+                        <xsd:element name="root">
+                            <xsd:complexType>
+                                <xsd:sequence>
+                                    <xsd:element name="TxnDetails" minOccurs="0">
+                                        <xsd:complexType>
+                                            <xsd:sequence>
+                                                <xsd:element name="Fields" minOccurs="0" maxOccurs="unbounded">
+                                                    <xsd:complexType>
+                                                        <xsd:sequence>
+                                                            <xsd:element name="FieldName" type="xsd:string" minOccurs="0"/>
+                                                            <xsd:element name="FieldValue" type="xsd:string" minOccurs="0"/>
+                                                        </xsd:sequence>
+                                                    </xsd:complexType>
+                                                </xsd:element>
+                                            </xsd:sequence>
+                                        </xsd:complexType>
+                                    </xsd:element>
+                                </xsd:sequence>
+                            </xsd:complexType>
+                        </xsd:element>
+                    </term>
+                </config>
+                <pd:inputBindings>
+                    <root>
+                        <TxnDetails>
+                            <xsl:for-each select="$TXNDetail/op:TranDetl/op:Fields">
+                                <Fields>
+                                    <FieldName>
+                                        <xsl:value-of select="op:FieldName"/>
+                                    </FieldName>
+                                    <FieldValue>
+                                        <xsl:value-of select="op:FieldValue"/>
+                                    </FieldValue>
+                                </Fields>
+                            </xsl:for-each>
+                        </TxnDetails>
+                    </root>
+                </pd:inputBindings>
+            </pd:activity>
+        </pd:group>
+    </pd:group>
+    <pd:activity name="ErrLog">
+        <pd:type>com.tibco.pe.core.CallProcessActivity</pd:type>
+        <pd:resourceType>ae.process.subprocess</pd:resourceType>
+        <pd:x>493</pd:x>
+        <pd:y>264</pd:y>
+        <config>
+            <processName>/HFA/SubProcesses/Log.process</processName>
+            <spawn>true</spawn>
+        </config>
+        <pd:inputBindings>
+            <Input>
+                <LogLocation>
+                    <xsl:value-of select="'ReceiveAlert'"/>
+                </LogLocation>
+                <ServiceName>
+                    <xsl:value-of select="'HFA_CREATE'"/>
+                </ServiceName>
+                <InputType>
+                    <xsl:value-of select="'ERR OTHR'"/>
+                </InputType>
+                <Schema>
+                    <xsl:copy-of select="$_error/ns2:ErrorReport"/>
+                </Schema>
+            </Input>
+        </pd:inputBindings>
+    </pd:activity>
+    <pd:activity name="ErrDuppLog">
+        <pd:type>com.tibco.pe.core.CallProcessActivity</pd:type>
+        <pd:resourceType>ae.process.subprocess</pd:resourceType>
+        <pd:x>496</pd:x>
+        <pd:y>415</pd:y>
+        <config>
+            <processName>/HFA/SubProcesses/Log.process</processName>
+            <spawn>true</spawn>
+        </config>
+        <pd:inputBindings>
+            <Input>
+                <LogLocation>
+                    <xsl:value-of select="'ReceiveAlert'"/>
+                </LogLocation>
+                <ServiceName>
+                    <xsl:value-of select="'HFA_CREATE'"/>
+                </ServiceName>
+                <InputType>
+                    <xsl:value-of select="'ERR DUPP'"/>
+                </InputType>
+                <Schema>
+                    <xsl:copy-of select="$_error/ns2:ErrorReport"/>
+                </Schema>
+            </Input>
+        </pd:inputBindings>
+    </pd:activity>
+    <pd:transition>
+        <pd:from>ReceiveAlertMsg</pd:from>
+        <pd:to>LogStart</pd:to>
+        <pd:lineType>Default</pd:lineType>
+        <pd:lineColor>-16777216</pd:lineColor>
+        <pd:conditionType>always</pd:conditionType>
+    </pd:transition>
+    <pd:transition>
+        <pd:from>ParseAlertReq</pd:from>
+        <pd:to>validateAlertRequest</pd:to>
+        <pd:lineType>Default</pd:lineType>
+        <pd:lineColor>-16777216</pd:lineColor>
+        <pd:conditionType>always</pd:conditionType>
+    </pd:transition>
+    <pd:transition>
+        <pd:from>Catch</pd:from>
+        <pd:to>ErrLog</pd:to>
+        <pd:lineType>Default</pd:lineType>
+        <pd:lineColor>-16777216</pd:lineColor>
+        <pd:conditionType>otherwise</pd:conditionType>
+    </pd:transition>
+    <pd:transition>
+        <pd:from>MapError</pd:from>
+        <pd:to>Render XML</pd:to>
+        <pd:lineType>Default</pd:lineType>
+        <pd:lineColor>-16777216</pd:lineColor>
+        <pd:conditionType>always</pd:conditionType>
+    </pd:transition>
+    <pd:transition>
+        <pd:from>Render XML</pd:from>
+        <pd:to>LogError</pd:to>
+        <pd:lineType>Default</pd:lineType>
+        <pd:lineColor>-16777216</pd:lineColor>
+        <pd:conditionType>always</pd:conditionType>
+    </pd:transition>
+    <pd:transition>
+        <pd:from>LogError</pd:from>
+        <pd:to>JMS-Queue-Sender-1</pd:to>
+        <pd:lineType>Default</pd:lineType>
+        <pd:lineColor>-16777216</pd:lineColor>
+        <pd:conditionType>always</pd:conditionType>
+    </pd:transition>
+    <pd:transition>
+        <pd:from>LogEnd</pd:from>
+        <pd:to>Confirm</pd:to>
+        <pd:lineType>Default</pd:lineType>
+        <pd:lineColor>-16777216</pd:lineColor>
+        <pd:conditionType>always</pd:conditionType>
+    </pd:transition>
+    <pd:transition>
+        <pd:from>Catch</pd:from>
+        <pd:to>ErrDuppLog</pd:to>
+        <pd:xpathDescription>Duplicate Alert ID</pd:xpathDescription>
+        <pd:lineType>Default</pd:lineType>
+        <pd:lineColor>-16777216</pd:lineColor>
+        <pd:conditionType>xpath</pd:conditionType>
+        <pd:xpath>$_error/ns2:ErrorReport/MsgCode=$_globalVariables/pfx5:GlobalVariables/Application/ErrorCode/DuplicateRecord</pd:xpath>
+    </pd:transition>
+    <pd:transition>
+        <pd:from>UpdateAlertHeaderDup</pd:from>
+        <pd:to>LogDuplicate</pd:to>
+        <pd:lineType>Default</pd:lineType>
+        <pd:lineColor>-16777216</pd:lineColor>
+        <pd:conditionType>always</pd:conditionType>
+    </pd:transition>
+    <pd:transition>
+        <pd:from>LogDuplicate</pd:from>
+        <pd:to>FormDupReply</pd:to>
+        <pd:lineType>Default</pd:lineType>
+        <pd:lineColor>-16777216</pd:lineColor>
+        <pd:conditionType>always</pd:conditionType>
+    </pd:transition>
+    <pd:transition>
+        <pd:from>FormDupReply</pd:from>
+        <pd:to>LogDupReply</pd:to>
+        <pd:lineType>Default</pd:lineType>
+        <pd:lineColor>-16777216</pd:lineColor>
+        <pd:conditionType>always</pd:conditionType>
+    </pd:transition>
+    <pd:transition>
+        <pd:from>JMS Queue Sender</pd:from>
+        <pd:to>LogEnd</pd:to>
+        <pd:lineType>Default</pd:lineType>
+        <pd:lineColor>-16777216</pd:lineColor>
+        <pd:conditionType>always</pd:conditionType>
+    </pd:transition>
+    <pd:transition>
+        <pd:from>Confirm</pd:from>
+        <pd:to>End</pd:to>
+        <pd:lineType>Default</pd:lineType>
+        <pd:lineColor>-16777216</pd:lineColor>
+        <pd:conditionType>always</pd:conditionType>
+    </pd:transition>
+    <pd:transition>
+        <pd:from>Confirm-1</pd:from>
+        <pd:to>End</pd:to>
+        <pd:lineType>One Bend</pd:lineType>
+        <pd:lineColor>-16777216</pd:lineColor>
+        <pd:conditionType>always</pd:conditionType>
+    </pd:transition>
+    <pd:transition>
+        <pd:from>Confirm-2</pd:from>
+        <pd:to>End</pd:to>
+        <pd:lineType>One Bend</pd:lineType>
+        <pd:lineColor>-16777216</pd:lineColor>
+        <pd:conditionType>always</pd:conditionType>
+    </pd:transition>
+    <pd:transition>
+        <pd:from>JMS-Queue-Sender-1</pd:from>
+        <pd:to>Confirm-1</pd:to>
+        <pd:lineType>Default</pd:lineType>
+        <pd:lineColor>-16777216</pd:lineColor>
+        <pd:conditionType>always</pd:conditionType>
+    </pd:transition>
+    <pd:transition>
+        <pd:from>JMS-Queue-Sender-2</pd:from>
+        <pd:to>Confirm-2</pd:to>
+        <pd:lineType>Default</pd:lineType>
+        <pd:lineColor>-16777216</pd:lineColor>
+        <pd:conditionType>always</pd:conditionType>
+    </pd:transition>
+    <pd:transition>
+        <pd:from>Render-XML-CaseSucess-1</pd:from>
+        <pd:to>JMS Queue Sender</pd:to>
+        <pd:lineType>Default</pd:lineType>
+        <pd:lineColor>-16777216</pd:lineColor>
+        <pd:conditionType>always</pd:conditionType>
+    </pd:transition>
+    <pd:transition>
+        <pd:from>LogDupReply</pd:from>
+        <pd:to>JMS-Queue-Sender-2</pd:to>
+        <pd:lineType>Default</pd:lineType>
+        <pd:lineColor>-16777216</pd:lineColor>
+        <pd:conditionType>always</pd:conditionType>
+    </pd:transition>
+    <pd:transition>
+        <pd:from>JMS-Queue-Sender-1</pd:from>
+        <pd:to>LogUnableToReply</pd:to>
+        <pd:lineType>Default</pd:lineType>
+        <pd:lineColor>-65485</pd:lineColor>
+        <pd:conditionType>error</pd:conditionType>
+    </pd:transition>
+    <pd:transition>
+        <pd:from>JMS-Queue-Sender-2</pd:from>
+        <pd:to>LogUnableToReply</pd:to>
+        <pd:lineType>Default</pd:lineType>
+        <pd:lineColor>-65485</pd:lineColor>
+        <pd:conditionType>error</pd:conditionType>
+    </pd:transition>
+    <pd:transition>
+        <pd:from>LogUnableToReply</pd:from>
+        <pd:to>Confirm-1</pd:to>
+        <pd:lineType>Default</pd:lineType>
+        <pd:lineColor>-16777216</pd:lineColor>
+        <pd:conditionType>always</pd:conditionType>
+    </pd:transition>
+    <pd:transition>
+        <pd:from>validateAlertRequest</pd:from>
+        <pd:to>Group (1)</pd:to>
+        <pd:lineType>Default</pd:lineType>
+        <pd:lineColor>-16777216</pd:lineColor>
+        <pd:conditionType>always</pd:conditionType>
+    </pd:transition>
+    <pd:transition>
+        <pd:from>Group (1)</pd:from>
+        <pd:to>Render-XML-CaseSucess-1</pd:to>
+        <pd:lineType>Default</pd:lineType>
+        <pd:lineColor>-16777216</pd:lineColor>
+        <pd:conditionType>always</pd:conditionType>
+    </pd:transition>
+    <pd:transition>
+        <pd:from>MapError</pd:from>
+        <pd:to>LogUnableToReply</pd:to>
+        <pd:lineType>Default</pd:lineType>
+        <pd:lineColor>-65536</pd:lineColor>
+        <pd:conditionType>error</pd:conditionType>
+    </pd:transition>
+    <pd:transition>
+        <pd:from>Render XML</pd:from>
+        <pd:to>LogUnableToReply</pd:to>
+        <pd:lineType>Default</pd:lineType>
+        <pd:lineColor>-65536</pd:lineColor>
+        <pd:conditionType>error</pd:conditionType>
+    </pd:transition>
+    <pd:transition>
+        <pd:from>FormDupReply</pd:from>
+        <pd:to>LogUnableToReply</pd:to>
+        <pd:lineType>Default</pd:lineType>
+        <pd:lineColor>-65536</pd:lineColor>
+        <pd:conditionType>error</pd:conditionType>
+    </pd:transition>
+    <pd:transition>
+        <pd:from>LogStart</pd:from>
+        <pd:to>ParseAlertReq</pd:to>
+        <pd:lineType>Default</pd:lineType>
+        <pd:lineColor>-16777216</pd:lineColor>
+        <pd:conditionType>always</pd:conditionType>
+    </pd:transition>
+    <pd:transition>
+        <pd:from>ErrLog</pd:from>
+        <pd:to>MapError</pd:to>
+        <pd:lineType>Default</pd:lineType>
+        <pd:lineColor>-16777216</pd:lineColor>
+        <pd:conditionType>always</pd:conditionType>
+    </pd:transition>
+    <pd:transition>
+        <pd:from>ErrDuppLog</pd:from>
+        <pd:to>UpdateAlertHeaderDup</pd:to>
+        <pd:lineType>Default</pd:lineType>
+        <pd:lineColor>-16777216</pd:lineColor>
+        <pd:conditionType>always</pd:conditionType>
+    </pd:transition>
+</pd:ProcessDefinition>

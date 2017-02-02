@@ -1,0 +1,27 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<Repository:repository xmlns:Repository="http://www.tibco.com/xmlns/repo/types/2002">
+    <enterpriseArchive>
+        <sharedArchive name="Shared Archive">
+            <resourceType>shared.archive.resource</resourceType>
+            <authorProperty>cwilliamson</authorProperty>
+            <sharedResources>/SharedResources/Connections/Security/Security Policy.securityPolicy,/SharedResources/Connections/Security/MERGESPA.securityPolicyAssociation,/SharedResources/Connections/Security/STARTSPA.securityPolicyAssociation</sharedResources>
+            <sharedFiles/>
+            <sharedJarFiles/>
+        </sharedArchive>
+        <processArchive name="HFA_CREATEProcess Archive">
+            <resourceType>process.archive.resource</resourceType>
+            <authorProperty>cwilliamson</authorProperty>
+            <processProperty>/Starter/ReceiveAlert.process,/Services/CreateCaseService.process,/Starter/UpdateInstanceId.process</processProperty>
+        </processArchive>
+        <versionProperty>47</versionProperty>
+        <authorProperty>cwilliamson</authorProperty>
+        <addServiceSettableGvars>true</addServiceSettableGvars>
+        <name>HFA_CREATE</name>
+        <designer>
+            <lockedProperties/>
+            <fixedChildren/>
+            <resourceDescriptions/>
+        </designer>
+        <fileLocationProperty>D:\ear\HFA_CREATE.ear</fileLocationProperty>
+    </enterpriseArchive>
+</Repository:repository>

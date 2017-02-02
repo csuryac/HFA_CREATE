@@ -1,0 +1,335 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<pd:ProcessDefinition xmlns:pd="http://xmlns.tibco.com/bw/process/2003" xmlns:xsl="http://www.w3.org/1999/XSL/Transform" xmlns:xsd="http://www.w3.org/2001/XMLSchema" xmlns:pfx="http://schemas.dbs.com/icc/BasicSvc">
+    <xsd:import namespace="http://schemas.dbs.com/icc/BasicSvc" schemaLocation="/SharedResources/Schema/IP/CaseMgmtRqAddOp_v1.1.xsd"/>
+    <pd:name>HFA/SubProcesses/InsertRemarkHistory.process</pd:name>
+    <pd:startName>Start</pd:startName>
+    <pd:startType>
+        <xsd:element name="Input">
+            <xsd:complexType>
+                <xsd:sequence>
+                    <xsd:element ref="pfx:CaseMgmtRqAdd"/>
+                </xsd:sequence>
+            </xsd:complexType>
+        </xsd:element>
+    </pd:startType>
+    <pd:startX>78</pd:startX>
+    <pd:startY>146</pd:startY>
+    <pd:returnBindings/>
+    <pd:endName>End</pd:endName>
+    <pd:endX>954</pd:endX>
+    <pd:endY>151</pd:endY>
+    <pd:errorSchemas/>
+    <pd:processVariables/>
+    <pd:targetNamespace>http://xmlns.example.com/1457954129591</pd:targetNamespace>
+    <pd:activity name="UpdateCaseStatus">
+        <pd:type>com.tibco.plugin.jdbc.JDBCCallActivity</pd:type>
+        <pd:resourceType>ae.activities.JDBCCallActivity</pd:resourceType>
+        <pd:x>306</pd:x>
+        <pd:y>146</pd:y>
+        <config>
+            <timeout>%%Connections/JDBC/QueryTimeout%%</timeout>
+            <maxRows>%%Connections/JDBC/MaxRow%%</maxRows>
+            <emptyStrAsNil>false</emptyStrAsNil>
+            <jdbcSharedConfig>/SharedResources/Connections/JDBC/IWFDB.sharedjdbc</jdbcSharedConfig>
+            <schema>%%Connections/JDBC/StoredProcedure/Schema%%</schema>
+            <catalog>%%Connections/JDBC/StoredProcedure/Package%%</catalog>
+            <ProcedureName>%%Connections/JDBC/StoredProcedure/ProcName_CaseStat%%</ProcedureName>
+            <parameterTypes>
+                <parameter>
+                    <colName>P_PROJECT_NAME</colName>
+                    <colType>1</colType>
+                    <dataType>12</dataType>
+                    <typeName>VARCHAR2</typeName>
+                </parameter>
+                <parameter>
+                    <colName>P_CASE_STATUS</colName>
+                    <colType>1</colType>
+                    <dataType>12</dataType>
+                    <typeName>VARCHAR2</typeName>
+                </parameter>
+                <parameter>
+                    <colName>P_CASE_NUM</colName>
+                    <colType>1</colType>
+                    <dataType>12</dataType>
+                    <typeName>VARCHAR2</typeName>
+                </parameter>
+                <parameter>
+                    <colName>P_RESULT</colName>
+                    <colType>4</colType>
+                    <dataType>12</dataType>
+                    <typeName>VARCHAR2</typeName>
+                </parameter>
+            </parameterTypes>
+        </config>
+        <pd:inputBindings>
+            <inputs>
+                <inputSet>
+                    <P_PROJECT_NAME>
+                        <xsl:choose xmlns:xsl="http://www.w3.org/1999/XSL/Transform">
+                            <xsl:when test="exists(tib:trim($Start/pfx:UpdateCaseDataRequest/pfx:PROJ_CODE))">
+                                <xsl:value-of select="tib:trim($Start/pfx:UpdateCaseDataRequest/pfx:PROJ_CODE)"/>
+                            </xsl:when>
+                            <xsl:otherwise>
+                                <xsl:attribute name="xsi:nil">true</xsl:attribute>
+                            </xsl:otherwise>
+                        </xsl:choose>
+                    </P_PROJECT_NAME>
+                    <P_CASE_STATUS>
+                        <xsl:choose xmlns:xsl="http://www.w3.org/1999/XSL/Transform">
+                            <xsl:when test="exists(tib:trim($Start/pfx:UpdateCaseDataRequest/pfx:Case_Status))">
+                                <xsl:value-of select="tib:trim($Start/pfx:UpdateCaseDataRequest/pfx:Case_Status)"/>
+                            </xsl:when>
+                            <xsl:otherwise>
+                                <xsl:attribute name="xsi:nil">true</xsl:attribute>
+                            </xsl:otherwise>
+                        </xsl:choose>
+                    </P_CASE_STATUS>
+                    <P_CASE_NUM>
+                        <xsl:choose xmlns:xsl="http://www.w3.org/1999/XSL/Transform">
+                            <xsl:when test="exists(tib:trim($Start/pfx:UpdateCaseDataRequest/pfx:CaseNumber))">
+                                <xsl:value-of select="tib:trim($Start/pfx:UpdateCaseDataRequest/pfx:CaseNumber)"/>
+                            </xsl:when>
+                            <xsl:otherwise>
+                                <xsl:attribute name="xsi:nil">true</xsl:attribute>
+                            </xsl:otherwise>
+                        </xsl:choose>
+                    </P_CASE_NUM>
+                </inputSet>
+            </inputs>
+        </pd:inputBindings>
+    </pd:activity>
+    <pd:activity name="UpdateCaseHistory">
+        <pd:type>com.tibco.plugin.jdbc.JDBCCallActivity</pd:type>
+        <pd:resourceType>ae.activities.JDBCCallActivity</pd:resourceType>
+        <pd:x>525</pd:x>
+        <pd:y>145</pd:y>
+        <config>
+            <timeout>%%Connections/JDBC/QueryTimeout%%</timeout>
+            <maxRows>%%Connections/JDBC/MaxRow%%</maxRows>
+            <emptyStrAsNil>false</emptyStrAsNil>
+            <jdbcSharedConfig>/SharedResources/Connections/JDBC/IWFDB.sharedjdbc</jdbcSharedConfig>
+            <schema>%%Connections/JDBC/StoredProcedure/Schema%%</schema>
+            <catalog>%%Connections/JDBC/StoredProcedure/Package%%</catalog>
+            <ProcedureName>%%Connections/JDBC/StoredProcedure/ProcName_CaseHist%%</ProcedureName>
+            <parameterTypes>
+                <parameter>
+                    <colName>P_PROJECT_NAME</colName>
+                    <colType>1</colType>
+                    <dataType>12</dataType>
+                    <typeName>VARCHAR2</typeName>
+                </parameter>
+                <parameter>
+                    <colName>P_CASE_NUM</colName>
+                    <colType>1</colType>
+                    <dataType>12</dataType>
+                    <typeName>VARCHAR2</typeName>
+                </parameter>
+                <parameter>
+                    <colName>P_STEP_NAME</colName>
+                    <colType>1</colType>
+                    <dataType>12</dataType>
+                    <typeName>VARCHAR2</typeName>
+                </parameter>
+                <parameter>
+                    <colName>P_STEP_DESC</colName>
+                    <colType>1</colType>
+                    <dataType>12</dataType>
+                    <typeName>VARCHAR2</typeName>
+                </parameter>
+                <parameter>
+                    <colName>P_STEP_ACTION</colName>
+                    <colType>1</colType>
+                    <dataType>12</dataType>
+                    <typeName>VARCHAR2</typeName>
+                </parameter>
+                <parameter>
+                    <colName>P_ACTED_BY</colName>
+                    <colType>1</colType>
+                    <dataType>12</dataType>
+                    <typeName>VARCHAR2</typeName>
+                </parameter>
+                <parameter>
+                    <colName>P_ACTED_DATE</colName>
+                    <colType>1</colType>
+                    <dataType>12</dataType>
+                    <typeName>VARCHAR2</typeName>
+                </parameter>
+                <parameter>
+                    <colName>P_RESULT</colName>
+                    <colType>4</colType>
+                    <dataType>12</dataType>
+                    <typeName>VARCHAR2</typeName>
+                </parameter>
+            </parameterTypes>
+        </config>
+        <pd:inputBindings>
+            <inputs>
+                <inputSet>
+                    <P_PROJECT_NAME>
+                        <xsl:choose xmlns:xsl="http://www.w3.org/1999/XSL/Transform">
+                            <xsl:when test="exists(tib:trim($Start/pfx:UpdateCaseDataRequest/pfx:PROJ_CODE))">
+                                <xsl:value-of select="tib:trim($Start/pfx:UpdateCaseDataRequest/pfx:PROJ_CODE)"/>
+                            </xsl:when>
+                            <xsl:otherwise>
+                                <xsl:attribute name="xsi:nil">true</xsl:attribute>
+                            </xsl:otherwise>
+                        </xsl:choose>
+                    </P_PROJECT_NAME>
+                    <P_CASE_NUM>
+                        <xsl:choose xmlns:xsl="http://www.w3.org/1999/XSL/Transform">
+                            <xsl:when test="exists(tib:trim($Start/pfx:UpdateCaseDataRequest/pfx:CaseNumber))">
+                                <xsl:value-of select="tib:trim($Start/pfx:UpdateCaseDataRequest/pfx:CaseNumber)"/>
+                            </xsl:when>
+                            <xsl:otherwise>
+                                <xsl:attribute name="xsi:nil">true</xsl:attribute>
+                            </xsl:otherwise>
+                        </xsl:choose>
+                    </P_CASE_NUM>
+                    <P_STEP_NAME>
+                        <xsl:choose xmlns:xsl="http://www.w3.org/1999/XSL/Transform">
+                            <xsl:when test="exists(tib:trim($Start/pfx:UpdateCaseDataRequest/pfx:STEP_NAME_HIST))">
+                                <xsl:value-of select="tib:trim($Start/pfx:UpdateCaseDataRequest/pfx:STEP_NAME_HIST)"/>
+                            </xsl:when>
+                            <xsl:otherwise>
+                                <xsl:attribute name="xsi:nil">true</xsl:attribute>
+                            </xsl:otherwise>
+                        </xsl:choose>
+                    </P_STEP_NAME>
+                    <P_STEP_DESC>
+                        <xsl:choose xmlns:xsl="http://www.w3.org/1999/XSL/Transform">
+                            <xsl:when test="exists(tib:trim($Start/pfx:UpdateCaseDataRequest/pfx:STEP_DESC_HIST))">
+                                <xsl:value-of select="tib:trim($Start/pfx:UpdateCaseDataRequest/pfx:STEP_DESC_HIST)"/>
+                            </xsl:when>
+                            <xsl:otherwise>
+                                <xsl:attribute name="xsi:nil">true</xsl:attribute>
+                            </xsl:otherwise>
+                        </xsl:choose>
+                    </P_STEP_DESC>
+                    <P_STEP_ACTION>
+                        <xsl:choose xmlns:xsl="http://www.w3.org/1999/XSL/Transform">
+                            <xsl:when test="exists(tib:trim($Start/pfx:UpdateCaseDataRequest/pfx:STEP_ACTION))">
+                                <xsl:value-of select="tib:trim($Start/pfx:UpdateCaseDataRequest/pfx:STEP_ACTION)"/>
+                            </xsl:when>
+                            <xsl:otherwise>
+                                <xsl:attribute name="xsi:nil">true</xsl:attribute>
+                            </xsl:otherwise>
+                        </xsl:choose>
+                    </P_STEP_ACTION>
+                    <P_ACTED_BY>
+                        <xsl:choose xmlns:xsl="http://www.w3.org/1999/XSL/Transform">
+                            <xsl:when test="exists(tib:trim($Start/pfx:UpdateCaseDataRequest/pfx:ACTED_BY))">
+                                <xsl:value-of select="tib:trim($Start/pfx:UpdateCaseDataRequest/pfx:ACTED_BY)"/>
+                            </xsl:when>
+                            <xsl:otherwise>
+                                <xsl:attribute name="xsi:nil">true</xsl:attribute>
+                            </xsl:otherwise>
+                        </xsl:choose>
+                    </P_ACTED_BY>
+                    <P_ACTED_DATE>
+                        <xsl:choose xmlns:xsl="http://www.w3.org/1999/XSL/Transform">
+                            <xsl:when test="exists(tib:trim($Start/pfx:UpdateCaseDataRequest/pfx:ACTED_DT))">
+                                <xsl:value-of select="tib:trim($Start/pfx:UpdateCaseDataRequest/pfx:ACTED_DT)"/>
+                            </xsl:when>
+                            <xsl:otherwise>
+                                <xsl:attribute name="xsi:nil">true</xsl:attribute>
+                            </xsl:otherwise>
+                        </xsl:choose>
+                    </P_ACTED_DATE>
+                </inputSet>
+            </inputs>
+        </pd:inputBindings>
+    </pd:activity>
+    <pd:activity name="UpdateCurrentStepName">
+        <pd:type>com.tibco.plugin.jdbc.JDBCUpdateActivity</pd:type>
+        <pd:resourceType>ae.activities.JDBCUpdateActivity</pd:resourceType>
+        <pd:x>744</pd:x>
+        <pd:y>149</pd:y>
+        <config>
+            <timeout>%%Connections/JDBC/QueryTimeout%%</timeout>
+            <commit>false</commit>
+            <emptyStrAsNil>false</emptyStrAsNil>
+            <jdbcSharedConfig>/SharedResources/Connections/JDBC/IWFDB.sharedjdbc</jdbcSharedConfig>
+            <statement>UPDATE HFA_CASE_DATA
+SET CURRENT_STEP = ?
+WHERE CASE_NUM = ?</statement>
+            <Prepared_Param_DataType>
+                <parameter>
+                    <parameterName>CURRENT_STEP</parameterName>
+                    <dataType>VARCHAR</dataType>
+                </parameter>
+                <parameter>
+                    <parameterName>CASE_NUM</parameterName>
+                    <dataType>VARCHAR</dataType>
+                </parameter>
+            </Prepared_Param_DataType>
+        </config>
+        <pd:inputBindings>
+            <jdbcUpdateActivityInput>
+                <xsl:choose xmlns:xsl="http://www.w3.org/1999/XSL/Transform">
+                    <xsl:when test="tib:trim($Start/pfx:UpdateCaseDataRequest/pfx:STEP_NAME_HIST) = &quot;S0000100&quot;">
+                        <CURRENT_STEP>
+                            <xsl:choose>
+                                <xsl:when test="exists(&quot;S0000300&quot;)">
+                                    <xsl:value-of select="&quot;S0000300&quot;"/>
+                                </xsl:when>
+                                <xsl:otherwise>
+                                    <xsl:attribute name="xsi:nil">true</xsl:attribute>
+                                </xsl:otherwise>
+                            </xsl:choose>
+                        </CURRENT_STEP>
+                    </xsl:when>
+                    <xsl:otherwise>
+                        <CURRENT_STEP>
+                            <xsl:choose>
+                                <xsl:when test="exists(&quot;S0000300&quot;)">
+                                    <xsl:value-of select="&quot;S0000300&quot;"/>
+                                </xsl:when>
+                                <xsl:otherwise>
+                                    <xsl:attribute name="xsi:nil">true</xsl:attribute>
+                                </xsl:otherwise>
+                            </xsl:choose>
+                        </CURRENT_STEP>
+                    </xsl:otherwise>
+                </xsl:choose>
+                <CASE_NUM>
+                    <xsl:choose xmlns:xsl="http://www.w3.org/1999/XSL/Transform">
+                        <xsl:when test="exists(tib:trim($Start/pfx:UpdateCaseDataRequest/pfx:CaseNumber))">
+                            <xsl:value-of select="tib:trim($Start/pfx:UpdateCaseDataRequest/pfx:CaseNumber)"/>
+                        </xsl:when>
+                        <xsl:otherwise>
+                            <xsl:attribute name="xsi:nil">true</xsl:attribute>
+                        </xsl:otherwise>
+                    </xsl:choose>
+                </CASE_NUM>
+            </jdbcUpdateActivityInput>
+        </pd:inputBindings>
+    </pd:activity>
+    <pd:transition>
+        <pd:from>Start</pd:from>
+        <pd:to>UpdateCaseStatus</pd:to>
+        <pd:lineType>Default</pd:lineType>
+        <pd:lineColor>-16777216</pd:lineColor>
+        <pd:conditionType>always</pd:conditionType>
+    </pd:transition>
+    <pd:transition>
+        <pd:from>UpdateCaseStatus</pd:from>
+        <pd:to>UpdateCaseHistory</pd:to>
+        <pd:lineType>Default</pd:lineType>
+        <pd:lineColor>-16777216</pd:lineColor>
+        <pd:conditionType>always</pd:conditionType>
+    </pd:transition>
+    <pd:transition>
+        <pd:from>UpdateCaseHistory</pd:from>
+        <pd:to>UpdateCurrentStepName</pd:to>
+        <pd:lineType>Default</pd:lineType>
+        <pd:lineColor>-16777216</pd:lineColor>
+        <pd:conditionType>always</pd:conditionType>
+    </pd:transition>
+    <pd:transition>
+        <pd:from>UpdateCurrentStepName</pd:from>
+        <pd:to>End</pd:to>
+        <pd:lineType>Default</pd:lineType>
+        <pd:lineColor>-16777216</pd:lineColor>
+        <pd:conditionType>always</pd:conditionType>
+    </pd:transition>
+</pd:ProcessDefinition>

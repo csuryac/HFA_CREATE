@@ -1,0 +1,16 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<definitions xmlns="http://schemas.xmlsoap.org/wsdl/" xmlns:ns="http://schemas.dbs.com/icc/BasicSvc" xmlns:tns="http://www.iwf.com/interface/hfaCreateCase" xmlns:xsd="http://www.w3.org/2001/XMLSchema" targetNamespace="http://www.iwf.com/interface/hfaCreateCase">
+    <import namespace="http://schemas.dbs.com/icc/BasicSvc" location="../Schema/IP/CaseMgmtRqAddOp_v1.1.xsd"/>
+    <message name="CreateCaseReq">
+        <part name="Input" element="ns:CaseMgmtRqAdd"/>
+    </message>
+    <message name="CreateCaseRes">
+        <part name="Output" element="ns:CaseMgmtRqAddResponse"/>
+    </message>
+    <portType name="CreateCasePortType">
+        <operation name="OpCreateCase">
+            <input message="tns:CreateCaseReq"/>
+            <output message="tns:CreateCaseRes"/>
+        </operation>
+    </portType>
+</definitions>

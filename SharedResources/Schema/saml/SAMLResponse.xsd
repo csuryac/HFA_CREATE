@@ -1,0 +1,18 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<xs:schema xmlns:xs="http://www.w3.org/2001/XMLSchema"
+	 xmlns="http://www.tibco.com/schemas/SAMLAssertion/Schemas/saml/Schema.xsd"
+	 xmlns:saml="urn:oasis:names:tc:SAML:2.0:assertion"
+	 targetNamespace="http://www.tibco.com/schemas/SAMLAssertion/Schemas/saml/Schema.xsd"
+	 elementFormDefault="qualified"
+	 attributeFormDefault="unqualified">
+	<xs:import namespace="urn:oasis:names:tc:SAML:2.0:assertion" schemaLocation="./saml-schema-assertion-2.0.xsd"/>
+	<xs:element name="SAMLResponse">
+		<xs:complexType>
+			<xs:sequence>
+				<xs:element name="Assertion" type="saml:AssertionType" minOccurs="0"/>
+				<xs:element name="Fault" type="xs:string" minOccurs="0"/>
+			</xs:sequence>
+		</xs:complexType>
+	</xs:element>
+</xs:schema>

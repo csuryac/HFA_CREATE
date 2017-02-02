@@ -1,0 +1,294 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<!-- edited with XMLSpy v2007 rel. 3 sp1 (http://www.altova.com) by DBS BANK LIMITED (DBS BANK LIMITED) -->
+<xs:schema xmlns="http://schemas.dbs.com/icc/BasicSvc"
+	 xmlns:xs="http://www.w3.org/2001/XMLSchema"
+	 xmlns:ems="http://schemas.dbs.com/icc/ems"
+	 xmlns:crd="http://schemas.dbs.com/icc/CardSvc"
+	 xmlns:cust="http://schemas.dbs.com/icc/CustomerSvc"
+	 targetNamespace="http://schemas.dbs.com/icc/BasicSvc"
+	 elementFormDefault="qualified"
+	 attributeFormDefault="unqualified">
+	<xs:annotation>
+		<xs:documentation>2014-09-22: Version 1.1 : Added  NFCEnabled , PrivilegedCust , MerchantName, MerchantCat, Merchantid in request xml</xs:documentation>
+	</xs:annotation>
+	<xs:annotation>
+		<xs:documentation>2014-10-31: Version 1.1 : Added  BillTranAmt  , RiskScore  and EntryMode in TranDetl Aggregate 2) Added CardType,  CardTypeDesc and SecureId in CardDetl Aggregate </xs:documentation>
+	</xs:annotation>
+	<xs:import namespace="http://schemas.dbs.com/icc/ems" schemaLocation="CommAggregate3_v1.5.xsd"/>
+	<xs:import namespace="http://schemas.dbs.com/icc/CardSvc" schemaLocation="CommCardSvc3_v1.2.xsd"/>
+	<xs:import namespace="http://schemas.dbs.com/icc/CustomerSvc" schemaLocation="CommCustomerSvc3_v1.2.xsd"/>
+	<xs:include schemaLocation="CommBasicSvc3_v1.1.xsd"/>
+	<xs:element name="CaseMgmtRqAdd">
+		<xs:annotation>
+			<xs:documentation>Add Case Management Request</xs:documentation>
+		</xs:annotation>
+		<xs:complexType>
+			<xs:sequence>
+				<xs:element ref="ems:CommonRq"/>
+				<xs:element ref="CaseType"/>
+				<xs:choice minOccurs="0">
+					<xs:element ref="ems:CustInternalId"/>
+					<xs:element ref="ems:CISInternalId"/>
+				</xs:choice>
+				<xs:element ref="ems:AltCustInternalId" minOccurs="0"/>
+				<xs:element ref="cust:CustDoc" minOccurs="0"/>
+				<xs:element ref="ems:CustName" minOccurs="0"/>
+				<xs:element ref="cust:Gender" minOccurs="0"/>
+				<xs:element ref="cust:EmailAddrDetl" minOccurs="0"/>
+				<xs:element ref="ems:Phone" minOccurs="0"/>
+				<xs:element name="Cards" minOccurs="0">
+					<xs:complexType>
+						<xs:sequence>
+							<xs:element ref="ems:Card" minOccurs="0" maxOccurs="unbounded"/>
+						</xs:sequence>
+					</xs:complexType>
+				</xs:element>
+				<xs:element name="TranDetl" minOccurs="0" maxOccurs="unbounded">
+					<xs:annotation>
+						<xs:documentation>Transaction details</xs:documentation>
+					</xs:annotation>
+					<xs:complexType>
+						<xs:sequence>
+							<xs:element ref="AlertId" minOccurs="0"/>
+							<xs:element ref="ems:Channel" minOccurs="0"/>
+							<xs:element ref="ems:OrigClientId" minOccurs="0"/>
+							<xs:element ref="ems:OrigTermId" minOccurs="0"/>
+							<xs:element ref="ems:OrigTermLoc" minOccurs="0"/>
+							<xs:element ref="ems:OrigClientRef" minOccurs="0"/>
+							<xs:element name="MerchantId" minOccurs="0">
+								<xs:annotation>
+									<xs:documentation>Merchant Identification Number</xs:documentation>
+								</xs:annotation>
+								<xs:simpleType>
+									<xs:restriction base="xs:string">
+										<xs:maxLength value="36"/>
+									</xs:restriction>
+								</xs:simpleType>
+							</xs:element>
+							<xs:element name="MerchantName" minOccurs="0">
+								<xs:annotation>
+									<xs:documentation>Name of Merchant</xs:documentation>
+								</xs:annotation>
+								<xs:simpleType>
+									<xs:restriction base="xs:string">
+										<xs:maxLength value="80"/>
+									</xs:restriction>
+								</xs:simpleType>
+							</xs:element>
+							<xs:element name="MerchantCat" minOccurs="0">
+								<xs:annotation>
+									<xs:documentation>Merchanr Category Code</xs:documentation>
+								</xs:annotation>
+								<xs:simpleType>
+									<xs:restriction base="xs:string">
+										<xs:maxLength value="5"/>
+									</xs:restriction>
+								</xs:simpleType>
+							</xs:element>
+							<xs:element ref="crd:TranCtry" minOccurs="0"/>
+							<xs:element name="TranType" minOccurs="0">
+								<xs:annotation>
+									<xs:documentation>Transaction type</xs:documentation>
+								</xs:annotation>
+								<xs:simpleType>
+									<xs:restriction base="xs:string">
+										<xs:maxLength value="5"/>
+									</xs:restriction>
+								</xs:simpleType>
+							</xs:element>
+							<xs:element name="NFCEnabled" type="xs:boolean" minOccurs="0">
+								<xs:annotation>
+									<xs:documentation>Near Field Communication </xs:documentation>
+								</xs:annotation>
+							</xs:element>
+							<xs:element name="PrivilegedCust" minOccurs="0">
+								<xs:annotation>
+									<xs:documentation>Special Privilege Customer</xs:documentation>
+								</xs:annotation>
+								<xs:simpleType>
+									<xs:restriction base="xs:string">
+										<xs:maxLength value="5"/>
+									</xs:restriction>
+								</xs:simpleType>
+							</xs:element>
+							<xs:element ref="ems:TranDate"/>
+							<xs:element ref="ems:TranTime" minOccurs="0"/>
+							<xs:element name="CardRefID" type="xs:string" minOccurs="0"/>
+							<xs:element ref="ems:TranAmt" minOccurs="0"/>
+							<xs:element name="BillTranAmt" type="ems:Amount" minOccurs="0">
+								<xs:annotation>
+									<xs:documentation>Amount to be billed in the billing currency of the credit card</xs:documentation>
+									<xs:documentation>Required only if the transaction currency is different from the billing currency.</xs:documentation>
+								</xs:annotation>
+							</xs:element>
+							<xs:element name="RiskScore" minOccurs="0">
+								<xs:annotation>
+									<xs:documentation>Risk Score </xs:documentation>
+								</xs:annotation>
+								<xs:simpleType>
+									<xs:restriction base="xs:string">
+										<xs:maxLength value="10"/>
+									</xs:restriction>
+								</xs:simpleType>
+							</xs:element>
+							<xs:element name="EntryMode" minOccurs="0">
+								<xs:annotation>
+									<xs:documentation>Point of sale entry mode</xs:documentation>
+								</xs:annotation>
+								<xs:simpleType>
+									<xs:restriction base="xs:string">
+										<xs:maxLength value="3"/>
+									</xs:restriction>
+								</xs:simpleType>
+							</xs:element>
+							<xs:element name="RejectReason" minOccurs="0">
+								<xs:annotation>
+									<xs:documentation>Reject reason</xs:documentation>
+								</xs:annotation>
+								<xs:simpleType>
+									<xs:restriction base="xs:string">
+										<xs:maxLength value="4"/>
+									</xs:restriction>
+								</xs:simpleType>
+							</xs:element>
+							<xs:element name="RejectReasonDesc" minOccurs="0">
+								<xs:annotation>
+									<xs:documentation>Reject reason description</xs:documentation>
+								</xs:annotation>
+								<xs:simpleType>
+									<xs:restriction base="xs:string">
+										<xs:maxLength value="80"/>
+									</xs:restriction>
+								</xs:simpleType>
+							</xs:element>
+							<xs:element ref="AlertTriggered" minOccurs="0"/>
+							<xs:choice minOccurs="0">
+								<xs:element ref="ems:CustInternalId"/>
+								<xs:element ref="ems:CISInternalId"/>
+							</xs:choice>
+							<xs:element ref="ems:AltCustInternalId" minOccurs="0"/>
+							<xs:element ref="cust:CustDoc" minOccurs="0"/>
+							<xs:element ref="ems:CustName" minOccurs="0"/>
+							<xs:element ref="cust:Gender" minOccurs="0"/>
+							<xs:element ref="cust:EmailAddrDetl" minOccurs="0"/>
+							<xs:element ref="ems:Phone" minOccurs="0"/>
+							<xs:element name="Fields" minOccurs="0" maxOccurs="unbounded">
+								<xs:complexType>
+									<xs:sequence>
+										<xs:element name="FieldName">
+											<xs:annotation>
+												<xs:documentation>Dynamic Field Name</xs:documentation>
+											</xs:annotation>
+											<xs:simpleType>
+												<xs:restriction base="xs:string">
+													<xs:maxLength value="20"/>
+												</xs:restriction>
+											</xs:simpleType>
+										</xs:element>
+										<xs:element name="FieldValue">
+											<xs:annotation>
+												<xs:documentation>Dynamic Field Value</xs:documentation>
+											</xs:annotation>
+											<xs:simpleType>
+												<xs:restriction base="xs:string">
+													<xs:maxLength value="255"/>
+												</xs:restriction>
+											</xs:simpleType>
+										</xs:element>
+									</xs:sequence>
+								</xs:complexType>
+							</xs:element>
+						</xs:sequence>
+					</xs:complexType>
+				</xs:element>
+				<xs:sequence minOccurs="0">
+					<xs:element name="AlertDetl" maxOccurs="unbounded">
+						<xs:annotation>
+							<xs:documentation>Details for alert case creation</xs:documentation>
+						</xs:annotation>
+						<xs:complexType>
+							<xs:sequence>
+								<xs:element ref="AlertId"/>
+								<xs:element ref="AlertRuleId"/>
+								<xs:element ref="AlertRuleDesc" minOccurs="0"/>
+								<xs:element ref="AlertRulePriority" minOccurs="0"/>
+								<xs:element ref="AlertDateTime"/>
+								<xs:element ref="AlertSent"/>
+								<xs:element ref="ContactMode" minOccurs="0" maxOccurs="5"/>
+								<xs:element ref="ems:CardId" minOccurs="0"/>
+								<xs:element ref="ems:Ctry" minOccurs="0"/>
+								<xs:element ref="ems:TranAmt" minOccurs="0"/>
+							</xs:sequence>
+						</xs:complexType>
+					</xs:element>
+				</xs:sequence>
+				<xs:sequence minOccurs="0">
+					<xs:element name="CardDetl">
+						<xs:annotation>
+							<xs:documentation>Card detail</xs:documentation>
+						</xs:annotation>
+						<xs:complexType>
+							<xs:sequence>
+								<xs:element name="CardType" minOccurs="0">
+									<xs:annotation>
+										<xs:documentation>Code to represent the type of card</xs:documentation>
+										<xs:documentation>Values vary depending on organization and product group</xs:documentation>
+										<xs:documentation>Refer to Card Type code in Foundation for IP Message Set - Codes document </xs:documentation>
+									</xs:annotation>
+									<xs:simpleType>
+										<xs:restriction base="xs:string">
+											<xs:maxLength value="3"/>
+										</xs:restriction>
+									</xs:simpleType>
+								</xs:element>
+								<xs:element name="CardTypeDesc" minOccurs="0">
+									<xs:annotation>
+										<xs:documentation>Card type description</xs:documentation>
+									</xs:annotation>
+									<xs:simpleType>
+										<xs:restriction base="xs:string">
+											<xs:maxLength value="40"/>
+										</xs:restriction>
+									</xs:simpleType>
+								</xs:element>
+								<xs:element ref="crd:CardStatus" minOccurs="0"/>
+								<xs:element ref="ems:CardUsage" minOccurs="0"/>
+								<xs:element name="CardCount" type="xs:integer" minOccurs="0">
+									<xs:annotation>
+										<xs:documentation>Number of cards issued with the same card identifier</xs:documentation>
+									</xs:annotation>
+								</xs:element>
+								<xs:element ref="ems:DailyLimit" minOccurs="0"/>
+								<xs:element name="SecureId" minOccurs="0">
+									<xs:annotation>
+										<xs:documentation>Card Secure Identifier</xs:documentation>
+									</xs:annotation>
+									<xs:simpleType>
+										<xs:restriction base="xs:string">
+											<xs:maxLength value="36"/>
+										</xs:restriction>
+									</xs:simpleType>
+								</xs:element>
+							</xs:sequence>
+						</xs:complexType>
+					</xs:element>
+				</xs:sequence>
+				<xs:element ref="ems:AddnlInfo" minOccurs="0" maxOccurs="5"/>
+			</xs:sequence>
+		</xs:complexType>
+	</xs:element>
+	<xs:element name="CaseMgmtRqAddResponse">
+		<xs:annotation>
+			<xs:documentation>Add Case Management Request Response</xs:documentation>
+		</xs:annotation>
+		<xs:complexType>
+			<xs:sequence>
+				<xs:element ref="ems:CommonRs"/>
+				<xs:element ref="CaseType"/>
+				<xs:element ref="CaseId"/>
+				<xs:element ref="CaseStatus" minOccurs="0"/>
+			</xs:sequence>
+		</xs:complexType>
+	</xs:element>
+</xs:schema>

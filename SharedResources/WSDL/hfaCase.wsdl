@@ -1,0 +1,46 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<definitions xmlns="http://schemas.xmlsoap.org/wsdl/" xmlns:ns="http://www.dbs.com/sg/wis/hfa/xsd/hfaCaseDetails" xmlns:tns="http://www.iwf.com/interface/hfaCase" xmlns:xsd="http://www.w3.org/2001/XMLSchema" targetNamespace="http://www.iwf.com/interface/hfaCase">
+    <import namespace="http://www.dbs.com/sg/wis/hfa/xsd/hfaCaseDetails" location="../Schema/hfaSchemas/hfaCase.xsd"/>
+    <message name="GetCaseDetailsReq">
+        <part name="input" element="ns:HFA_CaseDetails_input"/>
+    </message>
+    <message name="GetCaseDetailsRes">
+        <part name="output" element="ns:HFA_CaseDetails_output"/>
+    </message>
+    <message name="CaseInquiryReq">
+        <part name="input" element="ns:HFA_CaseInquiry_input"/>
+    </message>
+    <message name="CaseInquiryRes">
+        <part name="output" element="ns:HFA_CaseInquiry_output"/>
+    </message>
+    <message name="SubmitCaseReq">
+        <part name="input" element="ns:HFA_SaveUpdate_input"/>
+    </message>
+    <message name="SubmitCaseRes">
+        <part name="output" element="ns:HFA_SaveUpdate_output"/>
+    </message>
+    <message name="GetAlertHistoryReq">
+        <part name="input" element="ns:HFA_CustAlertHist_input"/>
+    </message>
+    <message name="GetAlertHistoryRes">
+        <part name="output" element="ns:HFA_CustAlertHist_output"/>
+    </message>
+    <portType name="HFACasePortType">
+        <operation name="OpGetCaseDetails">
+            <input message="tns:GetCaseDetailsReq"/>
+            <output message="tns:GetCaseDetailsRes"/>
+        </operation>
+        <operation name="OpCaseInquiry">
+            <input message="tns:CaseInquiryReq"/>
+            <output message="tns:CaseInquiryRes"/>
+        </operation>
+        <operation name="OpSubmitCase">
+            <input message="tns:SubmitCaseReq"/>
+            <output message="tns:SubmitCaseRes"/>
+        </operation>
+        <operation name="OpGetAlertHistory">
+            <input message="tns:GetAlertHistoryReq"/>
+            <output message="tns:GetAlertHistoryRes"/>
+        </operation>
+    </portType>
+</definitions>
