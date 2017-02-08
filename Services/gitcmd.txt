@@ -1,0 +1,10 @@
+git config --global user.name "csuryac"
+git config --global user.email surya43@gmail.com
+
+git init
+git add .
+git commit
+
+git diff --cached
+
+got status
