@@ -8,3 +8,6 @@ git commit
 git diff --cached
 
 got status
+
+
+open tortiose git and right click on new file and git commit first and then push next
