@@ -1,0 +1,324 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<pd:ProcessDefinition xmlns:xsl="http://www.w3.org/1999/XSL/Transform" xmlns:pfx="http://www.tibco.com/pe/DeployedVarsType" xmlns:pd="http://xmlns.tibco.com/bw/process/2003" xmlns:ns="www.tibco.com/plugin/java/JavaMethodActivityInput" xmlns:xsd="http://www.w3.org/2001/XMLSchema" xmlns:ns2="http://www.tibco.com/pe/GenerateErrorActivity/InputSchema" xmlns:tib="http://www.tibco.com/bw/xslt/custom-functions" xmlns:ns1="www.tibco.com/plugin/java/JavaMethodActivityOutput" xmlns:ns4="http://www.tibco.com/namespaces/tnt/plugins/file/v2" xmlns:ns3="http://www.tibco.com/namespaces/tnt/plugins/file">
+    <pd:name>DataEncryption.process</pd:name>
+    <pd:startName>Start</pd:startName>
+    <pd:startType>
+        <xsd:element name="root">
+            <xsd:complexType>
+                <xsd:sequence>
+                    <xsd:element name="Data" type="xsd:string"/>
+                </xsd:sequence>
+            </xsd:complexType>
+        </xsd:element>
+    </pd:startType>
+    <pd:startX>109</pd:startX>
+    <pd:startY>40</pd:startY>
+    <pd:returnBindings>
+        <root/>
+    </pd:returnBindings>
+    <pd:endName>End</pd:endName>
+    <pd:endType>
+        <xsd:element name="root">
+            <xsd:complexType>
+                <xsd:sequence>
+                    <xsd:element name="EncryptedData" type="xsd:string" minOccurs="0"/>
+                </xsd:sequence>
+            </xsd:complexType>
+        </xsd:element>
+    </pd:endType>
+    <pd:endX>673</pd:endX>
+    <pd:endY>58</pd:endY>
+    <pd:errorSchemas/>
+    <pd:processVariables/>
+    <pd:targetNamespace>http://xmlns.example.com/1378360782296</pd:targetNamespace>
+    <pd:activity name="Catch">
+        <pd:type>com.tibco.pe.core.CatchActivity</pd:type>
+        <pd:resourceType>ae.activities.catch</pd:resourceType>
+        <pd:x>403</pd:x>
+        <pd:y>227</pd:y>
+        <pd:handler>true</pd:handler>
+        <config>
+            <catchAll>true</catchAll>
+        </config>
+        <pd:inputBindings/>
+    </pd:activity>
+    <pd:activity name="Generate Error">
+        <pd:type>com.tibco.pe.core.GenerateErrorActivity</pd:type>
+        <pd:resourceType>ae.activities.throw</pd:resourceType>
+        <pd:x>540</pd:x>
+        <pd:y>231</pd:y>
+        <config>
+            <faultName/>
+        </config>
+        <pd:inputBindings>
+            <ns2:ActivityInput/>
+        </pd:inputBindings>
+    </pd:activity>
+    <pd:activity name="Java Code">
+        <pd:type>com.tibco.plugin.java.JavaActivity</pd:type>
+        <pd:resourceType>ae.javapalette.javaActivity</pd:resourceType>
+        <pd:x>342</pd:x>
+        <pd:y>47</pd:y>
+        <config>
+            <fileName>DataEncryptionJavaCode</fileName>
+            <packageName>DataEncryption</packageName>
+            <fullsource>package DataEncryption;
+import java.io.*;
+import java.util.zip.DeflaterOutputStream;
+
+public class DataEncryptionJavaCode{
+/****** START SET/GET METHOD, DO NOT MODIFY *****/
+	protected String in_var_1 = "";
+	protected byte[] out_var_1 = null;
+	public String getin_var_1() {
+		return in_var_1;
+	}
+	public void setin_var_1(String val) {
+		in_var_1 = val;
+	}
+	public byte[] getout_var_1() {
+		return out_var_1;
+	}
+	public void setout_var_1(byte[] val) {
+		out_var_1 = val;
+	}
+/****** END SET/GET METHOD, DO NOT MODIFY *****/
+	public DataEncryptionJavaCode() {
+	}
+	public void invoke() throws Exception {
+/* Available Variables: DO NOT MODIFY
+	In  : String in_var_1
+	Out : byte[] out_var_1
+* Available Variables: DO NOT MODIFY *****/
+
+	
+	
+  ByteArrayOutputStream baos = new ByteArrayOutputStream();
+	    try {
+	        OutputStream out = new DeflaterOutputStream(baos);
+	        out.write(in_var_1.getBytes("UTF-8"));
+	        out.close();
+	    } catch (IOException e) {
+	        //ooops
+	    }
+out_var_1 = baos.toByteArray();
+
+
+	
+}
+}
+</fullsource>
+            <inputData>
+                <row>
+                    <fieldName>in_var_1</fieldName>
+                    <fieldType>string</fieldType>
+                    <fieldRequired>optional</fieldRequired>
+                </row>
+            </inputData>
+            <outputData>
+                <row>
+                    <fieldName>out_var_1</fieldName>
+                    <fieldType>byte</fieldType>
+                    <fieldRequired>repeating</fieldRequired>
+                </row>
+            </outputData>
+            <byteCode>
+                <class>
+                    <name>DataEncryptionJavaCode</name>
+                    <byteCode>yv66vgAAADQARAkADwAqCQAPACsKABAALAgALQcALgoABQAsBwAvCgAHADAIADEKADIAMwoANAA1CgA0ADYHADcKAAUAOAcAOQcAOgEACGluX3Zhcl8xAQASTGphdmEvbGFuZy9TdHJpbmc7AQAJb3V0X3Zhcl8xAQACW0IBAAtnZXRpbl92YXJfMQEAFCgpTGphdmEvbGFuZy9TdHJpbmc7AQAEQ29kZQEAD0xpbmVOdW1iZXJUYWJsZQEAC3NldGluX3Zhcl8xAQAVKExqYXZhL2xhbmcvU3RyaW5nOylWAQAMZ2V0b3V0X3Zhcl8xAQAEKClbQgEADHNldG91dF92YXJfMQEABShbQilWAQAGPGluaXQ+AQADKClWAQAGaW52b2tlAQANU3RhY2tNYXBUYWJsZQcAOQcALgcANwEACkV4Y2VwdGlvbnMHADsBAApTb3VyY2VGaWxlAQAbRGF0YUVuY3J5cHRpb25KYXZhQ29kZS5qYXZhDAARABIMABMAFAwAHwAgAQAAAQAdamF2YS9pby9CeXRlQXJyYXlPdXRwdXRTdHJlYW0BACJqYXZhL3V0aWwvemlwL0RlZmxhdGVyT3V0cHV0U3RyZWFtDAAfADwBAAVVVEYtOAcAPQwAPgA/BwBADABBAB4MAEIAIAEAE2phdmEvaW8vSU9FeGNlcHRpb24MAEMAHAEAJURhdGFFbmNyeXB0aW9uL0RhdGFFbmNyeXB0aW9uSmF2YUNvZGUBABBqYXZhL2xhbmcvT2JqZWN0AQATamF2YS9sYW5nL0V4Y2VwdGlvbgEAGShMamF2YS9pby9PdXRwdXRTdHJlYW07KVYBABBqYXZhL2xhbmcvU3RyaW5nAQAIZ2V0Qnl0ZXMBABYoTGphdmEvbGFuZy9TdHJpbmc7KVtCAQAUamF2YS9pby9PdXRwdXRTdHJlYW0BAAV3cml0ZQEABWNsb3NlAQALdG9CeXRlQXJyYXkAIQAPABAAAAACAAQAEQASAAAABAATABQAAAAGAAEAFQAWAAEAFwAAAB0AAQABAAAABSq0AAGwAAAAAQAYAAAABgABAAAACgABABkAGgABABcAAAAiAAIAAgAAAAYqK7UAAbEAAAABABgAAAAKAAIAAAANAAUADgABABsAHAABABcAAAAdAAEAAQAAAAUqtAACsAAAAAEAGAAAAAYAAQAAABAAAQAdAB4AAQAXAAAAIgACAAIAAAAGKiu1AAKxAAAAAQAYAAAACgACAAAAEwAFABQAAQAfACAAAQAXAAAANAACAAEAAAAQKrcAAyoSBLUAASoBtQACsQAAAAEAGAAAABIABAAAABYABAAHAAoACAAPABcAAQAhACAAAgAXAAAAhAADAAMAAAAvuwAFWbcABky7AAdZK7cACE0sKrQAARIJtgAKtgALLLYADKcABE0qK7YADrUAArEAAQAIACIAJQANAAIAGAAAACIACAAAACAACAAiABEAIwAeACQAIgAnACUAJQAmACgALgAsACIAAAATAAL/ACUAAgcAIwcAJAABBwAlAAAmAAAABAABACcAAQAoAAAAAgAp</byteCode>
+                </class>
+            </byteCode>
+        </config>
+        <pd:inputBindings>
+            <javaCodeActivityInput>
+                <in_var_1>
+                    <xsl:value-of select="$Start/root/Data"/>
+                </in_var_1>
+            </javaCodeActivityInput>
+        </pd:inputBindings>
+    </pd:activity>
+    <pd:activity name="Write File">
+        <pd:type>com.tibco.plugin.file.FileWriteActivity</pd:type>
+        <pd:resourceType>ae.activities.FileWriteActivity</pd:resourceType>
+        <pd:x>446</pd:x>
+        <pd:y>51</pd:y>
+        <config>
+            <encoding>text</encoding>
+            <compressFile>None</compressFile>
+        </config>
+        <pd:inputBindings>
+            <ns3:WriteActivityInputTextClass>
+                <fileName>
+                    <xsl:value-of select="'d:/ggt.txt'"/>
+                </fileName>
+                <textContent>
+                    <xsl:value-of select="$Java-Code/javaCodeActivityOutput/out_var_1"/>
+                </textContent>
+            </ns3:WriteActivityInputTextClass>
+        </pd:inputBindings>
+    </pd:activity>
+    <pd:activity name="Decompress">
+        <pd:type>com.tibco.plugin.java.JavaActivity</pd:type>
+        <pd:resourceType>ae.javapalette.javaActivity</pd:resourceType>
+        <pd:x>563</pd:x>
+        <pd:y>65</pd:y>
+        <config>
+            <fileName>DataEncryptionDecompress</fileName>
+            <packageName>DataEncryption</packageName>
+            <fullsource>package DataEncryption;
+import java.util.*;
+import java.io.*;
+import java.util.zip.*;
+public class DataEncryptionDecompress{
+/****** START SET/GET METHOD, DO NOT MODIFY *****/
+	protected byte[] in_var_1 = null;
+	protected String out_var_1 = "";
+	public byte[] getin_var_1() {
+		return in_var_1;
+	}
+	public void setin_var_1(byte[] val) {
+		in_var_1 = val;
+	}
+	public String getout_var_1() {
+		return out_var_1;
+	}
+	public void setout_var_1(String val) {
+		out_var_1 = val;
+	}
+/****** END SET/GET METHOD, DO NOT MODIFY *****/
+	public DataEncryptionDecompress() {
+	}
+	public void invoke() throws Exception {
+/* Available Variables: DO NOT MODIFY
+	In  : byte[] in_var_1
+	Out : String out_var_1
+* Available Variables: DO NOT MODIFY *****/
+
+ InputStream in = new InflaterInputStream(new ByteArrayInputStream(in_var_1));
+    ByteArrayOutputStream baos = new ByteArrayOutputStream();
+    try {
+        byte[] buffer = new byte[8192];
+        int len;
+        while ((len = in.read(buffer)) &gt; 0)
+            baos.write(buffer, 0, len);
+        out_var_1= new String(baos.toByteArray(), "UTF-8");
+    } catch (IOException e) {
+        //ooops
+    }}
+}
+</fullsource>
+            <outputData>
+                <row>
+                    <fieldName>out_var_1</fieldName>
+                    <fieldType>string</fieldType>
+                    <fieldRequired>optional</fieldRequired>
+                </row>
+            </outputData>
+            <inputData>
+                <row>
+                    <fieldName>in_var_1</fieldName>
+                    <fieldType>byte</fieldType>
+                    <fieldRequired>repeating</fieldRequired>
+                </row>
+            </inputData>
+            <byteCode>
+                <class>
+                    <name>DataEncryptionDecompress</name>
+                    <byteCode>yv66vgAAADQASwkAEgAvCQASADAKABMAMQgAMgcAMwcANAoABgA1CgAFADYHADcKAAkAMQoAOAA5CgAJADoHADsKAAkAPAgAPQoADQA+BwA/BwBABwBBAQAIaW5fdmFyXzEBAAJbQgEACW91dF92YXJfMQEAEkxqYXZhL2xhbmcvU3RyaW5nOwEAC2dldGluX3Zhcl8xAQAEKClbQgEABENvZGUBAA9MaW5lTnVtYmVyVGFibGUBAAtzZXRpbl92YXJfMQEABShbQilWAQAMZ2V0b3V0X3Zhcl8xAQAUKClMamF2YS9sYW5nL1N0cmluZzsBAAxzZXRvdXRfdmFyXzEBABUoTGphdmEvbGFuZy9TdHJpbmc7KVYBAAY8aW5pdD4BAAMoKVYBAAZpbnZva2UBAA1TdGFja01hcFRhYmxlBwBCBwA3BwAVBwBABwA/AQAKRXhjZXB0aW9ucwcAQwEAClNvdXJjZUZpbGUBAB1EYXRhRW5jcnlwdGlvbkRlY29tcHJlc3MuamF2YQwAFAAVDAAWABcMACIAIwEAAAEAIWphdmEvdXRpbC96aXAvSW5mbGF0ZXJJbnB1dFN0cmVhbQEAHGphdmEvaW8vQnl0ZUFycmF5SW5wdXRTdHJlYW0MACIAHQwAIgBEAQAdamF2YS9pby9CeXRlQXJyYXlPdXRwdXRTdHJlYW0HAEIMAEUARgwARwBIAQAQamF2YS9sYW5nL1N0cmluZwwASQAZAQAFVVRGLTgMACIASgEAE2phdmEvaW8vSU9FeGNlcHRpb24BACdEYXRhRW5jcnlwdGlvbi9EYXRhRW5jcnlwdGlvbkRlY29tcHJlc3MBABBqYXZhL2xhbmcvT2JqZWN0AQATamF2YS9pby9JbnB1dFN0cmVhbQEAE2phdmEvbGFuZy9FeGNlcHRpb24BABgoTGphdmEvaW8vSW5wdXRTdHJlYW07KVYBAARyZWFkAQAFKFtCKUkBAAV3cml0ZQEAByhbQklJKVYBAAt0b0J5dGVBcnJheQEAFyhbQkxqYXZhL2xhbmcvU3RyaW5nOylWACEAEgATAAAAAgAEABQAFQAAAAQAFgAXAAAABgABABgAGQABABoAAAAdAAEAAQAAAAUqtAABsAAAAAEAGwAAAAYAAQAAAAoAAQAcAB0AAQAaAAAAIgACAAIAAAAGKiu1AAGxAAAAAQAbAAAACgACAAAADQAFAA4AAQAeAB8AAQAaAAAAHQABAAEAAAAFKrQAArAAAAABABsAAAAGAAEAAAAQAAEAIAAhAAEAGgAAACIAAgACAAAABiortQACsQAAAAEAGwAAAAoAAgAAABMABQAUAAEAIgAjAAEAGgAAADQAAgABAAAAECq3AAMqAbUAASoSBLUAArEAAAABABsAAAASAAQAAAAWAAQABwAJAAgADwAXAAEAJAAjAAIAGgAAALkABQAFAAAATbsABVm7AAZZKrQAAbcAB7cACEy7AAlZtwAKTREgALwITisttgALWTYEngAOLC0DFQS2AAyn/+0quwANWSy2AA4SD7cAELUAAqcABE6xAAEAGwBIAEsAEQACABsAAAAmAAkAAAAeABMAHwAbACEAIQAjACwAJAA3ACUASAAoAEsAJgBMACgAJQAAACYABP4AIQcAJgcAJwcAKPwAFQH/ABMAAwcAKQcAJgcAJwABBwAqAAArAAAABAABACwAAQAtAAAAAgAu</byteCode>
+                </class>
+            </byteCode>
+        </config>
+        <pd:inputBindings>
+            <javaCodeActivityInput>
+                <in_var_1>
+                    <xsl:value-of select="$Read-File/ns3:ReadActivityOutputTextClass/fileContent/textContent"/>
+                </in_var_1>
+            </javaCodeActivityInput>
+        </pd:inputBindings>
+    </pd:activity>
+    <pd:activity name="Read File">
+        <pd:type>com.tibco.plugin.file.FileReadActivity</pd:type>
+        <pd:resourceType>ae.activities.FileReadActivity</pd:resourceType>
+        <pd:x>474</pd:x>
+        <pd:y>137</pd:y>
+        <config>
+            <encoding>text</encoding>
+        </config>
+        <pd:inputBindings>
+            <ns4:ReadActivityInputClass>
+                <fileName>
+                    <xsl:value-of select="'d:/ggt.txt'"/>
+                </fileName>
+            </ns4:ReadActivityInputClass>
+        </pd:inputBindings>
+    </pd:activity>
+    <pd:activity name="Write-File-1">
+        <pd:type>com.tibco.plugin.file.FileWriteActivity</pd:type>
+        <pd:resourceType>ae.activities.FileWriteActivity</pd:resourceType>
+        <pd:x>221</pd:x>
+        <pd:y>94</pd:y>
+        <config>
+            <encoding>text</encoding>
+            <compressFile>None</compressFile>
+        </config>
+        <pd:inputBindings>
+            <ns3:WriteActivityInputTextClass>
+                <fileName>
+                    <xsl:value-of select="'d:/ggt_sou.txt'"/>
+                </fileName>
+                <textContent>
+                    <xsl:value-of select="$Start/root/Data"/>
+                </textContent>
+            </ns3:WriteActivityInputTextClass>
+        </pd:inputBindings>
+    </pd:activity>
+    <pd:transition>
+        <pd:from>Catch</pd:from>
+        <pd:to>Generate Error</pd:to>
+        <pd:lineType>Default</pd:lineType>
+        <pd:lineColor>-16777216</pd:lineColor>
+        <pd:conditionType>always</pd:conditionType>
+    </pd:transition>
+    <pd:transition>
+        <pd:from>Java Code</pd:from>
+        <pd:to>Write File</pd:to>
+        <pd:lineType>Default</pd:lineType>
+        <pd:lineColor>-16777216</pd:lineColor>
+        <pd:conditionType>always</pd:conditionType>
+    </pd:transition>
+    <pd:transition>
+        <pd:from>Start</pd:from>
+        <pd:to>Write-File-1</pd:to>
+        <pd:lineType>Default</pd:lineType>
+        <pd:lineColor>-16777216</pd:lineColor>
+        <pd:conditionType>always</pd:conditionType>
+    </pd:transition>
+    <pd:transition>
+        <pd:from>Write File</pd:from>
+        <pd:to>Read File</pd:to>
+        <pd:lineType>Default</pd:lineType>
+        <pd:lineColor>-16777216</pd:lineColor>
+        <pd:conditionType>always</pd:conditionType>
+    </pd:transition>
+    <pd:transition>
+        <pd:from>Decompress</pd:from>
+        <pd:to>End</pd:to>
+        <pd:lineType>Default</pd:lineType>
+        <pd:lineColor>-16777216</pd:lineColor>
+        <pd:conditionType>always</pd:conditionType>
+    </pd:transition>
+    <pd:transition>
+        <pd:from>Read File</pd:from>
+        <pd:to>Decompress</pd:to>
+        <pd:lineType>Default</pd:lineType>
+        <pd:lineColor>-16777216</pd:lineColor>
+        <pd:conditionType>always</pd:conditionType>
+    </pd:transition>
+    <pd:transition>
+        <pd:from>Write-File-1</pd:from>
+        <pd:to>Java Code</pd:to>
+        <pd:lineType>Default</pd:lineType>
+        <pd:lineColor>-16777216</pd:lineColor>
+        <pd:conditionType>always</pd:conditionType>
+    </pd:transition>
+</pd:ProcessDefinition>

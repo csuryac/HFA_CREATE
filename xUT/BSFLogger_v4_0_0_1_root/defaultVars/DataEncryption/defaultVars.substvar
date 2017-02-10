@@ -1,0 +1,37 @@
+<?xml version = "1.0" encoding = "UTF-8"?>
+<repository xmlns:xsi = "http://www.w3.org/2001/XMLSchema-instance" xmlns = "http://www.tibco.com/xmlns/repo/types/2002">
+	<globalVariables>
+		<globalVariable>
+			<name>MIG_BaseDN</name>
+			<value>ou=Accounts, ou=FPIP, ou=SG, dc=SIT1BANK, dc=DBS, dc=COM</value>
+			<deploymentSettable>true</deploymentSettable>
+			<serviceSettable>false</serviceSettable>
+			<type>String</type>
+			<modTime>1480473150503</modTime>
+		</globalVariable>
+		<globalVariable>
+			<name>MIG_DataEncryption</name>
+			<value>false</value>
+			<deploymentSettable>true</deploymentSettable>
+			<serviceSettable>false</serviceSettable>
+			<type>Boolean</type>
+			<modTime>1480473150503</modTime>
+		</globalVariable>
+		<globalVariable>
+			<name>MIG_EnableAuthtication</name>
+			<value>false</value>
+			<deploymentSettable>true</deploymentSettable>
+			<serviceSettable>false</serviceSettable>
+			<type>Boolean</type>
+			<modTime>1480473150503</modTime>
+		</globalVariable>
+		<globalVariable>
+			<name>MIG_MaskElements</name>
+			<value>Name,CardId,AcctId</value>
+			<deploymentSettable>true</deploymentSettable>
+			<serviceSettable>false</serviceSettable>
+			<type>String</type>
+			<modTime>1480473150503</modTime>
+		</globalVariable>
+	</globalVariables>
+</repository>

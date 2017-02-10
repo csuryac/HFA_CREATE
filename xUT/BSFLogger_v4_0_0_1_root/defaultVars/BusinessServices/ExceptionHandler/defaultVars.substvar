@@ -1,0 +1,37 @@
+<?xml version = "1.0" encoding = "UTF-8"?>
+<repository xmlns:xsi = "http://www.w3.org/2001/XMLSchema-instance" xmlns = "http://www.tibco.com/xmlns/repo/types/2002">
+	<globalVariables>
+		<globalVariable>
+			<name>Exception_Queue</name>
+			<value>SOI.PUB.INT.EXCEPTION</value>
+			<deploymentSettable>true</deploymentSettable>
+			<serviceSettable>false</serviceSettable>
+			<type>String</type>
+			<modTime>1480473150503</modTime>
+		</globalVariable>
+		<globalVariable>
+			<name>UEH_JMS_password</name>
+			<value>#!pGbcvlMtNO3JmFGTvY3KBhSdVIU3OwfNi2anuS1Mqnk=</value>
+			<deploymentSettable>true</deploymentSettable>
+			<serviceSettable>false</serviceSettable>
+			<type>Password</type>
+			<modTime>1480473150500</modTime>
+		</globalVariable>
+		<globalVariable>
+			<name>UEH_JMS_username</name>
+			<value>emsuehusr</value>
+			<deploymentSettable>true</deploymentSettable>
+			<serviceSettable>false</serviceSettable>
+			<type>String</type>
+			<modTime>1480473150500</modTime>
+		</globalVariable>
+		<globalVariable>
+			<name>UEH_connection_URL</name>
+			<value>tcp://10.91.37.160:8252,tcp://10.91.37.161:8254</value>
+			<deploymentSettable>true</deploymentSettable>
+			<serviceSettable>false</serviceSettable>
+			<type>String</type>
+			<modTime>1480473150500</modTime>
+		</globalVariable>
+	</globalVariables>
+</repository>

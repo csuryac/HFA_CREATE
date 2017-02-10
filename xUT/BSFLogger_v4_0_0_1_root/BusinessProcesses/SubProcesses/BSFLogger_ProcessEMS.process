@@ -1,0 +1,553 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<pd:ProcessDefinition xmlns:ns2="http://www.tibco.com/namespaces/tnt/plugins/file" xmlns:pd="http://xmlns.tibco.com/bw/process/2003" xmlns:ns1="http://www.tibco.com/namespaces/tnt/plugins/jms" xmlns:xsl="http://www.w3.org/1999/XSL/Transform" xmlns:ns4="http://www.tibco.com/pe/EngineTypes" xmlns:ns="http://www.tibco.com/pe/DeployedVarsType" xmlns:ns3="http://www.tibco.com/pe/WriteToLogActivitySchema" xmlns:icc3="java://com.dbs.icc3.util.Func3b" xmlns:tib="http://www.tibco.com/bw/xslt/custom-functions" xmlns:pfx3="http://www.tibco.com/schemas/DBBusinessServices/BusinessServices/UEH/Exception.xsd" xmlns:pfx2="http://www.tibco.com/pe/GenerateErrorActivity/InputSchema" xmlns:pfx="http://www.tibco.com/schemas/DBBusinessServices/BusinessServices/Logger/Schema.xsd" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance">
+    <xs:import xmlns:xs="http://www.w3.org/2001/XMLSchema" namespace="http://www.tibco.com/schemas/DBBusinessServices/BusinessServices/Logger/Schema.xsd"/>
+    <xs:import xmlns:xs="http://www.w3.org/2001/XMLSchema" namespace="http://www.tibco.com/schemas/DBBusinessServices/BusinessServices/Logger/Schema.xsd" schemaLocation="/BSFServices/Logger/BSFLogger.xsd"/>
+    <pd:name>BusinessProcesses/SubProcesses/BSFLogger_ProcessEMS.process</pd:name>
+    <pd:startName>BSFJMSQueueReceiver</pd:startName>
+    <pd:startX>0</pd:startX>
+    <pd:startY>0</pd:startY>
+    <pd:returnBindings/>
+    <pd:starter name="BSFJMSQueueReceiver">
+        <pd:type>com.tibco.plugin.jms.JMSQueueEventSource</pd:type>
+        <pd:resourceType>ae.activities.JMSQueueEventSource</pd:resourceType>
+        <pd:x>67</pd:x>
+        <pd:y>234</pd:y>
+        <config>
+            <PermittedMessageType>XML Text</PermittedMessageType>
+            <SessionAttributes>
+                <transacted>false</transacted>
+                <acknowledgeMode>2</acknowledgeMode>
+                <maxSessions>%%BusinessServices/DBLogger/MAX_EMS_SESSIONS%%</maxSessions>
+                <destination>%%BusinessServices/BSFLogger/BSFLoggerQueue%%</destination>
+            </SessionAttributes>
+            <ConfigurableHeaders>
+                <JMSDeliveryMode>PERSISTENT</JMSDeliveryMode>
+                <JMSExpiration>0</JMSExpiration>
+                <JMSPriority>4</JMSPriority>
+            </ConfigurableHeaders>
+            <ApplicationProperties/>
+            <ConnectionReference>/Resources/Connections/BSFDB LoggerJMSConnection.sharedjmscon</ConnectionReference>
+            <OutDataxsdString ref="pfx:Logger"/>
+        </config>
+        <pd:inputBindings/>
+    </pd:starter>
+    <pd:endName>End</pd:endName>
+    <pd:endX>912</pd:endX>
+    <pd:endY>236</pd:endY>
+    <pd:errorSchemas/>
+    <pd:processVariables/>
+    <pd:targetNamespace>http://xmlns.example.com/1378371179232</pd:targetNamespace>
+    <pd:activity name="Confirm">
+        <pd:type>com.tibco.pe.core.ConfirmActivity</pd:type>
+        <pd:resourceType>activity.confirm</pd:resourceType>
+        <pd:x>747</pd:x>
+        <pd:y>235</pd:y>
+        <config>
+            <ConfirmEvent>BSFJMSQueueReceiver</ConfirmEvent>
+        </config>
+        <pd:inputBindings/>
+    </pd:activity>
+    <pd:activity name="LogToDB">
+        <pd:type>com.tibco.pe.core.CallProcessActivity</pd:type>
+        <pd:resourceType>ae.process.subprocess</pd:resourceType>
+        <pd:x>457</pd:x>
+        <pd:y>234</pd:y>
+        <config>
+            <processName>/BusinessProcesses/SubProcesses/Logger/BSFLogToDatabase.process</processName>
+            <processNameXPath/>
+            <spawn>true</spawn>
+        </config>
+        <pd:inputBindings>
+            <xsl:copy-of select="$BSFJMSQueueReceiver/ns1:ActivityOutput/Body/pfx:Logger"/>
+        </pd:inputBindings>
+    </pd:activity>
+    <pd:activity name="LogToFile">
+        <pd:type>com.tibco.pe.core.CallProcessActivity</pd:type>
+        <pd:resourceType>ae.process.subprocess</pd:resourceType>
+        <pd:x>430</pd:x>
+        <pd:y>105</pd:y>
+        <config>
+            <processName>/BusinessProcesses/SubProcesses/Logger/BSFLoggerToFile.process</processName>
+        </config>
+        <pd:inputBindings>
+            <xsl:for-each select="$BSFJMSQueueReceiver/ns1:ActivityOutput/Body/pfx:Logger">
+                <pfx:Logger>
+                    <pfx:ServiceID>
+                        <xsl:value-of select="pfx:ServiceID"/>
+                    </pfx:ServiceID>
+                    <pfx:LogLevel>
+                        <xsl:value-of select="pfx:LogLevel"/>
+                    </pfx:LogLevel>
+                    <pfx:LogType>
+                        <xsl:value-of select="pfx:LogType"/>
+                    </pfx:LogType>
+                    <pfx:LogCode>
+                        <xsl:value-of select="pfx:LogCode"/>
+                    </pfx:LogCode>
+                    <pfx:LogMessage>
+                        <xsl:value-of select="pfx:LogMessage"/>
+                    </pfx:LogMessage>
+                    <pfx:LogGUID>
+                        <xsl:value-of select="pfx:LogGUID"/>
+                    </pfx:LogGUID>
+                    <xsl:if test="pfx:OrgCode">
+                        <pfx:OrgCode>
+                            <xsl:value-of select="pfx:OrgCode"/>
+                        </pfx:OrgCode>
+                    </xsl:if>
+                    <pfx:ProcessName>
+                        <xsl:value-of select="pfx:ProcessName"/>
+                    </pfx:ProcessName>
+                    <xsl:if test="pfx:SIID">
+                        <pfx:SIID>
+                            <xsl:value-of select="pfx:SIID"/>
+                        </pfx:SIID>
+                    </xsl:if>
+                    <xsl:if test="pfx:OperationName">
+                        <pfx:OperationName>
+                            <xsl:value-of select="pfx:OperationName"/>
+                        </pfx:OperationName>
+                    </xsl:if>
+                    <xsl:if test="pfx:ServiceRequestor">
+                        <pfx:ServiceRequestor>
+                            <xsl:value-of select="pfx:ServiceRequestor"/>
+                        </pfx:ServiceRequestor>
+                    </xsl:if>
+                    <xsl:if test="pfx:ServiceProvider">
+                        <pfx:ServiceProvider>
+                            <xsl:value-of select="pfx:ServiceProvider"/>
+                        </pfx:ServiceProvider>
+                    </xsl:if>
+                    <pfx:MachineName>
+                        <xsl:value-of select="pfx:MachineName"/>
+                    </pfx:MachineName>
+                    <xsl:if test="pfx:EngineName">
+                        <pfx:EngineName>
+                            <xsl:value-of select="pfx:EngineName"/>
+                        </pfx:EngineName>
+                    </xsl:if>
+                    <xsl:if test="pfx:Payload">
+                        <pfx:Payload>
+                            <xsl:value-of select="normalize-space(pfx:Payload)"/>
+                        </pfx:Payload>
+                    </xsl:if>
+                    <xsl:if test="pfx:PreStep">
+                        <pfx:PreStep>
+                            <xsl:value-of select="pfx:PreStep"/>
+                        </pfx:PreStep>
+                    </xsl:if>
+                    <xsl:if test="pfx:PostStep">
+                        <pfx:PostStep>
+                            <xsl:value-of select="pfx:PostStep"/>
+                        </pfx:PostStep>
+                    </xsl:if>
+                    <pfx:LogTimestamp>
+                        <xsl:value-of select="pfx:LogTimestamp"/>
+                    </pfx:LogTimestamp>
+                    <xsl:for-each select="pfx:Message">
+                        <pfx:Message>
+                            <pfx:Name>
+                                <xsl:value-of select="pfx:Name"/>
+                            </pfx:Name>
+                            <pfx:Value>
+                                <xsl:value-of select="pfx:Value"/>
+                            </pfx:Value>
+                        </pfx:Message>
+                    </xsl:for-each>
+                </pfx:Logger>
+            </xsl:for-each>
+        </pd:inputBindings>
+    </pd:activity>
+    <pd:activity name="Logfile">
+        <pd:type>com.tibco.pe.core.WriteToLogActivity</pd:type>
+        <pd:resourceType>ae.activities.log</pd:resourceType>
+        <pd:x>353</pd:x>
+        <pd:y>428</pd:y>
+        <config>
+            <role>User</role>
+        </config>
+        <pd:inputBindings>
+            <ns3:ActivityInput>
+                <message>
+                    <xsl:value-of select="$_error/ns4:ErrorReport/Msg"/>
+                </message>
+                <xsl:if test="$_error/ns4:ErrorReport/MsgCode">
+                    <msgCode>
+                        <xsl:value-of select="$_error/ns4:ErrorReport/MsgCode"/>
+                    </msgCode>
+                </xsl:if>
+            </ns3:ActivityInput>
+        </pd:inputBindings>
+    </pd:activity>
+    <pd:activity name="Catch">
+        <pd:type>com.tibco.pe.core.CatchActivity</pd:type>
+        <pd:resourceType>ae.activities.catch</pd:resourceType>
+        <pd:x>826</pd:x>
+        <pd:y>374</pd:y>
+        <pd:handler>true</pd:handler>
+        <config>
+            <catchAll>true</catchAll>
+        </config>
+        <pd:inputBindings/>
+    </pd:activity>
+    <pd:activity name="Generate Error">
+        <pd:type>com.tibco.pe.core.GenerateErrorActivity</pd:type>
+        <pd:resourceType>ae.activities.throw</pd:resourceType>
+        <pd:x>1125</pd:x>
+        <pd:y>497</pd:y>
+        <config>
+            <faultName/>
+        </config>
+        <pd:inputBindings>
+            <pfx2:ActivityInput>
+                <xsl:if test="$_error/ns4:ErrorReport/Msg">
+                    <message>
+                        <xsl:value-of select="$_error/ns4:ErrorReport/Msg"/>
+                    </message>
+                </xsl:if>
+                <xsl:if test="$_error/ns4:ErrorReport/MsgCode">
+                    <messageCode>
+                        <xsl:value-of select="$_error/ns4:ErrorReport/MsgCode"/>
+                    </messageCode>
+                </xsl:if>
+            </pfx2:ActivityInput>
+        </pd:inputBindings>
+    </pd:activity>
+    <pd:activity name="GenericError">
+        <pd:type>com.tibco.pe.core.WriteToLogActivity</pd:type>
+        <pd:resourceType>ae.activities.log</pd:resourceType>
+        <pd:x>966</pd:x>
+        <pd:y>374</pd:y>
+        <config>
+            <role>User</role>
+        </config>
+        <pd:inputBindings>
+            <ns3:ActivityInput>
+                <message>
+                    <xsl:value-of select="$_error/ns4:ErrorReport/Msg"/>
+                </message>
+                <msgCode>
+                    <xsl:value-of select="$_error/ns4:ErrorReport/MsgCode"/>
+                </msgCode>
+            </ns3:ActivityInput>
+        </pd:inputBindings>
+    </pd:activity>
+    <pd:activity name="Null">
+        <pd:type>com.tibco.plugin.timer.NullActivity</pd:type>
+        <pd:resourceType>ae.activities.null</pd:resourceType>
+        <pd:x>271</pd:x>
+        <pd:y>234</pd:y>
+        <config/>
+        <pd:inputBindings/>
+    </pd:activity>
+    <pd:activity name="CreateAlert">
+        <pd:type>com.tibco.pe.core.CallProcessActivity</pd:type>
+        <pd:resourceType>ae.process.subprocess</pd:resourceType>
+        <pd:x>505</pd:x>
+        <pd:y>364</pd:y>
+        <config>
+            <processName>/BusinessProcesses/SubProcesses/Logger/BSFGenerateAlert.process</processName>
+            <spawn>false</spawn>
+        </config>
+        <pd:inputBindings>
+            <xsl:copy-of select="$BSFJMSQueueReceiver/ns1:ActivityOutput/Body/pfx:Logger"/>
+        </pd:inputBindings>
+    </pd:activity>
+    <pd:activity name="Write File">
+        <pd:type>com.tibco.plugin.file.FileWriteActivity</pd:type>
+        <pd:resourceType>ae.activities.FileWriteActivity</pd:resourceType>
+        <pd:x>596</pd:x>
+        <pd:y>427</pd:y>
+        <config>
+            <encoding>text</encoding>
+            <compressFile>None</compressFile>
+        </config>
+        <pd:inputBindings>
+            <ns2:WriteActivityInputTextClass>
+                <fileName>
+                    <xsl:value-of select="concat($_globalVariables/ns:GlobalVariables/BusinessServices/DBLogger/RecoveryDir, $_globalVariables/ns:GlobalVariables/BusinessServices/DBLogger/Separator,'ERROR',tib:format-dateTime('ddMMyyyy-HH', current-dateTime()),'.err')"/>
+                </fileName>
+                <textContent>
+                    <xsl:value-of select="string($_error/ns4:ErrorReport/Data/*)"/>
+                </textContent>
+            </ns2:WriteActivityInputTextClass>
+        </pd:inputBindings>
+    </pd:activity>
+    <pd:activity name="DBUpdateError">
+        <pd:type>com.tibco.pe.core.WriteToLogActivity</pd:type>
+        <pd:resourceType>ae.activities.log</pd:resourceType>
+        <pd:x>670</pd:x>
+        <pd:y>169</pd:y>
+        <config>
+            <role>User</role>
+        </config>
+        <pd:inputBindings>
+            <ns3:ActivityInput>
+                <message>
+                    <xsl:value-of select="concat('Reason: ', $_error/ns4:ErrorReport/Msg)"/>
+                </message>
+                <xsl:if test="$_error/ns4:ErrorReport/MsgCode">
+                    <msgCode>
+                        <xsl:value-of select="$_error/ns4:ErrorReport/MsgCode"/>
+                    </msgCode>
+                </xsl:if>
+            </ns3:ActivityInput>
+        </pd:inputBindings>
+    </pd:activity>
+    <pd:activity name="Null-1">
+        <pd:type>com.tibco.plugin.timer.NullActivity</pd:type>
+        <pd:resourceType>ae.activities.null</pd:resourceType>
+        <pd:x>545</pd:x>
+        <pd:y>168</pd:y>
+        <config/>
+        <pd:inputBindings/>
+    </pd:activity>
+    <pd:activity name="Confirm-1">
+        <pd:type>com.tibco.pe.core.ConfirmActivity</pd:type>
+        <pd:resourceType>activity.confirm</pd:resourceType>
+        <pd:x>1121</pd:x>
+        <pd:y>374</pd:y>
+        <config>
+            <ConfirmEvent>BSFJMSQueueReceiver</ConfirmEvent>
+        </config>
+        <pd:inputBindings/>
+    </pd:activity>
+    <pd:activity name="SendError">
+        <pd:type>com.tibco.pe.core.CallProcessActivity</pd:type>
+        <pd:resourceType>ae.process.subprocess</pd:resourceType>
+        <pd:x>280</pd:x>
+        <pd:y>49</pd:y>
+        <config>
+            <processName>/BSFServices/ExceptionHandler/SendException.process</processName>
+        </config>
+        <pd:inputBindings>
+            <pfx3:Exception>
+                <ApplicationID>
+                    <xsl:value-of select="$BSFJMSQueueReceiver/ns1:ActivityOutput/Body/pfx:Logger/pfx:EngineName"/>
+                </ApplicationID>
+                <xsl:if test="$BSFJMSQueueReceiver/ns1:ActivityOutput/Body/pfx:Logger/pfx:ServiceID">
+                    <ComponentName>
+                        <xsl:value-of select="$BSFJMSQueueReceiver/ns1:ActivityOutput/Body/pfx:Logger/pfx:ServiceID"/>
+                    </ComponentName>
+                </xsl:if>
+                <xsl:if test="$BSFJMSQueueReceiver/ns1:ActivityOutput/Body/pfx:Logger/pfx:MachineName">
+                    <Hostname>
+                        <xsl:value-of select="$BSFJMSQueueReceiver/ns1:ActivityOutput/Body/pfx:Logger/pfx:MachineName"/>
+                    </Hostname>
+                </xsl:if>
+                <Timestamp>
+                    <xsl:value-of select="$BSFJMSQueueReceiver/ns1:ActivityOutput/Body/pfx:Logger/pfx:LogTimestamp"/>
+                </Timestamp>
+                <TransactionDomain>
+                    <xsl:value-of select="'SOI-3'"/>
+                </TransactionDomain>
+                <xsl:if test="$BSFJMSQueueReceiver/ns1:ActivityOutput/Body/pfx:Logger/pfx:LogGUID">
+                    <TransactionID>
+                        <xsl:value-of select="$BSFJMSQueueReceiver/ns1:ActivityOutput/Body/pfx:Logger/pfx:LogGUID"/>
+                    </TransactionID>
+                </xsl:if>
+                <xsl:if test="$BSFJMSQueueReceiver/ns1:ActivityOutput/Body/pfx:Logger/pfx:LogGUID">
+                    <CorrelationID>
+                        <xsl:value-of select="$BSFJMSQueueReceiver/ns1:ActivityOutput/Body/pfx:Logger/pfx:LogGUID"/>
+                    </CorrelationID>
+                </xsl:if>
+                <xsl:if test="$BSFJMSQueueReceiver/ns1:ActivityOutput/Body/pfx:Logger/pfx:SIID">
+                    <pfx3:SIID>
+                        <xsl:value-of select="$BSFJMSQueueReceiver/ns1:ActivityOutput/Body/pfx:Logger/pfx:SIID"/>
+                    </pfx3:SIID>
+                </xsl:if>
+                <xsl:if test="$BSFJMSQueueReceiver/ns1:ActivityOutput/Body/pfx:Logger/pfx:OrgCode">
+                    <pfx3:OrgCode>
+                        <xsl:value-of select="$BSFJMSQueueReceiver/ns1:ActivityOutput/Body/pfx:Logger/pfx:OrgCode"/>
+                    </pfx3:OrgCode>
+                </xsl:if>
+                <xsl:if test="$BSFJMSQueueReceiver/ns1:ActivityOutput/Body/pfx:Logger/pfx:EngineName">
+                    <pfx3:EngineName>
+                        <xsl:value-of select="$BSFJMSQueueReceiver/ns1:ActivityOutput/Body/pfx:Logger/pfx:EngineName"/>
+                    </pfx3:EngineName>
+                </xsl:if>
+                <xsl:if test="$BSFJMSQueueReceiver/ns1:ActivityOutput/Body/pfx:Logger/pfx:OperationName">
+                    <pfx3:OperationName>
+                        <xsl:value-of select="$BSFJMSQueueReceiver/ns1:ActivityOutput/Body/pfx:Logger/pfx:OperationName"/>
+                    </pfx3:OperationName>
+                </xsl:if>
+                <InterfaceID>
+                    <xsl:value-of select="concat('BSFLOGGER | ',$BSFJMSQueueReceiver/ns1:ActivityOutput/Body/pfx:Logger/pfx:OperationName)"/>
+                </InterfaceID>
+                <Message>
+                    <xsl:value-of select="icc3:getXMLElem($BSFJMSQueueReceiver/ns1:ActivityOutput/Body/pfx:Logger/pfx:Payload, 'StatusDesc')"/>
+                </Message>
+                <ExceptionCode>
+                    <xsl:value-of select="icc3:getXMLElem($BSFJMSQueueReceiver/ns1:ActivityOutput/Body/pfx:Logger/pfx:Payload, 'StatusCode')"/>
+                </ExceptionCode>
+                <ExceptionCategory>
+                    <xsl:value-of select="'FAULT'"/>
+                </ExceptionCategory>
+                <xsl:if test="$BSFJMSQueueReceiver/ns1:ActivityOutput/Body/pfx:Logger/pfx:Payload">
+                    <StackTrace>
+                        <xsl:value-of select="$BSFJMSQueueReceiver/ns1:ActivityOutput/Body/pfx:Logger/pfx:Payload"/>
+                    </StackTrace>
+                </xsl:if>
+            </pfx3:Exception>
+        </pd:inputBindings>
+    </pd:activity>
+    <pd:transition>
+        <pd:from>BSFJMSQueueReceiver</pd:from>
+        <pd:to>Null</pd:to>
+        <pd:xpathDescription>ParseOK</pd:xpathDescription>
+        <pd:lineType>Multiple Bends</pd:lineType>
+        <pd:lineColor>-16777216</pd:lineColor>
+        <pd:conditionType>always</pd:conditionType>
+    </pd:transition>
+    <pd:transition>
+        <pd:from>Confirm</pd:from>
+        <pd:to>End</pd:to>
+        <pd:lineType>Default</pd:lineType>
+        <pd:lineColor>-16777216</pd:lineColor>
+        <pd:conditionType>always</pd:conditionType>
+    </pd:transition>
+    <pd:transition>
+        <pd:from>LogToDB</pd:from>
+        <pd:to>Confirm</pd:to>
+        <pd:lineType>Default</pd:lineType>
+        <pd:lineColor>-16777216</pd:lineColor>
+        <pd:conditionType>always</pd:conditionType>
+    </pd:transition>
+    <pd:transition>
+        <pd:from>BSFJMSQueueReceiver</pd:from>
+        <pd:to>Logfile</pd:to>
+        <pd:lineType>Curved</pd:lineType>
+        <pd:lineColor>-65536</pd:lineColor>
+        <pd:conditionType>error</pd:conditionType>
+    </pd:transition>
+    <pd:transition>
+        <pd:from>Logfile</pd:from>
+        <pd:to>Write File</pd:to>
+        <pd:lineType>One Bend</pd:lineType>
+        <pd:lineColor>-16777216</pd:lineColor>
+        <pd:conditionType>always</pd:conditionType>
+    </pd:transition>
+    <pd:transition>
+        <pd:from>LogToFile</pd:from>
+        <pd:to>Confirm</pd:to>
+        <pd:lineType>One Bend</pd:lineType>
+        <pd:lineColor>-16777216</pd:lineColor>
+        <pd:conditionType>always</pd:conditionType>
+    </pd:transition>
+    <pd:transition>
+        <pd:from>Catch</pd:from>
+        <pd:to>GenericError</pd:to>
+        <pd:lineType>Default</pd:lineType>
+        <pd:lineColor>-16777216</pd:lineColor>
+        <pd:conditionType>always</pd:conditionType>
+    </pd:transition>
+    <pd:transition>
+        <pd:from>Null</pd:from>
+        <pd:to>LogToDB</pd:to>
+        <pd:xpathDescription>Log2DB on</pd:xpathDescription>
+        <pd:lineType>Straight</pd:lineType>
+        <pd:lineColor>-16777216</pd:lineColor>
+        <pd:conditionType>xpath</pd:conditionType>
+        <pd:xpath>($_globalVariables/ns:GlobalVariables/BusinessServices/DBLogger/LogToDB='true')</pd:xpath>
+    </pd:transition>
+    <pd:transition>
+        <pd:from>Null</pd:from>
+        <pd:to>CreateAlert</pd:to>
+        <pd:xpathDescription>Alert or Error</pd:xpathDescription>
+        <pd:lineType>Curved</pd:lineType>
+        <pd:lineColor>-16777216</pd:lineColor>
+        <pd:conditionType>xpath</pd:conditionType>
+        <pd:xpath>($BSFJMSQueueReceiver/ns1:ActivityOutput/Body/pfx:Logger/pfx:LogType ='ALERT')  or (($BSFJMSQueueReceiver/ns1:ActivityOutput/Body/pfx:Logger/pfx:LogType ='ERROR') and ($BSFJMSQueueReceiver/ns1:ActivityOutput/Body/pfx:Logger/pfx:LogMessage='Final Reply'))</pd:xpath>
+    </pd:transition>
+    <pd:transition>
+        <pd:from>LogToDB</pd:from>
+        <pd:to>Null-1</pd:to>
+        <pd:xpathDescription>ErrorLogDB</pd:xpathDescription>
+        <pd:lineType>Default</pd:lineType>
+        <pd:lineColor>-65536</pd:lineColor>
+        <pd:conditionType>error</pd:conditionType>
+    </pd:transition>
+    <pd:transition>
+        <pd:from>CreateAlert</pd:from>
+        <pd:to>Confirm</pd:to>
+        <pd:lineType>S-Shaped</pd:lineType>
+        <pd:lineColor>-16777216</pd:lineColor>
+        <pd:conditionType>always</pd:conditionType>
+    </pd:transition>
+    <pd:transition>
+        <pd:from>Null</pd:from>
+        <pd:to>LogToFile</pd:to>
+        <pd:xpathDescription>Log2File on</pd:xpathDescription>
+        <pd:lineType>Curved</pd:lineType>
+        <pd:lineColor>-16777216</pd:lineColor>
+        <pd:conditionType>xpath</pd:conditionType>
+        <pd:xpath>($_globalVariables/ns:GlobalVariables/BusinessServices/DBLogger/LogToFile='true')</pd:xpath>
+    </pd:transition>
+    <pd:transition>
+        <pd:from>Write File</pd:from>
+        <pd:to>Confirm</pd:to>
+        <pd:lineType>One Bend</pd:lineType>
+        <pd:lineColor>-16777216</pd:lineColor>
+        <pd:conditionType>always</pd:conditionType>
+    </pd:transition>
+    <pd:transition>
+        <pd:from>Null-1</pd:from>
+        <pd:to>DBUpdateError</pd:to>
+        <pd:lineType>Default</pd:lineType>
+        <pd:lineColor>-16777216</pd:lineColor>
+        <pd:conditionType>otherwise</pd:conditionType>
+    </pd:transition>
+    <pd:transition>
+        <pd:from>DBUpdateError</pd:from>
+        <pd:to>Confirm</pd:to>
+        <pd:lineType>One Bend</pd:lineType>
+        <pd:lineColor>-16777216</pd:lineColor>
+        <pd:conditionType>always</pd:conditionType>
+    </pd:transition>
+    <pd:transition>
+        <pd:from>GenericError</pd:from>
+        <pd:to>Confirm-1</pd:to>
+        <pd:lineType>Default</pd:lineType>
+        <pd:lineColor>-16777216</pd:lineColor>
+        <pd:conditionType>always</pd:conditionType>
+    </pd:transition>
+    <pd:transition>
+        <pd:from>Confirm-1</pd:from>
+        <pd:to>Generate Error</pd:to>
+        <pd:lineType>Default</pd:lineType>
+        <pd:lineColor>-16777216</pd:lineColor>
+        <pd:conditionType>always</pd:conditionType>
+    </pd:transition>
+    <pd:transition>
+        <pd:from>BSFJMSQueueReceiver</pd:from>
+        <pd:to>SendError</pd:to>
+        <pd:xpathDescription>ERROR</pd:xpathDescription>
+        <pd:lineType>Default</pd:lineType>
+        <pd:lineColor>-16777216</pd:lineColor>
+        <pd:conditionType>xpath</pd:conditionType>
+        <pd:xpath>upper-case($BSFJMSQueueReceiver/ns1:ActivityOutput/Body/pfx:Logger/pfx:LogType)='ERROR'
+or
+upper-case($BSFJMSQueueReceiver/ns1:ActivityOutput/Body/pfx:Logger/pfx:LogType)='FAULT'</pd:xpath>
+    </pd:transition>
+    <pd:transition>
+        <pd:from>SendError</pd:from>
+        <pd:to>Confirm</pd:to>
+        <pd:lineType>One Bend</pd:lineType>
+        <pd:lineColor>-16777216</pd:lineColor>
+        <pd:conditionType>always</pd:conditionType>
+    </pd:transition>
+    <pd:label>
+        <pd:name>Label (1)</pd:name>
+        <pd:description>    BSDBFLOGGER_MainProcess</pd:description>
+        <pd:x>111</pd:x>
+        <pd:y>37</pd:y>
+        <pd:width>205</pd:width>
+        <pd:height>53</pd:height>
+        <pd:fontName>Dialog.bold-plain-12</pd:fontName>
+        <pd:fontColor>-16777216</pd:fontColor>
+        <pd:color>-103</pd:color>
+        <pd:type>solid</pd:type>
+        <pd:thickness>1</pd:thickness>
+        <pd:fade>true</pd:fade>
+    </pd:label>
+</pd:ProcessDefinition>

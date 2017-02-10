@@ -1,0 +1,549 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<pd:ProcessDefinition xmlns:ns2="http://www.tibco.com/pe/GenerateErrorActivity/InputSchema" xmlns:pd="http://xmlns.tibco.com/bw/process/2003" xmlns:ns1="www.tibco.com/plugin/java/JavaMethodActivityOutput" xmlns:xsl="http://www.w3.org/1999/XSL/Transform" xmlns:ns="http://www.tibco.com/pe/DeployedVarsType" xmlns:icc3="java://ReplaceSet" xmlns:ns0="www.tibco.com/plugin/java/JavaMethodActivityInput" xmlns:xsd="http://www.w3.org/2001/XMLSchema" xmlns:tib="http://www.tibco.com/bw/xslt/custom-functions" xmlns:pfx="http://www.tibco.com/pe/WriteToLogActivitySchema">
+    <pd:name>Encryption/ElementDataMasking.process</pd:name>
+    <pd:startName>Start</pd:startName>
+    <pd:startType>
+        <xsd:element name="root">
+            <xsd:complexType>
+                <xsd:sequence>
+                    <xsd:element name="Data" type="xsd:string" minOccurs="0"/>
+                </xsd:sequence>
+            </xsd:complexType>
+        </xsd:element>
+    </pd:startType>
+    <pd:startX>34</pd:startX>
+    <pd:startY>60</pd:startY>
+    <pd:returnBindings>
+        <root>
+            <MaskedData>
+                <xsl:value-of select="$GetVariable-1/root"/>
+            </MaskedData>
+        </root>
+    </pd:returnBindings>
+    <pd:endName>End</pd:endName>
+    <pd:endType>
+        <xsd:element name="root">
+            <xsd:complexType>
+                <xsd:sequence>
+                    <xsd:element name="MaskedData" type="xsd:string"/>
+                </xsd:sequence>
+            </xsd:complexType>
+        </xsd:element>
+    </pd:endType>
+    <pd:endX>1290</pd:endX>
+    <pd:endY>73</pd:endY>
+    <pd:errorSchemas/>
+    <pd:processVariables/>
+    <pd:targetNamespace>http://xmlns.example.com/1378096056691</pd:targetNamespace>
+    <pd:activity name="Map Data">
+        <pd:type>com.tibco.plugin.mapper.MapperActivity</pd:type>
+        <pd:resourceType>ae.activities.MapperActivity</pd:resourceType>
+        <pd:x>136</pd:x>
+        <pd:y>79</pd:y>
+        <config>
+            <element>
+                <xsd:element name="root">
+                    <xsd:complexType>
+                        <xsd:sequence>
+                            <xsd:element name="MaskData" type="xsd:string" minOccurs="0"/>
+                            <xsd:element name="Pairs" minOccurs="0" maxOccurs="unbounded">
+                                <xsd:complexType>
+                                    <xsd:sequence>
+                                        <xsd:element name="Key" type="xsd:string" minOccurs="0"/>
+                                        <xsd:element name="Value" type="xsd:string" minOccurs="0"/>
+                                    </xsd:sequence>
+                                </xsd:complexType>
+                            </xsd:element>
+                            <xsd:element name="param" type="xsd:string"/>
+                        </xsd:sequence>
+                    </xsd:complexType>
+                </xsd:element>
+            </element>
+        </config>
+        <pd:inputBindings>
+            <xsl:variable name="var1" select="substring-after(substring-before(substring-after($Start/root/Data, $Parse-Data/Output/Rows/root[1]/param1), '&lt;/'), '>')"/>
+            <xsl:variable name="Data1" select="if((tib:trim($var1)!='') and exists($Parse-Data/Output/Rows/root[1]/param1))&#xA;then&#xA;concat(substring-before($Start/root/Data, $Parse-Data/Output/Rows/root[1]/param1),$Parse-Data/Output/Rows/root[1]/param1,'>',concat($Parse-Data/Output/Rows/root[1]/param1,'1234567890'),'&lt;/',substring-after(substring-after($Start/root/Data, $Parse-Data/Output/Rows/root[1]/param1), '&lt;/'))&#xA;else&#xA;$Start/root/Data"/>
+            <xsl:variable name="var2" select="substring-after(substring-before(substring-after($Data1, $Parse-Data/Output/Rows/root[1]/param2), '&lt;/'), '>')"/>
+            <xsl:variable name="Data2" select="if((tib:trim($var2)!='') and exists($Parse-Data/Output/Rows/root[1]/param2))&#xA;then&#xA;concat(substring-before($Data1, $Parse-Data/Output/Rows/root[1]/param2),$Parse-Data/Output/Rows/root[1]/param2,'>',concat($Parse-Data/Output/Rows/root[1]/param2,'1234567890'),'&lt;/',substring-after(substring-after($Data1, $Parse-Data/Output/Rows/root[1]/param2), '&lt;/'))&#xA;else&#xA;$Data1"/>
+            <xsl:variable name="var3" select="substring-after(substring-before(substring-after($Data2, $Parse-Data/Output/Rows/root[1]/param3), '&lt;/'), '>')"/>
+            <xsl:variable name="Data3" select="if((tib:trim($var3)!='') and exists($Parse-Data/Output/Rows/root[1]/param3))&#xA;then&#xA;concat(substring-before($Data2, $Parse-Data/Output/Rows/root[1]/param3),$Parse-Data/Output/Rows/root[1]/param3,'>',concat($Parse-Data/Output/Rows/root[1]/param3,'1234567890'),'&lt;/',substring-after(substring-after($Data2, $Parse-Data/Output/Rows/root[1]/param3), '&lt;/'))&#xA;else&#xA;$Data2"/>
+            <xsl:variable name="var4" select="substring-after(substring-before(substring-after($Data3, $Parse-Data/Output/Rows/root[1]/param4), '&lt;/'), '>')"/>
+            <xsl:variable name="Data4" select="if((tib:trim($var4)!='') and exists($Parse-Data/Output/Rows/root[1]/param4))&#xA;then&#xA;concat(substring-before($Data3, $Parse-Data/Output/Rows/root[1]/param4),$Parse-Data/Output/Rows/root[1]/param4,'>',concat($Parse-Data/Output/Rows/root[1]/param4,'1234567890'),'&lt;/',substring-after(substring-after($Data3, $Parse-Data/Output/Rows/root[1]/param4), '&lt;/'))&#xA;else&#xA;$Data3"/>
+            <xsl:variable name="var5" select="substring-after(substring-before(substring-after($Start/root/Data, $Parse-Data/Output/Rows/root[1]/param5), '&lt;/'), '>')"/>
+            <xsl:variable name="Data5" select="if((tib:trim($var5)!='') and exists($Parse-Data/Output/Rows/root[1]/param5))&#xA;then&#xA;concat(substring-before($Data4, $Parse-Data/Output/Rows/root[1]/param5),$Parse-Data/Output/Rows/root[1]/param5,'>',concat($Parse-Data/Output/Rows/root[1]/param5,'1234567890'),'&lt;/',substring-after(substring-after($Data4, $Parse-Data/Output/Rows/root[1]/param5), '&lt;/'))&#xA;else&#xA;$Data4"/>
+            <xsl:variable name="var6" select="substring-after(substring-before(substring-after($Start/root/Data, $Parse-Data/Output/Rows/root[1]/param6), '&lt;/'), '>')"/>
+            <xsl:variable name="Data6" select="if((tib:trim($var6)!='') and exists($Parse-Data/Output/Rows/root[1]/param6))&#xA;then&#xA;concat(substring-before($Data5, $Parse-Data/Output/Rows/root[1]/param6),$Parse-Data/Output/Rows/root[1]/param6,'>',concat($Parse-Data/Output/Rows/root[1]/param6,'1234567890'),'&lt;/',substring-after(substring-after($Data5, $Parse-Data/Output/Rows/root[1]/param6), '&lt;/'))&#xA;else&#xA;$Data5"/>
+            <xsl:variable name="var7" select="substring-after(substring-before(substring-after($Start/root/Data, $Parse-Data/Output/Rows/root[1]/param7), '&lt;/'), '>')"/>
+            <xsl:variable name="Data7" select="if((tib:trim($var7)!='') and exists($Parse-Data/Output/Rows/root[1]/param7))&#xA;then&#xA;concat(substring-before($Data6, $Parse-Data/Output/Rows/root[1]/param7),$Parse-Data/Output/Rows/root[1]/param7,'>',concat($Parse-Data/Output/Rows/root[1]/param7,'1234567890'),'&lt;/',substring-after(substring-after($Data6, $Parse-Data/Output/Rows/root[1]/param7), '&lt;/'))&#xA;else&#xA;$Data6"/>
+            <xsl:variable name="var8" select="substring-after(substring-before(substring-after($Start/root/Data, $Parse-Data/Output/Rows/root[1]/param8), '&lt;/'), '>')"/>
+            <xsl:variable name="Data8" select="if((tib:trim($var8)!='') and exists($Parse-Data/Output/Rows/root[1]/param8))&#xA;then&#xA;concat(substring-before($Data7, $Parse-Data/Output/Rows/root[1]/param8),$Parse-Data/Output/Rows/root[1]/param8,'>',concat($Parse-Data/Output/Rows/root[1]/param8,'1234567890'),'&lt;/',substring-after(substring-after($Data6, $Parse-Data/Output/Rows/root[1]/param8), '&lt;/'))&#xA;else&#xA;$Data7"/>
+            <xsl:variable name="MaskedData" select="$Data8"/>
+            <xsl:variable name="EncryptData" select="tib:string-to-base64($MaskedData)"/>
+            <xsl:variable name="DecryptData" select="tib:base64-to-string($EncryptData)"/>
+            <root>
+                <MaskData>
+                    <xsl:value-of select="$MaskedData"/>
+                </MaskData>
+                <Pairs>
+                    <Key>
+                        <xsl:value-of select="$Parse-Data/Output/Rows/root[1]/param1"/>
+                    </Key>
+                    <Value>
+                        <xsl:value-of select="$var1"/>
+                    </Value>
+                </Pairs>
+                <Pairs>
+                    <Key>
+                        <xsl:value-of select="$Parse-Data/Output/Rows/root[1]/param2"/>
+                    </Key>
+                    <Value>
+                        <xsl:value-of select="$var2"/>
+                    </Value>
+                </Pairs>
+                <Pairs>
+                    <Key>
+                        <xsl:value-of select="$Parse-Data/Output/Rows/root[1]/param3"/>
+                    </Key>
+                    <Value>
+                        <xsl:value-of select="$var3"/>
+                    </Value>
+                </Pairs>
+                <Pairs>
+                    <Key>
+                        <xsl:value-of select="$Parse-Data/Output/Rows/root[1]/param4"/>
+                    </Key>
+                    <Value>
+                        <xsl:value-of select="$var4"/>
+                    </Value>
+                </Pairs>
+                <Pairs>
+                    <Key>
+                        <xsl:value-of select="$Parse-Data/Output/Rows/root[1]/param5"/>
+                    </Key>
+                    <Value>
+                        <xsl:value-of select="$var5"/>
+                    </Value>
+                </Pairs>
+                <Pairs>
+                    <Key>
+                        <xsl:value-of select="$Parse-Data/Output/Rows/root[1]/param6"/>
+                    </Key>
+                    <Value>
+                        <xsl:value-of select="$var6"/>
+                    </Value>
+                </Pairs>
+                <Pairs>
+                    <Key>
+                        <xsl:value-of select="$Parse-Data/Output/Rows/root[1]/param7"/>
+                    </Key>
+                    <Value>
+                        <xsl:value-of select="$var7"/>
+                    </Value>
+                </Pairs>
+                <Pairs>
+                    <Key>
+                        <xsl:value-of select="$Parse-Data/Output/Rows/root[1]/param8"/>
+                    </Key>
+                    <Value>
+                        <xsl:value-of select="$var8"/>
+                    </Value>
+                </Pairs>
+                <param>
+                    <xsl:value-of select="$var1"/>
+                </param>
+            </root>
+        </pd:inputBindings>
+    </pd:activity>
+    <pd:activity name="Parse Data">
+        <pd:type>com.tibco.plugin.parse.ParseActivity</pd:type>
+        <pd:resourceType>ae.activities.ParseActivity</pd:resourceType>
+        <pd:x>67</pd:x>
+        <pd:y>169</pd:y>
+        <config>
+            <InputType>String</InputType>
+            <Encoding>ASCII</Encoding>
+            <ParseSharedConfig>/Resources/DataFormat/Data Format.sharedparse</ParseSharedConfig>
+        </config>
+        <pd:inputBindings>
+            <Input>
+                <text>
+                    <xsl:value-of select="$_globalVariables/ns:GlobalVariables/DataEncryption/MIG_MaskElements"/>
+                </text>
+                <noOfRecords>
+                    <xsl:value-of select="-1"/>
+                </noOfRecords>
+            </Input>
+        </pd:inputBindings>
+    </pd:activity>
+    <pd:group name="Group">
+        <pd:type>com.tibco.pe.core.LoopGroup</pd:type>
+        <pd:resourceType>ae.process.group</pd:resourceType>
+        <pd:x>337</pd:x>
+        <pd:y>3</pd:y>
+        <pd:width>304</pd:width>
+        <pd:height>147</pd:height>
+        <pd:collapsedWidth>57</pd:collapsedWidth>
+        <pd:collapsedHeight>70</pd:collapsedHeight>
+        <pd:groupVariables/>
+        <pd:joinToggle>inherit</pd:joinToggle>
+        <config>
+            <pd:groupType>while</pd:groupType>
+            <pd:serializable>false</pd:serializable>
+            <pd:indexSlot>i</pd:indexSlot>
+            <pd:outSlot>OpData</pd:outSlot>
+            <pd:activityOutputName>Map-Data-1</pd:activityOutputName>
+            <pd:whileCondition>$Map-Data/root/Pairs[$i]/Key!=''</pd:whileCondition>
+            <pd:accumulateOutput>true</pd:accumulateOutput>
+        </config>
+        <pd:inputBindings/>
+        <pd:expanded>true</pd:expanded>
+        <pd:transition>
+            <pd:from>start</pd:from>
+            <pd:to>Java Method</pd:to>
+            <pd:lineType>Default</pd:lineType>
+            <pd:lineColor>-16777216</pd:lineColor>
+            <pd:conditionType>always</pd:conditionType>
+        </pd:transition>
+        <pd:transition>
+            <pd:from>Map-Data-1</pd:from>
+            <pd:to>end</pd:to>
+            <pd:lineType>Default</pd:lineType>
+            <pd:lineColor>-16777216</pd:lineColor>
+            <pd:conditionType>always</pd:conditionType>
+        </pd:transition>
+        <pd:transition>
+            <pd:from>Java Method</pd:from>
+            <pd:to>Map-Data-1</pd:to>
+            <pd:lineType>Default</pd:lineType>
+            <pd:lineColor>-16777216</pd:lineColor>
+            <pd:conditionType>always</pd:conditionType>
+        </pd:transition>
+        <pd:activity name="Java Method">
+            <pd:type>com.tibco.plugin.java.JavaMethodActivity</pd:type>
+            <pd:resourceType>ae.activities.JavaMethodActivity</pd:resourceType>
+            <pd:x>434</pd:x>
+            <pd:y>85</pd:y>
+            <config>
+                <ConstructDeclaredClass>false</ConstructDeclaredClass>
+                <CacheConstructedClass>false</CacheConstructedClass>
+                <InvokeCleanupMethod>false</InvokeCleanupMethod>
+                <JavaGlobalInstance>/Resources/CustomFunctions/Java Global Instance.serviceagent</JavaGlobalInstance>
+                <MethodInfo>
+                    <className>com.tibco.psg.tibmeters.TripleDES</className>
+                    <methodName>encrypt</methodName>
+                    <methodReturn>java.lang.String</methodReturn>
+                    <methodParameter>java.lang.String</methodParameter>
+                </MethodInfo>
+            </config>
+            <pd:inputBindings>
+                <ns0:JavaMethodActivityInput>
+                    <MethodParameters>
+                        <Parameter1>
+                            <xsl:value-of select="$Map-Data/root/Pairs[$i]/Value"/>
+                        </Parameter1>
+                    </MethodParameters>
+                </ns0:JavaMethodActivityInput>
+            </pd:inputBindings>
+        </pd:activity>
+        <pd:activity name="Map-Data-1">
+            <pd:type>com.tibco.plugin.mapper.MapperActivity</pd:type>
+            <pd:resourceType>ae.activities.MapperActivity</pd:resourceType>
+            <pd:x>554</pd:x>
+            <pd:y>86</pd:y>
+            <config>
+                <element>
+                    <xsd:element name="group">
+                        <xsd:complexType>
+                            <xsd:sequence>
+                                <xsd:element name="Pairs" minOccurs="0" maxOccurs="unbounded">
+                                    <xsd:complexType>
+                                        <xsd:sequence>
+                                            <xsd:element name="Key" type="xsd:string" minOccurs="0"/>
+                                            <xsd:element name="Value" type="xsd:string" minOccurs="0"/>
+                                        </xsd:sequence>
+                                    </xsd:complexType>
+                                </xsd:element>
+                            </xsd:sequence>
+                        </xsd:complexType>
+                    </xsd:element>
+                </element>
+            </config>
+            <pd:inputBindings>
+                <group>
+                    <Pairs>
+                        <Key>
+                            <xsl:value-of select="$Map-Data/root/Pairs[$i]/Key"/>
+                        </Key>
+                        <xsl:if test="$Java-Method/ns1:JavaMethodActivityOutput/MethodReturnValue">
+                            <Value>
+                                <xsl:value-of select="$Java-Method/ns1:JavaMethodActivityOutput/MethodReturnValue"/>
+                            </Value>
+                        </xsl:if>
+                    </Pairs>
+                </group>
+            </pd:inputBindings>
+        </pd:activity>
+    </pd:group>
+    <pd:activity name="Map-Data-2">
+        <pd:type>com.tibco.plugin.mapper.MapperActivity</pd:type>
+        <pd:resourceType>ae.activities.MapperActivity</pd:resourceType>
+        <pd:x>608</pd:x>
+        <pd:y>249</pd:y>
+        <config>
+            <element>
+                <xsd:element name="group">
+                    <xsd:complexType>
+                        <xsd:sequence>
+                            <xsd:element name="Pairs" minOccurs="0" maxOccurs="unbounded">
+                                <xsd:complexType>
+                                    <xsd:sequence>
+                                        <xsd:element name="Key" type="xsd:string" minOccurs="0"/>
+                                        <xsd:element name="Value" type="xsd:string" minOccurs="0"/>
+                                    </xsd:sequence>
+                                </xsd:complexType>
+                            </xsd:element>
+                        </xsd:sequence>
+                    </xsd:complexType>
+                </xsd:element>
+            </element>
+        </config>
+        <pd:inputBindings>
+            <group>
+                <xsl:copy-of select="$OpData/AccumulatedOutput/group/Pairs"/>
+            </group>
+        </pd:inputBindings>
+    </pd:activity>
+    <pd:group name="Group (1)">
+        <pd:type>com.tibco.pe.core.LoopGroup</pd:type>
+        <pd:resourceType>ae.process.group</pd:resourceType>
+        <pd:x>708</pd:x>
+        <pd:y>23</pd:y>
+        <pd:width>347</pd:width>
+        <pd:height>146</pd:height>
+        <pd:collapsedWidth>57</pd:collapsedWidth>
+        <pd:collapsedHeight>70</pd:collapsedHeight>
+        <pd:groupVariables/>
+        <pd:joinToggle>inherit</pd:joinToggle>
+        <config>
+            <pd:groupType>inputLoop</pd:groupType>
+            <pd:serializable>false</pd:serializable>
+            <pd:over>$Map-Data-2/group/Pairs</pd:over>
+            <pd:indexSlot>j</pd:indexSlot>
+            <pd:outSlot>data</pd:outSlot>
+            <pd:activityOutputName>Map-Data-2-1</pd:activityOutputName>
+            <pd:accumulateOutput>true</pd:accumulateOutput>
+        </config>
+        <pd:inputBindings/>
+        <pd:expanded>true</pd:expanded>
+        <pd:transition>
+            <pd:from>start</pd:from>
+            <pd:to>GetVariable</pd:to>
+            <pd:lineType>Default</pd:lineType>
+            <pd:lineColor>-16777216</pd:lineColor>
+            <pd:conditionType>always</pd:conditionType>
+        </pd:transition>
+        <pd:transition>
+            <pd:from>SetVariable-1</pd:from>
+            <pd:to>end</pd:to>
+            <pd:lineType>Default</pd:lineType>
+            <pd:lineColor>-16777216</pd:lineColor>
+            <pd:conditionType>always</pd:conditionType>
+        </pd:transition>
+        <pd:transition>
+            <pd:from>GetVariable</pd:from>
+            <pd:to>Map-Data-2-1</pd:to>
+            <pd:lineType>Default</pd:lineType>
+            <pd:lineColor>-16777216</pd:lineColor>
+            <pd:conditionType>always</pd:conditionType>
+        </pd:transition>
+        <pd:transition>
+            <pd:from>Map-Data-2-1</pd:from>
+            <pd:to>SetVariable-1</pd:to>
+            <pd:lineType>Default</pd:lineType>
+            <pd:lineColor>-16777216</pd:lineColor>
+            <pd:conditionType>always</pd:conditionType>
+        </pd:transition>
+        <pd:activity name="Map-Data-2-1">
+            <pd:type>com.tibco.plugin.mapper.MapperActivity</pd:type>
+            <pd:resourceType>ae.activities.MapperActivity</pd:resourceType>
+            <pd:x>891</pd:x>
+            <pd:y>89</pd:y>
+            <config>
+                <element>
+                    <xsd:element name="group">
+                        <xsd:complexType>
+                            <xsd:sequence>
+                                <xsd:element name="group">
+                                    <xsd:complexType>
+                                        <xsd:sequence>
+                                            <xsd:element name="Data" type="xsd:string"/>
+                                        </xsd:sequence>
+                                    </xsd:complexType>
+                                </xsd:element>
+                                <xsd:element name="param" type="xsd:string"/>
+                                <xsd:element name="param1" type="xsd:string"/>
+                                <xsd:element name="param2" type="xsd:string"/>
+                            </xsd:sequence>
+                        </xsd:complexType>
+                    </xsd:element>
+                </element>
+            </config>
+            <pd:inputBindings>
+                <group>
+                    <group>
+                        <Data>
+                            <xsl:value-of select="icc3:replaceSet($GetVariable/root, concat($Map-Data-2/group/Pairs[$j]/Key,'1234567890'), $Map-Data-2/group/Pairs[$j]/Value)"/>
+                        </Data>
+                    </group>
+                    <param>
+                        <xsl:value-of select="$GetVariable/root"/>
+                    </param>
+                    <param1>
+                        <xsl:value-of select="$Map-Data-2/group/Pairs[$j]/Key"/>
+                    </param1>
+                    <param2>
+                        <xsl:value-of select="$Map-Data-2/group/Pairs[$j]/Value"/>
+                    </param2>
+                </group>
+            </pd:inputBindings>
+        </pd:activity>
+        <pd:activity name="GetVariable">
+            <pd:type>com.tibco.pe.core.GetSharedVariableActivity</pd:type>
+            <pd:resourceType>ae.activities.getSharedVariable</pd:resourceType>
+            <pd:x>777</pd:x>
+            <pd:y>90</pd:y>
+            <config>
+                <variableConfig>/Resources/SharedVariables/Job Shared Variable.jobsharedvariable</variableConfig>
+            </config>
+            <pd:inputBindings/>
+        </pd:activity>
+        <pd:activity name="SetVariable-1">
+            <pd:type>com.tibco.pe.core.SetSharedVariableActivity</pd:type>
+            <pd:resourceType>ae.activities.setSharedVariable</pd:resourceType>
+            <pd:x>986</pd:x>
+            <pd:y>92</pd:y>
+            <config>
+                <variableConfig>/Resources/SharedVariables/Job Shared Variable.jobsharedvariable</variableConfig>
+            </config>
+            <pd:inputBindings>
+                <root>
+                    <xsl:value-of select="$Map-Data-2-1/group/group/Data"/>
+                </root>
+            </pd:inputBindings>
+        </pd:activity>
+    </pd:group>
+    <pd:activity name="SetVariable">
+        <pd:type>com.tibco.pe.core.SetSharedVariableActivity</pd:type>
+        <pd:resourceType>ae.activities.setSharedVariable</pd:resourceType>
+        <pd:x>247</pd:x>
+        <pd:y>78</pd:y>
+        <config>
+            <variableConfig>/Resources/SharedVariables/Job Shared Variable.jobsharedvariable</variableConfig>
+        </config>
+        <pd:inputBindings>
+            <root>
+                <xsl:value-of select="$Map-Data/root/MaskData"/>
+            </root>
+        </pd:inputBindings>
+    </pd:activity>
+    <pd:activity name="GetVariable-1">
+        <pd:type>com.tibco.pe.core.GetSharedVariableActivity</pd:type>
+        <pd:resourceType>ae.activities.getSharedVariable</pd:resourceType>
+        <pd:x>1153</pd:x>
+        <pd:y>74</pd:y>
+        <config>
+            <variableConfig>/Resources/SharedVariables/Job Shared Variable.jobsharedvariable</variableConfig>
+        </config>
+        <pd:inputBindings/>
+    </pd:activity>
+    <pd:activity name="Catch">
+        <pd:type>com.tibco.pe.core.CatchActivity</pd:type>
+        <pd:resourceType>ae.activities.catch</pd:resourceType>
+        <pd:x>70</pd:x>
+        <pd:y>294</pd:y>
+        <pd:handler>true</pd:handler>
+        <config>
+            <catchAll>true</catchAll>
+        </config>
+        <pd:inputBindings/>
+    </pd:activity>
+    <pd:activity name="Generate Error">
+        <pd:type>com.tibco.pe.core.GenerateErrorActivity</pd:type>
+        <pd:resourceType>ae.activities.throw</pd:resourceType>
+        <pd:x>258</pd:x>
+        <pd:y>276</pd:y>
+        <config>
+            <faultName/>
+        </config>
+        <pd:inputBindings>
+            <ns2:ActivityInput>
+                <messageCode>
+                    <xsl:value-of select="'ERROR MASKING'"/>
+                </messageCode>
+            </ns2:ActivityInput>
+        </pd:inputBindings>
+    </pd:activity>
+    <pd:transition>
+        <pd:from>Start</pd:from>
+        <pd:to>Parse Data</pd:to>
+        <pd:lineType>Default</pd:lineType>
+        <pd:lineColor>-16777216</pd:lineColor>
+        <pd:conditionType>always</pd:conditionType>
+    </pd:transition>
+    <pd:transition>
+        <pd:from>Parse Data</pd:from>
+        <pd:to>Map Data</pd:to>
+        <pd:lineType>Default</pd:lineType>
+        <pd:lineColor>-16777216</pd:lineColor>
+        <pd:conditionType>always</pd:conditionType>
+    </pd:transition>
+    <pd:transition>
+        <pd:from>Group</pd:from>
+        <pd:to>Map-Data-2</pd:to>
+        <pd:lineType>Default</pd:lineType>
+        <pd:lineColor>-16777216</pd:lineColor>
+        <pd:conditionType>always</pd:conditionType>
+    </pd:transition>
+    <pd:transition>
+        <pd:from>Map-Data-2</pd:from>
+        <pd:to>Group (1)</pd:to>
+        <pd:lineType>Default</pd:lineType>
+        <pd:lineColor>-16777216</pd:lineColor>
+        <pd:conditionType>always</pd:conditionType>
+    </pd:transition>
+    <pd:transition>
+        <pd:from>Map Data</pd:from>
+        <pd:to>SetVariable</pd:to>
+        <pd:lineType>Default</pd:lineType>
+        <pd:lineColor>-16777216</pd:lineColor>
+        <pd:conditionType>always</pd:conditionType>
+    </pd:transition>
+    <pd:transition>
+        <pd:from>SetVariable</pd:from>
+        <pd:to>Group</pd:to>
+        <pd:lineType>Default</pd:lineType>
+        <pd:lineColor>-16777216</pd:lineColor>
+        <pd:conditionType>always</pd:conditionType>
+    </pd:transition>
+    <pd:transition>
+        <pd:from>Group (1)</pd:from>
+        <pd:to>GetVariable-1</pd:to>
+        <pd:lineType>Default</pd:lineType>
+        <pd:lineColor>-16777216</pd:lineColor>
+        <pd:conditionType>always</pd:conditionType>
+    </pd:transition>
+    <pd:transition>
+        <pd:from>GetVariable-1</pd:from>
+        <pd:to>End</pd:to>
+        <pd:lineType>Default</pd:lineType>
+        <pd:lineColor>-16777216</pd:lineColor>
+        <pd:conditionType>always</pd:conditionType>
+    </pd:transition>
+    <pd:transition>
+        <pd:from>Catch</pd:from>
+        <pd:to>Generate Error</pd:to>
+        <pd:lineType>Default</pd:lineType>
+        <pd:lineColor>-16777216</pd:lineColor>
+        <pd:conditionType>always</pd:conditionType>
+    </pd:transition>
+</pd:ProcessDefinition>

@@ -1,0 +1,402 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<pd:ProcessDefinition xmlns:pd="http://xmlns.tibco.com/bw/process/2003" xmlns:ns2="http://www.tibco.com/pe/GenerateErrorActivity/InputSchema" xmlns:xsl="http://www.w3.org/1999/XSL/Transform" xmlns:ns="http://www.tibco.com/pe/EngineTypes" xmlns:xsd="http://www.w3.org/2001/XMLSchema" xmlns:pfx2="http://www.tibco.com/schemas/DBBusinessServices/BusinessServices/Stats/Stats.xsd" xmlns:pfx="http://www.tibco.com/schemas/DBBusinessServices/BusinessServices/Logger/Stats.xsd" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance">
+    <xsd:import namespace="http://www.tibco.com/schemas/DBBusinessServices/BusinessServices/Logger/Stats.xsd"/>
+    <xsd:import namespace="http://www.tibco.com/schemas/DBBusinessServices/BusinessServices/Logger/Stats.xsd" schemaLocation="/BSFServices/Stats/Stats.xsd"/>
+    <pd:name>BusinessProcesses/SubProcesses/Logger/BSFStatsToDB.process</pd:name>
+    <pd:startName>Start</pd:startName>
+    <pd:startType ref="pfx:Stats"/>
+    <pd:startX>27</pd:startX>
+    <pd:startY>209</pd:startY>
+    <pd:returnBindings/>
+    <pd:endName>End</pd:endName>
+    <pd:endX>491</pd:endX>
+    <pd:endY>213</pd:endY>
+    <pd:errorSchemas/>
+    <pd:processVariables/>
+    <pd:targetNamespace>http://xmlns.example.com/1378801625857</pd:targetNamespace>
+    <pd:group name="Group">
+        <pd:type>com.tibco.pe.core.TransactionGroup</pd:type>
+        <pd:resourceType>ae.process.group</pd:resourceType>
+        <pd:x>154</pd:x>
+        <pd:y>80</pd:y>
+        <pd:width>212</pd:width>
+        <pd:height>207</pd:height>
+        <pd:collapsedWidth>57</pd:collapsedWidth>
+        <pd:collapsedHeight>70</pd:collapsedHeight>
+        <pd:groupVariables/>
+        <pd:joinToggle>inherit</pd:joinToggle>
+        <config>
+            <pd:groupType>transactionGroup</pd:groupType>
+            <pd:serializable>false</pd:serializable>
+            <pd:transactionType>JDBCTransaction</pd:transactionType>
+            <pd:includeCheckpoint>false</pd:includeCheckpoint>
+        </config>
+        <pd:inputBindings/>
+        <pd:expanded>true</pd:expanded>
+        <pd:transition>
+            <pd:from>start</pd:from>
+            <pd:to>STATS</pd:to>
+            <pd:lineType>Default</pd:lineType>
+            <pd:lineColor>-16777216</pd:lineColor>
+            <pd:conditionType>always</pd:conditionType>
+        </pd:transition>
+        <pd:transition>
+            <pd:from>STATS</pd:from>
+            <pd:to>end</pd:to>
+            <pd:lineType>Default</pd:lineType>
+            <pd:lineColor>-16777216</pd:lineColor>
+            <pd:conditionType>always</pd:conditionType>
+        </pd:transition>
+        <pd:activity name="STATS">
+            <pd:type>com.tibco.plugin.jdbc.JDBCUpdateActivity</pd:type>
+            <pd:resourceType>ae.activities.JDBCUpdateActivity</pd:resourceType>
+            <pd:x>251</pd:x>
+            <pd:y>192</pd:y>
+            <config>
+                <timeout>%%BusinessServices/DBLogger/LogToDBTimeout%%</timeout>
+                <commit>false</commit>
+                <emptyStrAsNil>true</emptyStrAsNil>
+                <jdbcSharedConfig>/Resources/Connections/BSFDBLogger_JDBCConn.sharedjdbc</jdbcSharedConfig>
+                <statement>INSERT INTO BSF_STATS (STATID,SIID,LOGTIMESTAMP,LOGTIMEZONE,OPNAME,SERVICEID,STATUSCODE,LOGUID,RQCLIENTID,TOTALTXNTIME, SVCLAYERTIME,ENGINETIME,PROXYLATENCY,SVCLAYERLATENCY,ENGINEID,HOSTNAME)
+VALUES (BSF_STATS_SEQ.NEXTVAL,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?) </statement>
+                <Prepared_Param_DataType>
+                    <parameter>
+                        <parameterName>SIID</parameterName>
+                        <dataType>VARCHAR</dataType>
+                    </parameter>
+                    <parameter>
+                        <parameterName>LOGTIMESTAMP</parameterName>
+                        <dataType>TIMESTAMP</dataType>
+                    </parameter>
+                    <parameter>
+                        <parameterName>LOGTIMEZONE</parameterName>
+                        <dataType>VARCHAR</dataType>
+                    </parameter>
+                    <parameter>
+                        <parameterName>OPNAME</parameterName>
+                        <dataType>VARCHAR</dataType>
+                    </parameter>
+                    <parameter>
+                        <parameterName>SERVICEID</parameterName>
+                        <dataType>VARCHAR</dataType>
+                    </parameter>
+                    <parameter>
+                        <parameterName>STATUSCODE</parameterName>
+                        <dataType>VARCHAR</dataType>
+                    </parameter>
+                    <parameter>
+                        <parameterName>LOGGUID</parameterName>
+                        <dataType>VARCHAR</dataType>
+                    </parameter>
+                    <parameter>
+                        <parameterName>RQCLIENTID</parameterName>
+                        <dataType>VARCHAR</dataType>
+                    </parameter>
+                    <parameter>
+                        <parameterName>TOTALTXNTIME</parameterName>
+                        <dataType>VARCHAR</dataType>
+                    </parameter>
+                    <parameter>
+                        <parameterName>SVCLAYERTIME</parameterName>
+                        <dataType>VARCHAR</dataType>
+                    </parameter>
+                    <parameter>
+                        <parameterName>ENGINETIME</parameterName>
+                        <dataType>VARCHAR</dataType>
+                    </parameter>
+                    <parameter>
+                        <parameterName>PROXYLATENCY</parameterName>
+                        <dataType>VARCHAR</dataType>
+                    </parameter>
+                    <parameter>
+                        <parameterName>SVCLAYERLATENCY</parameterName>
+                        <dataType>VARCHAR</dataType>
+                    </parameter>
+                    <parameter>
+                        <parameterName>ENGINEID</parameterName>
+                        <dataType>VARCHAR</dataType>
+                    </parameter>
+                    <parameter>
+                        <parameterName>HOSTNAME</parameterName>
+                        <dataType>VARCHAR</dataType>
+                    </parameter>
+                </Prepared_Param_DataType>
+            </config>
+            <pd:inputBindings>
+                <jdbcUpdateActivityInput>
+                    <SIID>
+                        <xsl:value-of select="$Start/pfx:Stats/pfx:SIID"/>
+                    </SIID>
+                    <LOGTIMESTAMP>
+                        <xsl:choose>
+                            <xsl:when test="exists($Start/pfx:Stats/pfx:StatsTimestamp)">
+                                <xsl:value-of select="$Start/pfx:Stats/pfx:StatsTimestamp"/>
+                            </xsl:when>
+                            <xsl:otherwise>
+                                <xsl:attribute name="xsi:nil">true</xsl:attribute>
+                            </xsl:otherwise>
+                        </xsl:choose>
+                    </LOGTIMESTAMP>
+                    <LOGTIMEZONE>
+                        <xsl:choose>
+                            <xsl:when test="exists('')">
+                                <xsl:value-of select="''"/>
+                            </xsl:when>
+                            <xsl:otherwise>
+                                <xsl:attribute name="xsi:nil">true</xsl:attribute>
+                            </xsl:otherwise>
+                        </xsl:choose>
+                    </LOGTIMEZONE>
+                    <OPNAME>
+                        <xsl:choose>
+                            <xsl:when test="exists($Start/pfx:Stats/pfx:OperationName)">
+                                <xsl:value-of select="$Start/pfx:Stats/pfx:OperationName"/>
+                            </xsl:when>
+                            <xsl:otherwise>
+                                <xsl:attribute name="xsi:nil">true</xsl:attribute>
+                            </xsl:otherwise>
+                        </xsl:choose>
+                    </OPNAME>
+                    <SERVICEID>
+                        <xsl:choose>
+                            <xsl:when test="exists($Start/pfx:Stats/pfx:ServiceID)">
+                                <xsl:value-of select="$Start/pfx:Stats/pfx:ServiceID"/>
+                            </xsl:when>
+                            <xsl:otherwise>
+                                <xsl:attribute name="xsi:nil">true</xsl:attribute>
+                            </xsl:otherwise>
+                        </xsl:choose>
+                    </SERVICEID>
+                    <STATUSCODE>
+                        <xsl:choose>
+                            <xsl:when test="exists($Start/pfx:Stats/pfx:StatusCode)">
+                                <xsl:value-of select="$Start/pfx:Stats/pfx:StatusCode"/>
+                            </xsl:when>
+                            <xsl:otherwise>
+                                <xsl:attribute name="xsi:nil">true</xsl:attribute>
+                            </xsl:otherwise>
+                        </xsl:choose>
+                    </STATUSCODE>
+                    <LOGGUID>
+                        <xsl:choose>
+                            <xsl:when test="exists($Start/pfx:Stats/pfx:LogGUID)">
+                                <xsl:value-of select="$Start/pfx:Stats/pfx:LogGUID"/>
+                            </xsl:when>
+                            <xsl:otherwise>
+                                <xsl:attribute name="xsi:nil">true</xsl:attribute>
+                            </xsl:otherwise>
+                        </xsl:choose>
+                    </LOGGUID>
+                    <RQCLIENTID>
+                        <xsl:choose>
+                            <xsl:when test="exists($Start/pfx:Stats/pfx:RQClientID)">
+                                <xsl:value-of select="$Start/pfx:Stats/pfx:RQClientID"/>
+                            </xsl:when>
+                            <xsl:otherwise>
+                                <xsl:attribute name="xsi:nil">true</xsl:attribute>
+                            </xsl:otherwise>
+                        </xsl:choose>
+                    </RQCLIENTID>
+                    <xsl:choose>
+                        <xsl:when test="exists($Start/pfx:Stats/pfx:TotalTXNTime) and  &#xA;number($Start/pfx:Stats/pfx:TotalTXNTime)">
+                            <TOTALTXNTIME>
+                                <xsl:choose>
+                                    <xsl:when test="exists($Start/pfx:Stats/pfx:TotalTXNTime)">
+                                        <xsl:value-of select="$Start/pfx:Stats/pfx:TotalTXNTime"/>
+                                    </xsl:when>
+                                    <xsl:otherwise>
+                                        <xsl:attribute name="xsi:nil">true</xsl:attribute>
+                                    </xsl:otherwise>
+                                </xsl:choose>
+                            </TOTALTXNTIME>
+                        </xsl:when>
+                        <xsl:otherwise>
+                            <TOTALTXNTIME>
+                                <xsl:choose>
+                                    <xsl:when test="exists(0)">
+                                        <xsl:value-of select="0"/>
+                                    </xsl:when>
+                                    <xsl:otherwise>
+                                        <xsl:attribute name="xsi:nil">true</xsl:attribute>
+                                    </xsl:otherwise>
+                                </xsl:choose>
+                            </TOTALTXNTIME>
+                        </xsl:otherwise>
+                    </xsl:choose>
+                    <xsl:choose>
+                        <xsl:when test="exists($Start/pfx:Stats/pfx:SvcLayerTime) and&#xA;number ($Start/pfx:Stats/pfx:SvcLayerTime)">
+                            <SVCLAYERTIME>
+                                <xsl:choose>
+                                    <xsl:when test="exists($Start/pfx:Stats/pfx:SvcLayerTime)">
+                                        <xsl:value-of select="$Start/pfx:Stats/pfx:SvcLayerTime"/>
+                                    </xsl:when>
+                                    <xsl:otherwise>
+                                        <xsl:attribute name="xsi:nil">true</xsl:attribute>
+                                    </xsl:otherwise>
+                                </xsl:choose>
+                            </SVCLAYERTIME>
+                        </xsl:when>
+                        <xsl:otherwise>
+                            <SVCLAYERTIME>
+                                <xsl:choose>
+                                    <xsl:when test="exists(0)">
+                                        <xsl:value-of select="0"/>
+                                    </xsl:when>
+                                    <xsl:otherwise>
+                                        <xsl:attribute name="xsi:nil">true</xsl:attribute>
+                                    </xsl:otherwise>
+                                </xsl:choose>
+                            </SVCLAYERTIME>
+                        </xsl:otherwise>
+                    </xsl:choose>
+                    <xsl:choose>
+                        <xsl:when test="exists($Start/pfx:Stats/pfx:EngineTime) and &#xA;number($Start/pfx:Stats/pfx:EngineTime)">
+                            <ENGINETIME>
+                                <xsl:choose>
+                                    <xsl:when test="exists($Start/pfx:Stats/pfx:EngineTime)">
+                                        <xsl:value-of select="$Start/pfx:Stats/pfx:EngineTime"/>
+                                    </xsl:when>
+                                    <xsl:otherwise>
+                                        <xsl:attribute name="xsi:nil">true</xsl:attribute>
+                                    </xsl:otherwise>
+                                </xsl:choose>
+                            </ENGINETIME>
+                        </xsl:when>
+                        <xsl:otherwise>
+                            <ENGINETIME>
+                                <xsl:value-of select="0"/>
+                            </ENGINETIME>
+                        </xsl:otherwise>
+                    </xsl:choose>
+                    <xsl:choose>
+                        <xsl:when test="exists($Start/pfx:Stats/pfx:ProxyLatency) and&#xA;number($Start/pfx:Stats/pfx:ProxyLatency)">
+                            <PROXYLATENCY>
+                                <xsl:choose>
+                                    <xsl:when test="exists($Start/pfx:Stats/pfx:ProxyLatency)">
+                                        <xsl:value-of select="$Start/pfx:Stats/pfx:ProxyLatency"/>
+                                    </xsl:when>
+                                    <xsl:otherwise>
+                                        <xsl:attribute name="xsi:nil">true</xsl:attribute>
+                                    </xsl:otherwise>
+                                </xsl:choose>
+                            </PROXYLATENCY>
+                        </xsl:when>
+                        <xsl:otherwise>
+                            <PROXYLATENCY>
+                                <xsl:choose>
+                                    <xsl:when test="exists(0)">
+                                        <xsl:value-of select="0"/>
+                                    </xsl:when>
+                                    <xsl:otherwise>
+                                        <xsl:attribute name="xsi:nil">true</xsl:attribute>
+                                    </xsl:otherwise>
+                                </xsl:choose>
+                            </PROXYLATENCY>
+                        </xsl:otherwise>
+                    </xsl:choose>
+                    <xsl:choose>
+                        <xsl:when test="exists($Start/pfx:Stats/pfx:SvcLayerLatency) and&#xA;number($Start/pfx:Stats/pfx:SvcLayerLatency)">
+                            <SVCLAYERLATENCY>
+                                <xsl:choose>
+                                    <xsl:when test="exists($Start/pfx:Stats/pfx:SvcLayerLatency)">
+                                        <xsl:value-of select="$Start/pfx:Stats/pfx:SvcLayerLatency"/>
+                                    </xsl:when>
+                                    <xsl:otherwise>
+                                        <xsl:attribute name="xsi:nil">true</xsl:attribute>
+                                    </xsl:otherwise>
+                                </xsl:choose>
+                            </SVCLAYERLATENCY>
+                        </xsl:when>
+                        <xsl:otherwise>
+                            <SVCLAYERLATENCY>
+                                <xsl:choose>
+                                    <xsl:when test="exists(0)">
+                                        <xsl:value-of select="0"/>
+                                    </xsl:when>
+                                    <xsl:otherwise>
+                                        <xsl:attribute name="xsi:nil">true</xsl:attribute>
+                                    </xsl:otherwise>
+                                </xsl:choose>
+                            </SVCLAYERLATENCY>
+                        </xsl:otherwise>
+                    </xsl:choose>
+                    <ENGINEID>
+                        <xsl:choose>
+                            <xsl:when test="exists($Start/pfx:Stats/pfx:EngineID)">
+                                <xsl:value-of select="$Start/pfx:Stats/pfx:EngineID"/>
+                            </xsl:when>
+                            <xsl:otherwise>
+                                <xsl:attribute name="xsi:nil">true</xsl:attribute>
+                            </xsl:otherwise>
+                        </xsl:choose>
+                    </ENGINEID>
+                    <HOSTNAME>
+                        <xsl:choose>
+                            <xsl:when test="exists($Start/pfx:Stats/pfx:Hostname)">
+                                <xsl:value-of select="$Start/pfx:Stats/pfx:Hostname"/>
+                            </xsl:when>
+                            <xsl:otherwise>
+                                <xsl:attribute name="xsi:nil">true</xsl:attribute>
+                            </xsl:otherwise>
+                        </xsl:choose>
+                    </HOSTNAME>
+                </jdbcUpdateActivityInput>
+            </pd:inputBindings>
+        </pd:activity>
+    </pd:group>
+    <pd:activity name="Catch">
+        <pd:type>com.tibco.pe.core.CatchActivity</pd:type>
+        <pd:resourceType>ae.activities.catch</pd:resourceType>
+        <pd:x>623</pd:x>
+        <pd:y>157</pd:y>
+        <pd:handler>true</pd:handler>
+        <config>
+            <catchAll>true</catchAll>
+        </config>
+        <pd:inputBindings/>
+    </pd:activity>
+    <pd:activity name="Generate Error">
+        <pd:type>com.tibco.pe.core.GenerateErrorActivity</pd:type>
+        <pd:resourceType>ae.activities.throw</pd:resourceType>
+        <pd:x>630</pd:x>
+        <pd:y>297</pd:y>
+        <config>
+            <faultName/>
+        </config>
+        <pd:inputBindings>
+            <ns2:ActivityInput>
+                <xsl:if test="$_error/ns:ErrorReport/Msg">
+                    <message>
+                        <xsl:value-of select="$_error/ns:ErrorReport/Msg"/>
+                    </message>
+                </xsl:if>
+                <xsl:if test="$_error/ns:ErrorReport/MsgCode">
+                    <messageCode>
+                        <xsl:value-of select="$_error/ns:ErrorReport/MsgCode"/>
+                    </messageCode>
+                </xsl:if>
+            </ns2:ActivityInput>
+        </pd:inputBindings>
+    </pd:activity>
+    <pd:transition>
+        <pd:from>Start</pd:from>
+        <pd:to>Group</pd:to>
+        <pd:lineType>Default</pd:lineType>
+        <pd:lineColor>-16777216</pd:lineColor>
+        <pd:conditionType>always</pd:conditionType>
+    </pd:transition>
+    <pd:transition>
+        <pd:from>Group</pd:from>
+        <pd:to>End</pd:to>
+        <pd:lineType>Default</pd:lineType>
+        <pd:lineColor>-16777216</pd:lineColor>
+        <pd:conditionType>always</pd:conditionType>
+    </pd:transition>
+    <pd:transition>
+        <pd:from>Catch</pd:from>
+        <pd:to>Generate Error</pd:to>
+        <pd:lineType>Default</pd:lineType>
+        <pd:lineColor>-16777216</pd:lineColor>
+        <pd:conditionType>always</pd:conditionType>
+    </pd:transition>
+</pd:ProcessDefinition>

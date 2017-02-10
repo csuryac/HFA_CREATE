@@ -1,0 +1,637 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<pd:ProcessDefinition xmlns:pd="http://xmlns.tibco.com/bw/process/2003" xmlns:ns2="http://www.tibco.com/namespaces/tnt/plugins/file" xmlns:ns1="http://www.tibco.com/namespaces/tnt/plugins/jms" xmlns:xsl="http://www.w3.org/1999/XSL/Transform" xmlns:ns4="com/tibco/pe/commands" xmlns:ns="http://www.tibco.com/pe/DeployedVarsType" xmlns:ns3="http://www.tibco.com/pe/EngineTypes" xmlns:xsd="http://www.w3.org/2001/XMLSchema" xmlns:tib="http://www.tibco.com/bw/xslt/custom-functions" xmlns:pfx2="http://www.tibco.com/pe/GenerateErrorActivity/InputSchema" xmlns:ns5="http://www.tibco.com/pe/WriteToLogActivitySchema" xmlns:ns6="http://schemas.tibco.com/bw/plugins/jdbc/5.0/jdbcExceptions" xmlns:pfx="http://www.tibco.com/schemas/DBBusinessServices/BusinessServices/Logger/Schema.xsd" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance">
+    <xsd:import namespace="http://www.tibco.com/schemas/DBBusinessServices/BusinessServices/Logger/Schema.xsd"/>
+    <pd:name>BusinessProcesses/SubProcesses/Logger/BSFLogToDatabase.process</pd:name>
+    <pd:startName>Start</pd:startName>
+    <pd:startType ref="pfx:Logger"/>
+    <pd:startX>27</pd:startX>
+    <pd:startY>400</pd:startY>
+    <pd:returnBindings/>
+    <pd:endName>End</pd:endName>
+    <pd:endX>841</pd:endX>
+    <pd:endY>394</pd:endY>
+    <pd:errorSchemas/>
+    <pd:processVariables/>
+    <pd:targetNamespace>http://xmlns.example.com/1378371182748</pd:targetNamespace>
+    <pd:group name="Group">
+        <pd:type>com.tibco.pe.core.LoopGroup</pd:type>
+        <pd:resourceType>ae.process.group</pd:resourceType>
+        <pd:x>134</pd:x>
+        <pd:y>242</pd:y>
+        <pd:width>598</pd:width>
+        <pd:height>297</pd:height>
+        <pd:collapsedWidth>57</pd:collapsedWidth>
+        <pd:collapsedHeight>70</pd:collapsedHeight>
+        <pd:groupVariables/>
+        <pd:joinToggle>inherit</pd:joinToggle>
+        <config>
+            <pd:groupType>simpleGroup</pd:groupType>
+            <pd:serializable>false</pd:serializable>
+        </config>
+        <pd:inputBindings/>
+        <pd:expanded>true</pd:expanded>
+        <pd:transition>
+            <pd:from>start</pd:from>
+            <pd:to>Generate Sequence to Use</pd:to>
+            <pd:lineType>Default</pd:lineType>
+            <pd:lineColor>-16777216</pd:lineColor>
+            <pd:conditionType>always</pd:conditionType>
+        </pd:transition>
+        <pd:transition>
+            <pd:from>Null</pd:from>
+            <pd:to>end</pd:to>
+            <pd:lineType>Default</pd:lineType>
+            <pd:lineColor>-16777216</pd:lineColor>
+            <pd:conditionType>always</pd:conditionType>
+        </pd:transition>
+        <pd:transition>
+            <pd:from>JDBC_BSFLoggerMessage</pd:from>
+            <pd:to>end</pd:to>
+            <pd:lineType>Default</pd:lineType>
+            <pd:lineColor>-16777216</pd:lineColor>
+            <pd:conditionType>always</pd:conditionType>
+        </pd:transition>
+        <pd:transition>
+            <pd:from>Generate Sequence to Use</pd:from>
+            <pd:to>PayloadEncrypt</pd:to>
+            <pd:xpathDescription>DataEncryptionFlag=true</pd:xpathDescription>
+            <pd:lineType>Default</pd:lineType>
+            <pd:lineColor>-16777216</pd:lineColor>
+            <pd:conditionType>xpath</pd:conditionType>
+            <pd:xpath>$_globalVariables/ns:GlobalVariables/DataEncryption/MIG_DataEncryption='true'</pd:xpath>
+        </pd:transition>
+        <pd:transition>
+            <pd:from>BSFLOGGER</pd:from>
+            <pd:to>Null</pd:to>
+            <pd:xpathDescription>NoMessage</pd:xpathDescription>
+            <pd:lineType>Default</pd:lineType>
+            <pd:lineColor>-16777216</pd:lineColor>
+            <pd:conditionType>xpath</pd:conditionType>
+            <pd:xpath>count($Start/pfx:Logger/pfx:Message)=0</pd:xpath>
+        </pd:transition>
+        <pd:transition>
+            <pd:from>BSFLOGGER</pd:from>
+            <pd:to>JDBC_BSFLoggerMessage</pd:to>
+            <pd:lineType>Default</pd:lineType>
+            <pd:lineColor>-16777216</pd:lineColor>
+            <pd:conditionType>otherwise</pd:conditionType>
+        </pd:transition>
+        <pd:transition>
+            <pd:from>PayloadEncrypt</pd:from>
+            <pd:to>BSFLOGGER</pd:to>
+            <pd:lineType>Default</pd:lineType>
+            <pd:lineColor>-16777216</pd:lineColor>
+            <pd:conditionType>always</pd:conditionType>
+        </pd:transition>
+        <pd:transition>
+            <pd:from>Generate Sequence to Use</pd:from>
+            <pd:to>BSFLOGGER</pd:to>
+            <pd:lineType>Default</pd:lineType>
+            <pd:lineColor>-16777216</pd:lineColor>
+            <pd:conditionType>otherwise</pd:conditionType>
+        </pd:transition>
+        <pd:activity name="Generate Sequence to Use">
+            <pd:type>com.tibco.plugin.jdbc.JDBCGeneralActivity</pd:type>
+            <pd:resourceType>ae.activities.JDBCGeneralActivity</pd:resourceType>
+            <pd:x>242</pd:x>
+            <pd:y>407</pd:y>
+            <config>
+                <timeout>10</timeout>
+                <commit>false</commit>
+                <maxRows>100</maxRows>
+                <jdbcSharedConfig>/Resources/Connections/BSFDBLogger_JDBCConn.sharedjdbc</jdbcSharedConfig>
+            </config>
+            <pd:inputBindings>
+                <jdbcGeneralActivityInput>
+                    <statement>
+                        <xsl:value-of select="&quot;SELECT BSFLOGGER_SEQ.NEXTVAL FROM DUAL&quot;"/>
+                    </statement>
+                    <timeout>
+                        <xsl:value-of select="10"/>
+                    </timeout>
+                    <maxRows>
+                        <xsl:value-of select="1"/>
+                    </maxRows>
+                </jdbcGeneralActivityInput>
+            </pd:inputBindings>
+        </pd:activity>
+        <pd:activity name="BSFLOGGER">
+            <pd:type>com.tibco.plugin.jdbc.JDBCUpdateActivity</pd:type>
+            <pd:resourceType>ae.activities.JDBCUpdateActivity</pd:resourceType>
+            <pd:x>357</pd:x>
+            <pd:y>476</pd:y>
+            <config>
+                <timeout>%%BusinessServices/DBLogger/LogToDBTimeout%%</timeout>
+                <commit>false</commit>
+                <emptyStrAsNil>true</emptyStrAsNil>
+                <jdbcSharedConfig>/Resources/Connections/BSFDBLogger_JDBCConn.sharedjdbc</jdbcSharedConfig>
+                <statement>INSERT INTO BSFLOGGER_TABLE (LOGGERID, SERVICEID, LOGLEVEL,LOGTYPE, LOGCODE, LOGMESSAGE, LOGUID,ORGCODE, PROCESSNAME, SIID,OPERATIONNAME,SERVICEREQUESTOR,SERVICEPROVIDER,MACHINENAME,ENGINENAME, PRESTEP, POSTSTEP, LOGTIMESTAMP,PAYLOAD)
+values (?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?)</statement>
+                <batchUpdate>false</batchUpdate>
+                <Prepared_Param_DataType>
+                    <parameter>
+                        <parameterName>LOGGERID</parameterName>
+                        <dataType>INTEGER</dataType>
+                    </parameter>
+                    <parameter>
+                        <parameterName>SERVICEID</parameterName>
+                        <dataType>VARCHAR</dataType>
+                    </parameter>
+                    <parameter>
+                        <parameterName>LOGLEVEL</parameterName>
+                        <dataType>INTEGER</dataType>
+                    </parameter>
+                    <parameter>
+                        <parameterName>LOGTYPE</parameterName>
+                        <dataType>VARCHAR</dataType>
+                    </parameter>
+                    <parameter>
+                        <parameterName>LOGCODE</parameterName>
+                        <dataType>VARCHAR</dataType>
+                    </parameter>
+                    <parameter>
+                        <parameterName>LOGMESSAGE</parameterName>
+                        <dataType>VARCHAR</dataType>
+                    </parameter>
+                    <parameter>
+                        <parameterName>LOGUID</parameterName>
+                        <dataType>VARCHAR</dataType>
+                    </parameter>
+                    <parameter>
+                        <parameterName>ORGCODE</parameterName>
+                        <dataType>VARCHAR</dataType>
+                    </parameter>
+                    <parameter>
+                        <parameterName>PROCESSNAME</parameterName>
+                        <dataType>VARCHAR</dataType>
+                    </parameter>
+                    <parameter>
+                        <parameterName>SIID</parameterName>
+                        <dataType>VARCHAR</dataType>
+                    </parameter>
+                    <parameter>
+                        <parameterName>OPERATIONNAME</parameterName>
+                        <dataType>VARCHAR</dataType>
+                    </parameter>
+                    <parameter>
+                        <parameterName>SERVICEREQUESTOR</parameterName>
+                        <dataType>VARCHAR</dataType>
+                    </parameter>
+                    <parameter>
+                        <parameterName>SERVICEPROVIDER</parameterName>
+                        <dataType>VARCHAR</dataType>
+                    </parameter>
+                    <parameter>
+                        <parameterName>MACHINENAME</parameterName>
+                        <dataType>VARCHAR</dataType>
+                    </parameter>
+                    <parameter>
+                        <parameterName>ENGINENAME</parameterName>
+                        <dataType>VARCHAR</dataType>
+                    </parameter>
+                    <parameter>
+                        <parameterName>PRESTEP</parameterName>
+                        <dataType>VARCHAR</dataType>
+                    </parameter>
+                    <parameter>
+                        <parameterName>POSTSTEP</parameterName>
+                        <dataType>VARCHAR</dataType>
+                    </parameter>
+                    <parameter>
+                        <parameterName>LOGTIMESTAMP</parameterName>
+                        <dataType>VARCHAR</dataType>
+                    </parameter>
+                    <parameter>
+                        <parameterName>PAYLOAD</parameterName>
+                        <dataType>VARCHAR</dataType>
+                    </parameter>
+                </Prepared_Param_DataType>
+            </config>
+            <pd:inputBindings>
+                <jdbcUpdateActivityInput>
+                    <LOGGERID>
+                        <xsl:value-of select="number($Generate-Sequence-to-Use/jdbcGeneralActivityOutput/unknownResultset[1]/row[1]/column[1]/value)"/>
+                    </LOGGERID>
+                    <SERVICEID>
+                        <xsl:value-of select="upper-case($Start/pfx:Logger/pfx:ServiceID)"/>
+                    </SERVICEID>
+                    <LOGLEVEL>
+                        <xsl:value-of select="$Start/pfx:Logger/pfx:LogLevel"/>
+                    </LOGLEVEL>
+                    <LOGTYPE>
+                        <xsl:value-of select="$Start/pfx:Logger/pfx:LogType"/>
+                    </LOGTYPE>
+                    <LOGCODE>
+                        <xsl:value-of select="$Start/pfx:Logger/pfx:LogCode"/>
+                    </LOGCODE>
+                    <LOGMESSAGE>
+                        <xsl:value-of select="substring($Start/pfx:Logger/pfx:LogMessage, 1, 2000)"/>
+                    </LOGMESSAGE>
+                    <LOGUID>
+                        <xsl:value-of select="$Start/pfx:Logger/pfx:LogGUID"/>
+                    </LOGUID>
+                    <xsl:choose>
+                        <xsl:when test="exists($Start/pfx:Logger/pfx:OrgCode)">
+                            <ORGCODE>
+                                <xsl:value-of select="$Start/pfx:Logger/pfx:OrgCode"/>
+                            </ORGCODE>
+                        </xsl:when>
+                        <xsl:otherwise>
+                            <ORGCODE>
+                                <xsl:value-of select="''"/>
+                            </ORGCODE>
+                        </xsl:otherwise>
+                    </xsl:choose>
+                    <PROCESSNAME>
+                        <xsl:value-of select="$Start/pfx:Logger/pfx:ProcessName"/>
+                    </PROCESSNAME>
+                    <SIID>
+                        <xsl:choose>
+                            <xsl:when test="exists($Start/pfx:Logger/pfx:SIID)">
+                                <xsl:value-of select="$Start/pfx:Logger/pfx:SIID"/>
+                            </xsl:when>
+                            <xsl:otherwise>
+                                <xsl:attribute name="xsi:nil">true</xsl:attribute>
+                            </xsl:otherwise>
+                        </xsl:choose>
+                    </SIID>
+                    <OPERATIONNAME>
+                        <xsl:choose>
+                            <xsl:when test="exists($Start/pfx:Logger/pfx:OperationName)">
+                                <xsl:value-of select="$Start/pfx:Logger/pfx:OperationName"/>
+                            </xsl:when>
+                            <xsl:otherwise>
+                                <xsl:attribute name="xsi:nil">true</xsl:attribute>
+                            </xsl:otherwise>
+                        </xsl:choose>
+                    </OPERATIONNAME>
+                    <SERVICEREQUESTOR>
+                        <xsl:choose>
+                            <xsl:when test="exists($Start/pfx:Logger/pfx:ServiceRequestor)">
+                                <xsl:value-of select="$Start/pfx:Logger/pfx:ServiceRequestor"/>
+                            </xsl:when>
+                            <xsl:otherwise>
+                                <xsl:attribute name="xsi:nil">true</xsl:attribute>
+                            </xsl:otherwise>
+                        </xsl:choose>
+                    </SERVICEREQUESTOR>
+                    <SERVICEPROVIDER>
+                        <xsl:choose>
+                            <xsl:when test="exists($Start/pfx:Logger/pfx:ServiceProvider)">
+                                <xsl:value-of select="$Start/pfx:Logger/pfx:ServiceProvider"/>
+                            </xsl:when>
+                            <xsl:otherwise>
+                                <xsl:attribute name="xsi:nil">true</xsl:attribute>
+                            </xsl:otherwise>
+                        </xsl:choose>
+                    </SERVICEPROVIDER>
+                    <MACHINENAME>
+                        <xsl:value-of select="$Start/pfx:Logger/pfx:MachineName"/>
+                    </MACHINENAME>
+                    <ENGINENAME>
+                        <xsl:choose>
+                            <xsl:when test="exists($Start/pfx:Logger/pfx:EngineName)">
+                                <xsl:value-of select="$Start/pfx:Logger/pfx:EngineName"/>
+                            </xsl:when>
+                            <xsl:otherwise>
+                                <xsl:attribute name="xsi:nil">true</xsl:attribute>
+                            </xsl:otherwise>
+                        </xsl:choose>
+                    </ENGINENAME>
+                    <PRESTEP>
+                        <xsl:choose>
+                            <xsl:when test="exists($Start/pfx:Logger/pfx:PreStep)">
+                                <xsl:value-of select="$Start/pfx:Logger/pfx:PreStep"/>
+                            </xsl:when>
+                            <xsl:otherwise>
+                                <xsl:attribute name="xsi:nil">true</xsl:attribute>
+                            </xsl:otherwise>
+                        </xsl:choose>
+                    </PRESTEP>
+                    <POSTSTEP>
+                        <xsl:choose>
+                            <xsl:when test="exists($Start/pfx:Logger/pfx:PostStep)">
+                                <xsl:value-of select="$Start/pfx:Logger/pfx:PostStep"/>
+                            </xsl:when>
+                            <xsl:otherwise>
+                                <xsl:attribute name="xsi:nil">true</xsl:attribute>
+                            </xsl:otherwise>
+                        </xsl:choose>
+                    </POSTSTEP>
+                    <LOGTIMESTAMP>
+                        <xsl:value-of select="$Start/pfx:Logger/pfx:LogTimestamp"/>
+                    </LOGTIMESTAMP>
+                    <xsl:choose>
+                        <xsl:when test="$_globalVariables/ns:GlobalVariables/DataEncryption/MIG_DataEncryption='true'">
+                            <PAYLOAD>
+                                <xsl:value-of select="$PayloadEncrypt/root/EncryptedData"/>
+                            </PAYLOAD>
+                        </xsl:when>
+                        <xsl:otherwise>
+                            <PAYLOAD>
+                                <xsl:choose>
+                                    <xsl:when test="exists($Start/pfx:Logger/pfx:Payload)">
+                                        <xsl:value-of select="$Start/pfx:Logger/pfx:Payload"/>
+                                    </xsl:when>
+                                    <xsl:otherwise>
+                                        <xsl:attribute name="xsi:nil">true</xsl:attribute>
+                                    </xsl:otherwise>
+                                </xsl:choose>
+                            </PAYLOAD>
+                        </xsl:otherwise>
+                    </xsl:choose>
+                </jdbcUpdateActivityInput>
+            </pd:inputBindings>
+        </pd:activity>
+        <pd:activity name="JDBC_BSFLoggerMessage">
+            <pd:type>com.tibco.plugin.jdbc.JDBCUpdateActivity</pd:type>
+            <pd:resourceType>ae.activities.JDBCUpdateActivity</pd:resourceType>
+            <pd:x>549</pd:x>
+            <pd:y>332</pd:y>
+            <config>
+                <timeout>10</timeout>
+                <commit>false</commit>
+                <emptyStrAsNil>false</emptyStrAsNil>
+                <jdbcSharedConfig>/Resources/Connections/BSFDBLogger_JDBCConn.sharedjdbc</jdbcSharedConfig>
+                <statement>INSERT INTO BSFLOGGER_MESSAGE_TABLE (MESSAGELOGGERID, LOGUID, NAME, VALUE)
+VALUES (BSFLOGGER_MESSAGE_SEQ.NEXTVAL,?,?,?)
+</statement>
+                <Prepared_Param_DataType>
+                    <parameter>
+                        <parameterName>LOGGERID</parameterName>
+                        <dataType>INTEGER</dataType>
+                    </parameter>
+                    <parameter>
+                        <parameterName>NAME</parameterName>
+                        <dataType>VARCHAR</dataType>
+                    </parameter>
+                    <parameter>
+                        <parameterName>VALUE</parameterName>
+                        <dataType>VARCHAR</dataType>
+                    </parameter>
+                </Prepared_Param_DataType>
+                <batchUpdate>true</batchUpdate>
+            </config>
+            <pd:inputBindings>
+                <jdbcUpdateActivityInput>
+                    <xsl:for-each select="$Start/pfx:Logger/pfx:Message">
+                        <Record>
+                            <LOGGERID>
+                                <xsl:value-of select="number($Generate-Sequence-to-Use/jdbcGeneralActivityOutput/unknownResultset[1]/row[1]/column[1]/value)"/>
+                            </LOGGERID>
+                            <NAME>
+                                <xsl:value-of select="pfx:Name"/>
+                            </NAME>
+                            <VALUE>
+                                <xsl:value-of select="pfx:Value"/>
+                            </VALUE>
+                        </Record>
+                    </xsl:for-each>
+                </jdbcUpdateActivityInput>
+            </pd:inputBindings>
+        </pd:activity>
+        <pd:activity name="Null">
+            <pd:type>com.tibco.plugin.timer.NullActivity</pd:type>
+            <pd:resourceType>ae.activities.null</pd:resourceType>
+            <pd:x>571</pd:x>
+            <pd:y>472</pd:y>
+            <config/>
+            <pd:inputBindings/>
+        </pd:activity>
+        <pd:activity name="PayloadEncrypt">
+            <pd:type>com.tibco.pe.core.CallProcessActivity</pd:type>
+            <pd:resourceType>ae.process.subprocess</pd:resourceType>
+            <pd:x>356</pd:x>
+            <pd:y>299</pd:y>
+            <config>
+                <processName>/Encryption/DataEncryption.process</processName>
+            </config>
+            <pd:inputBindings>
+                <root>
+                    <Data>
+                        <xsl:value-of select="$Start/pfx:Logger/pfx:Payload"/>
+                    </Data>
+                </root>
+            </pd:inputBindings>
+        </pd:activity>
+    </pd:group>
+    <pd:activity name="Catch JDBC Time out">
+        <pd:type>com.tibco.pe.core.CatchActivity</pd:type>
+        <pd:resourceType>ae.activities.catch</pd:resourceType>
+        <pd:x>1162</pd:x>
+        <pd:y>515</pd:y>
+        <pd:handler>true</pd:handler>
+        <config>
+            <fault>localname=JDBCTimedOutException namespace=http://schemas.tibco.com/bw/plugins/jdbc/5.0/jdbcExceptions</fault>
+        </config>
+        <pd:inputBindings/>
+    </pd:activity>
+    <pd:activity name="CatchSQLError">
+        <pd:type>com.tibco.pe.core.CatchActivity</pd:type>
+        <pd:resourceType>ae.activities.catch</pd:resourceType>
+        <pd:x>1031</pd:x>
+        <pd:y>638</pd:y>
+        <pd:handler>true</pd:handler>
+        <config>
+            <fault>localname=JDBCSQLException namespace=http://schemas.tibco.com/bw/plugins/jdbc/5.0/jdbcExceptions</fault>
+        </config>
+        <pd:inputBindings/>
+    </pd:activity>
+    <pd:activity name="Log">
+        <pd:type>com.tibco.pe.core.WriteToLogActivity</pd:type>
+        <pd:resourceType>ae.activities.log</pd:resourceType>
+        <pd:x>1035</pd:x>
+        <pd:y>391</pd:y>
+        <config>
+            <role>User</role>
+        </config>
+        <pd:inputBindings>
+            <ns5:ActivityInput>
+                <message>
+                    <xsl:value-of select="concat('RECOVERY ENTRY CREATED FOR ', $Start/pfx:Logger/pfx:ServiceID,'(PAYLOAD SIZE IS: ', string(string-length($Start/pfx:Logger/pfx:Payload)),'  - LOGUID is:',$Start/pfx:Logger/pfx:LogGUID,') -', $_error/ns3:ErrorReport/Msg)"/>
+                </message>
+                <xsl:if test="$_error/ns3:ErrorReport/MsgCode">
+                    <msgCode>
+                        <xsl:value-of select="$_error/ns3:ErrorReport/MsgCode"/>
+                    </msgCode>
+                </xsl:if>
+            </ns5:ActivityInput>
+        </pd:inputBindings>
+    </pd:activity>
+    <pd:activity name="Catch">
+        <pd:type>com.tibco.pe.core.CatchActivity</pd:type>
+        <pd:resourceType>ae.activities.catch</pd:resourceType>
+        <pd:x>909</pd:x>
+        <pd:y>512</pd:y>
+        <pd:handler>true</pd:handler>
+        <config>
+            <catchAll>true</catchAll>
+        </config>
+        <pd:inputBindings/>
+    </pd:activity>
+    <pd:activity name="BSFLoggerToFile">
+        <pd:type>com.tibco.pe.core.CallProcessActivity</pd:type>
+        <pd:resourceType>ae.process.subprocess</pd:resourceType>
+        <pd:x>1034</pd:x>
+        <pd:y>509</pd:y>
+        <config>
+            <processName>/BusinessProcesses/SubProcesses/Logger/BSFLoggerToFile.process</processName>
+        </config>
+        <pd:inputBindings>
+            <xsl:for-each select="$Start/pfx:Logger">
+                <pfx:Logger>
+                    <pfx:ServiceID>
+                        <xsl:value-of select="'ErrorLog'"/>
+                    </pfx:ServiceID>
+                    <pfx:LogLevel>
+                        <xsl:value-of select="pfx:LogLevel"/>
+                    </pfx:LogLevel>
+                    <pfx:LogType>
+                        <xsl:value-of select="pfx:LogType"/>
+                    </pfx:LogType>
+                    <pfx:LogCode>
+                        <xsl:value-of select="pfx:LogCode"/>
+                    </pfx:LogCode>
+                    <pfx:LogMessage>
+                        <xsl:value-of select="concat(pfx:LogMessage,'|',$_error)"/>
+                    </pfx:LogMessage>
+                    <pfx:LogGUID>
+                        <xsl:value-of select="pfx:LogGUID"/>
+                    </pfx:LogGUID>
+                    <xsl:if test="pfx:OrgCode">
+                        <pfx:OrgCode>
+                            <xsl:value-of select="pfx:OrgCode"/>
+                        </pfx:OrgCode>
+                    </xsl:if>
+                    <pfx:ProcessName>
+                        <xsl:value-of select="pfx:ProcessName"/>
+                    </pfx:ProcessName>
+                    <xsl:if test="pfx:SIID">
+                        <pfx:SIID>
+                            <xsl:value-of select="pfx:SIID"/>
+                        </pfx:SIID>
+                    </xsl:if>
+                    <xsl:if test="pfx:CountryCode">
+                        <pfx:CountryCode>
+                            <xsl:value-of select="pfx:CountryCode"/>
+                        </pfx:CountryCode>
+                    </xsl:if>
+                    <xsl:if test="pfx:OperationName">
+                        <pfx:OperationName>
+                            <xsl:value-of select="pfx:OperationName"/>
+                        </pfx:OperationName>
+                    </xsl:if>
+                    <xsl:if test="pfx:ServiceRequestor">
+                        <pfx:ServiceRequestor>
+                            <xsl:value-of select="pfx:ServiceRequestor"/>
+                        </pfx:ServiceRequestor>
+                    </xsl:if>
+                    <xsl:if test="pfx:ServiceProvider">
+                        <pfx:ServiceProvider>
+                            <xsl:value-of select="pfx:ServiceProvider"/>
+                        </pfx:ServiceProvider>
+                    </xsl:if>
+                    <pfx:MachineName>
+                        <xsl:value-of select="pfx:MachineName"/>
+                    </pfx:MachineName>
+                    <xsl:if test="pfx:EngineName">
+                        <pfx:EngineName>
+                            <xsl:value-of select="pfx:EngineName"/>
+                        </pfx:EngineName>
+                    </xsl:if>
+                    <xsl:if test="pfx:Payload">
+                        <pfx:Payload>
+                            <xsl:value-of select="pfx:Payload"/>
+                        </pfx:Payload>
+                    </xsl:if>
+                    <xsl:if test="pfx:PreStep">
+                        <pfx:PreStep>
+                            <xsl:value-of select="pfx:PreStep"/>
+                        </pfx:PreStep>
+                    </xsl:if>
+                    <xsl:if test="pfx:PostStep">
+                        <pfx:PostStep>
+                            <xsl:value-of select="pfx:PostStep"/>
+                        </pfx:PostStep>
+                    </xsl:if>
+                    <pfx:LogTimestamp>
+                        <xsl:value-of select="pfx:LogTimestamp"/>
+                    </pfx:LogTimestamp>
+                    <xsl:for-each select="pfx:Message">
+                        <pfx:Message>
+                            <pfx:Name>
+                                <xsl:value-of select="pfx:Name"/>
+                            </pfx:Name>
+                            <pfx:Value>
+                                <xsl:value-of select="pfx:Value"/>
+                            </pfx:Value>
+                        </pfx:Message>
+                    </xsl:for-each>
+                </pfx:Logger>
+            </xsl:for-each>
+        </pd:inputBindings>
+    </pd:activity>
+    <pd:transition>
+        <pd:from>Start</pd:from>
+        <pd:to>Group</pd:to>
+        <pd:lineType>Default</pd:lineType>
+        <pd:lineColor>-16777216</pd:lineColor>
+        <pd:conditionType>always</pd:conditionType>
+    </pd:transition>
+    <pd:transition>
+        <pd:from>Group</pd:from>
+        <pd:to>End</pd:to>
+        <pd:lineType>Default</pd:lineType>
+        <pd:lineColor>-16777216</pd:lineColor>
+        <pd:conditionType>always</pd:conditionType>
+    </pd:transition>
+    <pd:transition>
+        <pd:from>Catch JDBC Time out</pd:from>
+        <pd:to>BSFLoggerToFile</pd:to>
+        <pd:lineType>Default</pd:lineType>
+        <pd:lineColor>-16777216</pd:lineColor>
+        <pd:conditionType>always</pd:conditionType>
+    </pd:transition>
+    <pd:transition>
+        <pd:from>Catch</pd:from>
+        <pd:to>BSFLoggerToFile</pd:to>
+        <pd:lineType>Default</pd:lineType>
+        <pd:lineColor>-16777216</pd:lineColor>
+        <pd:conditionType>always</pd:conditionType>
+    </pd:transition>
+    <pd:transition>
+        <pd:from>CatchSQLError</pd:from>
+        <pd:to>BSFLoggerToFile</pd:to>
+        <pd:lineType>Default</pd:lineType>
+        <pd:lineColor>-16777216</pd:lineColor>
+        <pd:conditionType>always</pd:conditionType>
+    </pd:transition>
+    <pd:transition>
+        <pd:from>BSFLoggerToFile</pd:from>
+        <pd:to>Log</pd:to>
+        <pd:lineType>Default</pd:lineType>
+        <pd:lineColor>-16777216</pd:lineColor>
+        <pd:conditionType>always</pd:conditionType>
+    </pd:transition>
+    <pd:transition>
+        <pd:from>Log</pd:from>
+        <pd:to>End</pd:to>
+        <pd:lineType>Default</pd:lineType>
+        <pd:lineColor>-16777216</pd:lineColor>
+        <pd:conditionType>always</pd:conditionType>
+    </pd:transition>
+    <pd:label>
+        <pd:name>Label</pd:name>
+        <pd:description>BSFLOGGER_DB_Update_SubProcess updates the data in the BSFLOGGER Database for the Log Request.
+</pd:description>
+        <pd:x>417</pd:x>
+        <pd:y>72</pd:y>
+        <pd:width>405</pd:width>
+        <pd:height>98</pd:height>
+        <pd:fontColor>-13434829</pd:fontColor>
+        <pd:color>-13261</pd:color>
+        <pd:type>solid</pd:type>
+        <pd:thickness>0</pd:thickness>
+        <pd:fade>true</pd:fade>
+    </pd:label>
+</pd:ProcessDefinition>

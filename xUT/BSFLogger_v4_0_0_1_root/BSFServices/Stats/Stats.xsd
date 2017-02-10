@@ -1,0 +1,48 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<xs:schema xmlns:xs="http://www.w3.org/2001/XMLSchema"
+	 xmlns="http://www.tibco.com/schemas/DBBusinessServices/BusinessServices/Logger/Stats.xsd"
+	 targetNamespace="http://www.tibco.com/schemas/DBBusinessServices/BusinessServices/Logger/Stats.xsd"
+	 elementFormDefault="qualified"
+	 attributeFormDefault="unqualified">
+	<xs:element name="Stats">
+		<xs:complexType>
+			<xs:sequence>
+				<xs:element ref="SIID"/>
+				<xs:element ref="OrgCode" minOccurs="0"/>
+				<xs:element ref="CountryCode" minOccurs="0"/>
+				<xs:element ref="OperationName" minOccurs="0"/>
+				<xs:element ref="StatsTimestamp" minOccurs="0"/>
+				<xs:element ref="StatsTimeszone" minOccurs="0"/>
+				<xs:element ref="ServiceID" minOccurs="0"/>
+				<xs:element ref="StatusCode" minOccurs="0"/>
+				<xs:element ref="LogGUID" minOccurs="0"/>
+				<xs:element ref="RQClientID" minOccurs="0"/>
+				<xs:element ref="TotalTXNTime" minOccurs="0"/>
+				<xs:element ref="SvcLayerTime" minOccurs="0"/>
+				<xs:element ref="EngineTime" minOccurs="0"/>
+				<xs:element ref="ProxyLatency" minOccurs="0"/>
+				<xs:element ref="SvcLayerLatency" minOccurs="0"/>
+				<xs:element ref="EngineID" minOccurs="0"/>
+				<xs:element ref="Hostname" minOccurs="0"/>
+			</xs:sequence>
+		</xs:complexType>
+	</xs:element>
+	<xs:element name="SIID" type="xs:string"/>
+	<xs:element name="OperationName" type="xs:string"/>
+	<xs:element name="StatsTimestamp" type="xs:string"/>
+	<xs:element name="StatsTimeszone" type="xs:string"/>
+	<xs:element name="ServiceID" type="xs:string"/>
+	<xs:element name="StatusCode" type="xs:string"/>
+	<xs:element name="LogGUID" type="xs:string"/>
+	<xs:element name="RQClientID" type="xs:string"/>
+	<xs:element name="TotalTXNTime" type="xs:double"/>
+	<xs:element name="SvcLayerTime" type="xs:double"/>
+	<xs:element name="EngineTime" type="xs:double"/>
+	<xs:element name="ProxyLatency" type="xs:double"/>
+	<xs:element name="SvcLayerLatency" type="xs:double"/>
+	<xs:element name="EngineID" type="xs:string"/>
+	<xs:element name="Hostname" type="xs:string"/>
+	<xs:element name="CountryCode" type="xs:string"/>
+	<xs:element name="OrgCode" type="xs:string"/>
+</xs:schema>

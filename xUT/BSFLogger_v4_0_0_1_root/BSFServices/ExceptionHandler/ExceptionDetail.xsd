@@ -1,0 +1,44 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<xsd:schema xmlns:xsd="http://www.w3.org/2001/XMLSchema"
+	 xmlns="http://www.tibco.com/schemas/DBBusinessServices/BusinessServices/UEH/Exception.xsd"
+	 targetNamespace="http://www.tibco.com/schemas/DBBusinessServices/BusinessServices/UEH/Exception.xsd"
+	 elementFormDefault="unqualified"
+	 attributeFormDefault="unqualified">
+	<xsd:element name="Exception">
+		<xsd:complexType>
+			<xsd:sequence>
+				<xsd:element name="ApplicationID" type="xsd:string"/>
+				<xsd:element name="ComponentName" type="xsd:string" minOccurs="0"/>
+				<xsd:element name="Hostname" type="xsd:string" minOccurs="0"/>
+				<xsd:element name="Timestamp" type="xsd:dateTime"/>
+				<xsd:element name="TransactionDomain" type="xsd:string" minOccurs="0"/>
+				<xsd:element name="TransactionType" type="xsd:string" minOccurs="0"/>
+				<xsd:element name="TransactionID" type="xsd:string" minOccurs="0"/>
+				<xsd:element name="CorrelationID" type="xsd:string" minOccurs="0"/>
+				<xsd:element ref="SIID" minOccurs="0"/>
+				<xsd:element ref="OrgCode" minOccurs="0"/>
+				<xsd:element ref="CountryCode" minOccurs="0"/>
+				<xsd:element ref="EngineName" minOccurs="0"/>
+				<xsd:element ref="OperationName" minOccurs="0"/>
+				<xsd:element name="InterfaceID" type="xsd:string" minOccurs="0"/>
+				<xsd:element name="Filename" type="xsd:string" minOccurs="0"/>
+				<xsd:element name="Message" type="xsd:string" minOccurs="0"/>
+				<xsd:element name="DataEncoding" type="xsd:string" minOccurs="0"/>
+				<xsd:element name="ExceptionID" type="xsd:string" minOccurs="0"/>
+				<xsd:element name="ExceptionCode" type="xsd:string" minOccurs="0"/>
+				<xsd:element name="ExceptionCategory" type="xsd:string" minOccurs="0"/>
+				<xsd:element name="ExceptionType" type="xsd:string" minOccurs="0"/>
+				<xsd:element name="ExceptionSeverity" type="xsd:string" minOccurs="0"/>
+				<xsd:element name="EmailTo" type="xsd:string" minOccurs="0"/>
+				<xsd:element name="EmailCC" type="xsd:string" minOccurs="0"/>
+				<xsd:element name="StackTrace" type="xsd:string" minOccurs="0"/>
+			</xsd:sequence>
+		</xsd:complexType>
+	</xsd:element>
+	<xsd:element name="OrgCode" type="xsd:string"/>
+	<xsd:element name="EngineName" type="xsd:string"/>
+	<xsd:element name="OperationName" type="xsd:string"/>
+	<xsd:element name="SIID" type="xsd:string"/>
+	<xsd:element name="CountryCode" type="xsd:string"/>
+</xsd:schema>

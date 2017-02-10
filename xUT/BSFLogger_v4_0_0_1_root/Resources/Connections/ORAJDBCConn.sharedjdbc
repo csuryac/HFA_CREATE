@@ -1,0 +1,15 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<BWSharedResource>
+    <name>ORAJDBCConn</name>
+    <resourceType>ae.shared.JDBCSharedResource</resourceType>
+    <config>
+        <driver>oracle.jdbc.driver.OracleDriver (thin)</driver>
+        <maxConnections>%%Connections/BSFLoggerJDBC/MaxConnectionCounts%%</maxConnections>
+        <loginTimeout>60</loginTimeout>
+        <connectionType>JDBC</connectionType>
+        <UseSharedJndiConfig>false</UseSharedJndiConfig>
+        <location>%%Connections/BSFLoggerJDBC/ORAURL%%</location>
+        <password>%%Connections/BSFLoggerJDBC/BSFLoggerDB_PASSWD%%</password>
+        <user>%%Connections/BSFLoggerJDBC/BSFLoggerDB_User%%</user>
+    </config>
+</BWSharedResource>

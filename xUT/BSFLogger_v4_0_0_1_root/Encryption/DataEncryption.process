@@ -1,0 +1,241 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<pd:ProcessDefinition xmlns:xsl="http://www.w3.org/1999/XSL/Transform" xmlns:pfx="http://www.tibco.com/pe/DeployedVarsType" xmlns:pd="http://xmlns.tibco.com/bw/process/2003" xmlns:ns="www.tibco.com/plugin/java/JavaMethodActivityInput" xmlns:xsd="http://www.w3.org/2001/XMLSchema" xmlns:ns2="http://www.tibco.com/pe/GenerateErrorActivity/InputSchema" xmlns:tib="http://www.tibco.com/bw/xslt/custom-functions" xmlns:ns1="www.tibco.com/plugin/java/JavaMethodActivityOutput">
+    <pd:name>Encryption/DataEncryption.process</pd:name>
+    <pd:startName>Start</pd:startName>
+    <pd:startType>
+        <xsd:element name="root">
+            <xsd:complexType>
+                <xsd:sequence>
+                    <xsd:element name="Data" type="xsd:string"/>
+                </xsd:sequence>
+            </xsd:complexType>
+        </xsd:element>
+    </pd:startType>
+    <pd:startX>109</pd:startX>
+    <pd:startY>40</pd:startY>
+    <pd:returnBindings>
+        <root>
+            <EncryptedData>
+                <xsl:value-of select="$Java-Method/ns1:JavaMethodActivityOutput/MethodReturnValue"/>
+            </EncryptedData>
+        </root>
+    </pd:returnBindings>
+    <pd:endName>End</pd:endName>
+    <pd:endType>
+        <xsd:element name="root">
+            <xsd:complexType>
+                <xsd:sequence>
+                    <xsd:element name="EncryptedData" type="xsd:string" minOccurs="0"/>
+                </xsd:sequence>
+            </xsd:complexType>
+        </xsd:element>
+    </pd:endType>
+    <pd:endX>673</pd:endX>
+    <pd:endY>58</pd:endY>
+    <pd:errorSchemas/>
+    <pd:processVariables/>
+    <pd:targetNamespace>http://xmlns.example.com/1378360782296</pd:targetNamespace>
+    <pd:activity name="DataMask">
+        <pd:type>com.tibco.pe.core.CallProcessActivity</pd:type>
+        <pd:resourceType>ae.process.subprocess</pd:resourceType>
+        <pd:x>248</pd:x>
+        <pd:y>162</pd:y>
+        <config>
+            <processName>/Encryption/ElementDataMasking.process</processName>
+        </config>
+        <pd:inputBindings>
+            <root>
+                <Data>
+                    <xsl:value-of select="$Start/root/Data"/>
+                </Data>
+            </root>
+        </pd:inputBindings>
+    </pd:activity>
+    <pd:activity name="Java Method">
+        <pd:type>com.tibco.plugin.java.JavaMethodActivity</pd:type>
+        <pd:resourceType>ae.activities.JavaMethodActivity</pd:resourceType>
+        <pd:x>382</pd:x>
+        <pd:y>117</pd:y>
+        <config>
+            <ConstructDeclaredClass>false</ConstructDeclaredClass>
+            <CacheConstructedClass>false</CacheConstructedClass>
+            <InvokeCleanupMethod>false</InvokeCleanupMethod>
+            <JavaGlobalInstance>/Resources/CustomFunctions/Java Global Instance.serviceagent</JavaGlobalInstance>
+            <MethodInfo>
+                <className>com.tibco.psg.tibmeters.TripleDES</className>
+                <methodName>encrypt</methodName>
+                <methodReturn>java.lang.String</methodReturn>
+                <methodParameter>java.lang.String</methodParameter>
+            </MethodInfo>
+        </config>
+        <pd:inputBindings>
+            <ns:JavaMethodActivityInput>
+                <MethodParameters>
+                    <Parameter1>
+                        <xsl:value-of select="if($DataMask/root/MaskedData!='')&#xA;then&#xA;$DataMask/root/MaskedData&#xA;else&#xA;$Start/root/Data"/>
+                    </Parameter1>
+                </MethodParameters>
+            </ns:JavaMethodActivityInput>
+        </pd:inputBindings>
+    </pd:activity>
+    <pd:activity name="Catch">
+        <pd:type>com.tibco.pe.core.CatchActivity</pd:type>
+        <pd:resourceType>ae.activities.catch</pd:resourceType>
+        <pd:x>403</pd:x>
+        <pd:y>227</pd:y>
+        <pd:handler>true</pd:handler>
+        <config>
+            <catchAll>true</catchAll>
+        </config>
+        <pd:inputBindings/>
+    </pd:activity>
+    <pd:activity name="Generate Error">
+        <pd:type>com.tibco.pe.core.GenerateErrorActivity</pd:type>
+        <pd:resourceType>ae.activities.throw</pd:resourceType>
+        <pd:x>540</pd:x>
+        <pd:y>231</pd:y>
+        <config>
+            <faultName/>
+        </config>
+        <pd:inputBindings>
+            <ns2:ActivityInput>
+                <message>
+                    <xsl:value-of select="'ERROR ENCODING'"/>
+                </message>
+            </ns2:ActivityInput>
+        </pd:inputBindings>
+    </pd:activity>
+    <pd:activity name="Java Code">
+        <pd:type>com.tibco.plugin.java.JavaActivity</pd:type>
+        <pd:resourceType>ae.javapalette.javaActivity</pd:resourceType>
+        <pd:x>538</pd:x>
+        <pd:y>52</pd:y>
+        <config>
+            <fileName>DataEncryptionJavaCode</fileName>
+            <packageName>Encryption.DataEncryption</packageName>
+            <fullsource>package Encryption.DataEncryption;
+import java.io.*;
+import java.util.zip.DeflaterOutputStream;
+public class DataEncryptionJavaCode{
+/****** START SET/GET METHOD, DO NOT MODIFY *****/
+	protected String in_var_1 = "";
+	protected String out_var_1 = "";
+	public String getin_var_1() {
+		return in_var_1;
+	}
+	public void setin_var_1(String val) {
+		in_var_1 = val;
+	}
+	public String getout_var_1() {
+		return out_var_1;
+	}
+	public void setout_var_1(String val) {
+		out_var_1 = val;
+	}
+/****** END SET/GET METHOD, DO NOT MODIFY *****/
+	public DataEncryptionJavaCode() {
+	}
+	public void invoke() throws Exception {
+/* Available Variables: DO NOT MODIFY
+	In  : String in_var_1
+	Out : String out_var_1
+* Available Variables: DO NOT MODIFY *****/
+
+	
+	
+	    ByteArrayOutputStream out_var_1 = new ByteArrayOutputStream();
+	    try {
+	        OutputStream out = new DeflaterOutputStream(out_var_1);
+	        out.write(in_var_1.getBytes("UTF-8"));
+	        out.close();
+	    } catch (IOException e) {
+	        //ooops
+	    }
+	   //return out_var_1.toString();
+	
+}
+}
+</fullsource>
+            <inputData>
+                <row>
+                    <fieldName>in_var_1</fieldName>
+                    <fieldType>string</fieldType>
+                    <fieldRequired>optional</fieldRequired>
+                </row>
+            </inputData>
+            <outputData>
+                <row>
+                    <fieldName>out_var_1</fieldName>
+                    <fieldType>string</fieldType>
+                    <fieldRequired>optional</fieldRequired>
+                </row>
+            </outputData>
+            <byteCode>
+                <class>
+                    <name>DataEncryptionJavaCode</name>
+                    <byteCode>yv66vgAAADQAPwkADgAmCQAOACcKAA8AKAgAKQcAKgoABQAoBwArCgAHACwIAC0KAC4ALwoAMAAxCgAwADIHADMHADQHADUBAAhpbl92YXJfMQEAEkxqYXZhL2xhbmcvU3RyaW5nOwEACW91dF92YXJfMQEAC2dldGluX3Zhcl8xAQAUKClMamF2YS9sYW5nL1N0cmluZzsBAARDb2RlAQAPTGluZU51bWJlclRhYmxlAQALc2V0aW5fdmFyXzEBABUoTGphdmEvbGFuZy9TdHJpbmc7KVYBAAxnZXRvdXRfdmFyXzEBAAxzZXRvdXRfdmFyXzEBAAY8aW5pdD4BAAMoKVYBAAZpbnZva2UBAA1TdGFja01hcFRhYmxlBwA0BwAqBwAzAQAKRXhjZXB0aW9ucwcANgEAClNvdXJjZUZpbGUBABtEYXRhRW5jcnlwdGlvbkphdmFDb2RlLmphdmEMABAAEQwAEgARDAAbABwBAAABAB1qYXZhL2lvL0J5dGVBcnJheU91dHB1dFN0cmVhbQEAImphdmEvdXRpbC96aXAvRGVmbGF0ZXJPdXRwdXRTdHJlYW0MABsANwEABVVURi04BwA4DAA5ADoHADsMADwAPQwAPgAcAQATamF2YS9pby9JT0V4Y2VwdGlvbgEAMEVuY3J5cHRpb24vRGF0YUVuY3J5cHRpb24vRGF0YUVuY3J5cHRpb25KYXZhQ29kZQEAEGphdmEvbGFuZy9PYmplY3QBABNqYXZhL2xhbmcvRXhjZXB0aW9uAQAZKExqYXZhL2lvL091dHB1dFN0cmVhbTspVgEAEGphdmEvbGFuZy9TdHJpbmcBAAhnZXRCeXRlcwEAFihMamF2YS9sYW5nL1N0cmluZzspW0IBABRqYXZhL2lvL091dHB1dFN0cmVhbQEABXdyaXRlAQAFKFtCKVYBAAVjbG9zZQAhAA4ADwAAAAIABAAQABEAAAAEABIAEQAAAAYAAQATABQAAQAVAAAAHQABAAEAAAAFKrQAAbAAAAABABYAAAAGAAEAAAAJAAEAFwAYAAEAFQAAACIAAgACAAAABiortQABsQAAAAEAFgAAAAoAAgAAAAwABQANAAEAGQAUAAEAFQAAAB0AAQABAAAABSq0AAKwAAAAAQAWAAAABgABAAAADwABABoAGAABABUAAAAiAAIAAgAAAAYqK7UAArEAAAABABYAAAAKAAIAAAASAAUAEwABABsAHAABABUAAAA1AAIAAQAAABEqtwADKhIEtQABKhIEtQACsQAAAAEAFgAAABIABAAAABUABAAGAAoABwAQABYAAQAdABwAAgAVAAAAeAADAAMAAAAnuwAFWbcABky7AAdZK7cACE0sKrQAARIJtgAKtgALLLYADKcABE2xAAEACAAiACUADQACABYAAAAeAAcAAAAfAAgAIQARACIAHgAjACIAJgAlACQAJgApAB4AAAATAAL/ACUAAgcAHwcAIAABBwAhAAAiAAAABAABACMAAQAkAAAAAgAl</byteCode>
+                </class>
+            </byteCode>
+        </config>
+        <pd:inputBindings>
+            <javaCodeActivityInput>
+                <in_var_1>
+                    <xsl:value-of select="$Start/root/Data"/>
+                </in_var_1>
+            </javaCodeActivityInput>
+        </pd:inputBindings>
+    </pd:activity>
+    <pd:transition>
+        <pd:from>Start</pd:from>
+        <pd:to>Java Method</pd:to>
+        <pd:xpathDescription>NoMasking</pd:xpathDescription>
+        <pd:lineType>Default</pd:lineType>
+        <pd:lineColor>-16777216</pd:lineColor>
+        <pd:conditionType>xpath</pd:conditionType>
+        <pd:xpath>1&gt;2</pd:xpath>
+    </pd:transition>
+    <pd:transition>
+        <pd:from>Java Method</pd:from>
+        <pd:to>Java Code</pd:to>
+        <pd:lineType>Default</pd:lineType>
+        <pd:lineColor>-16777216</pd:lineColor>
+        <pd:conditionType>always</pd:conditionType>
+    </pd:transition>
+    <pd:transition>
+        <pd:from>Start</pd:from>
+        <pd:to>DataMask</pd:to>
+        <pd:xpathDescription>MaskingRequired</pd:xpathDescription>
+        <pd:lineType>Default</pd:lineType>
+        <pd:lineColor>-16777216</pd:lineColor>
+        <pd:conditionType>xpath</pd:conditionType>
+        <pd:xpath>$_globalVariables/pfx:GlobalVariables/DataEncryption/MIG_DataEncryption='true'</pd:xpath>
+    </pd:transition>
+    <pd:transition>
+        <pd:from>DataMask</pd:from>
+        <pd:to>Java Method</pd:to>
+        <pd:lineType>Default</pd:lineType>
+        <pd:lineColor>-16777216</pd:lineColor>
+        <pd:conditionType>always</pd:conditionType>
+    </pd:transition>
+    <pd:transition>
+        <pd:from>Catch</pd:from>
+        <pd:to>Generate Error</pd:to>
+        <pd:lineType>Default</pd:lineType>
+        <pd:lineColor>-16777216</pd:lineColor>
+        <pd:conditionType>always</pd:conditionType>
+    </pd:transition>
+    <pd:transition>
+        <pd:from>Java Code</pd:from>
+        <pd:to>End</pd:to>
+        <pd:lineType>Default</pd:lineType>
+        <pd:lineColor>-16777216</pd:lineColor>
+        <pd:conditionType>always</pd:conditionType>
+    </pd:transition>
+    <pd:transition>
+        <pd:from>Start</pd:from>
+        <pd:to>Java Code</pd:to>
+        <pd:lineType>Default</pd:lineType>
+        <pd:lineColor>-16777216</pd:lineColor>
+        <pd:conditionType>always</pd:conditionType>
+    </pd:transition>
+</pd:ProcessDefinition>

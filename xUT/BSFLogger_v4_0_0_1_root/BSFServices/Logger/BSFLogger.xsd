@@ -1,0 +1,74 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<xs:schema xmlns:xs="http://www.w3.org/2001/XMLSchema"
+	 xmlns="http://www.tibco.com/schemas/DBBusinessServices/BusinessServices/Logger/Schema.xsd"
+	 targetNamespace="http://www.tibco.com/schemas/DBBusinessServices/BusinessServices/Logger/Schema.xsd"
+	 elementFormDefault="qualified"
+	 attributeFormDefault="unqualified">
+	<xs:element name="Logger">
+		<xs:complexType>
+			<xs:sequence>
+				<xs:element ref="ServiceID"/>
+				<xs:element ref="LogLevel"/>
+				<xs:element ref="LogType"/>
+				<xs:element ref="LogCode"/>
+				<xs:element ref="LogMessage"/>
+				<xs:element ref="LogGUID"/>
+				<xs:element ref="OrgCode" minOccurs="0"/>
+				<xs:element ref="ProcessName"/>
+				<xs:element ref="SIID" minOccurs="0"/>
+				<xs:element ref="CountryCode" minOccurs="0"/>
+				<xs:element ref="OperationName" minOccurs="0"/>
+				<xs:element ref="ServiceRequestor" minOccurs="0"/>
+				<xs:element ref="ServiceProvider" minOccurs="0"/>
+				<xs:element ref="MachineName"/>
+				<xs:element ref="EngineName" minOccurs="0"/>
+				<xs:element ref="Payload" minOccurs="0"/>
+				<xs:element ref="PreStep" minOccurs="0"/>
+				<xs:element ref="PostStep" minOccurs="0"/>
+				<xs:element name="LogTimestamp" type="xs:string"/>
+				<xs:element ref="Message" minOccurs="0" maxOccurs="unbounded"/>
+			</xs:sequence>
+		</xs:complexType>
+	</xs:element>
+	<xs:element name="LogType">
+		<xs:simpleType>
+			<xs:restriction base="xs:string">
+				<xs:enumeration value="ALERT"/>
+				<xs:enumeration value="ERROR"/>
+				<xs:enumeration value="INFO"/>
+				<xs:enumeration value="WARNING"/>
+				<xs:enumeration value="DEBUG"/>
+				<xs:enumeration value="AUDIT"/>
+				<xs:enumeration value="TSHIELD"/>
+			</xs:restriction>
+		</xs:simpleType>
+	</xs:element>
+	<xs:element name="LogCode" type="xs:string"/>
+	<xs:element name="LogMessage" type="xs:string"/>
+	<xs:element name="LogGUID" type="xs:string"/>
+	<xs:element name="ProcessName" type="xs:string"/>
+	<xs:element name="Payload" type="xs:string"/>
+	<xs:element name="PreStep" type="xs:string"/>
+	<xs:element name="PostStep" type="xs:string"/>
+	<xs:element name="ServiceID" type="xs:string"/>
+	<xs:element name="SIID" type="xs:string"/>
+	<xs:element name="LogLevel" type="xs:int"/>
+	<xs:element name="Message">
+		<xs:complexType>
+			<xs:sequence>
+				<xs:element ref="Name"/>
+				<xs:element ref="Value"/>
+			</xs:sequence>
+		</xs:complexType>
+	</xs:element>
+	<xs:element name="Name" type="xs:string"/>
+	<xs:element name="Value" type="xs:string"/>
+	<xs:element name="MachineName" type="xs:string"/>
+	<xs:element name="OperationName" type="xs:string"/>
+	<xs:element name="ServiceRequestor" type="xs:string"/>
+	<xs:element name="ServiceProvider" type="xs:string"/>
+	<xs:element name="OrgCode" type="xs:string"/>
+	<xs:element name="EngineName" type="xs:string"/>
+	<xs:element name="CountryCode" type="xs:string"/>
+</xs:schema>

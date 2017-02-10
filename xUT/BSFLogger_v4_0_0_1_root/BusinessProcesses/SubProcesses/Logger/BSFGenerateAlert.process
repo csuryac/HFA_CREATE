@@ -1,0 +1,200 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<pd:ProcessDefinition xmlns:ns2="http://www.tibco.com/namespaces/tnt/plugins/file" xmlns:pd="http://xmlns.tibco.com/bw/process/2003" xmlns:BW="java://com.tibco.pe.core.JavaCustomXPATHFunctions" xmlns:ns1="http://www.tibco.com/namespaces/tnt/plugins/jms" xmlns:xsl="http://www.w3.org/1999/XSL/Transform" xmlns:ns4="http://www.tibco.com/pe/WriteToLogActivitySchema" xmlns:ns="http://www.tibco.com/pe/DeployedVarsType" xmlns:ns3="http://www.tibco.com/pe/EngineTypes" xmlns:icc2="java://com.dbs.icc2.util.Func2" xmlns:xsd="http://www.w3.org/2001/XMLSchema" xmlns:tib="http://www.tibco.com/bw/xslt/custom-functions" xmlns:pfx2="http://www.tibco.com/pe/GenerateErrorActivity/InputSchema" xmlns:ns5="http://www.tibco.com/schemas/DBBusinessServices/BusinessServices/UEH/Exception.xsd" xmlns:pfx="http://www.tibco.com/schemas/DBBusinessServices/BusinessServices/Logger/Schema.xsd" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance">
+    <xsd:import namespace="http://www.tibco.com/schemas/DBBusinessServices/BusinessServices/Logger/Schema.xsd"/>
+    <pd:name>BusinessProcesses/SubProcesses/Logger/BSFGenerateAlert.process</pd:name>
+    <pd:startName>Start</pd:startName>
+    <pd:startType ref="pfx:Logger"/>
+    <pd:startX>27</pd:startX>
+    <pd:startY>183</pd:startY>
+    <pd:returnBindings/>
+    <pd:endName>End</pd:endName>
+    <pd:endX>528</pd:endX>
+    <pd:endY>182</pd:endY>
+    <pd:errorSchemas/>
+    <pd:processVariables/>
+    <pd:targetNamespace>http://xmlns.example.com/1378966795706</pd:targetNamespace>
+    <pd:activity name="LogAlertActivity">
+        <pd:type>com.tibco.pe.core.WriteToLogActivity</pd:type>
+        <pd:resourceType>ae.activities.log</pd:resourceType>
+        <pd:x>188</pd:x>
+        <pd:y>182</pd:y>
+        <config>
+            <role>User</role>
+        </config>
+        <pd:inputBindings>
+            <xsl:choose>
+                <xsl:when test="$Start/pfx:Logger/pfx:LogType = 'ALERT'">
+                    <ns4:ActivityInput>
+                        <message>
+                            <xsl:value-of select="concat('ALERT LOGGED for SERVICEID: '&#xA;,$Start/pfx:Logger/pfx:ServiceID, ' LOGUID: ' ,$Start/pfx:Logger/pfx:LogGUID)"/>
+                        </message>
+                        <msgCode>
+                            <xsl:value-of select="'0999'"/>
+                        </msgCode>
+                    </ns4:ActivityInput>
+                </xsl:when>
+                <xsl:otherwise>
+                    <ns4:ActivityInput>
+                        <message>
+                            <xsl:value-of select="concat('ERROR LOGGED for SERVICEID: ',$Start/pfx:Logger/pfx:ServiceID, ' LOGUID: ' ,$Start/pfx:Logger/pfx:LogGUID)"/>
+                        </message>
+                    </ns4:ActivityInput>
+                </xsl:otherwise>
+            </xsl:choose>
+        </pd:inputBindings>
+    </pd:activity>
+    <pd:activity name="Generate Error">
+        <pd:type>com.tibco.pe.core.GenerateErrorActivity</pd:type>
+        <pd:resourceType>ae.activities.throw</pd:resourceType>
+        <pd:x>442</pd:x>
+        <pd:y>316</pd:y>
+        <config>
+            <faultName/>
+        </config>
+        <pd:inputBindings>
+            <pfx2:ActivityInput>
+                <message>
+                    <xsl:value-of select="'Error Generating Alerts'"/>
+                </message>
+                <messageCode>
+                    <xsl:value-of select="'0000'"/>
+                </messageCode>
+            </pfx2:ActivityInput>
+        </pd:inputBindings>
+    </pd:activity>
+    <pd:activity name="Catch">
+        <pd:type>com.tibco.pe.core.CatchActivity</pd:type>
+        <pd:resourceType>ae.activities.catch</pd:resourceType>
+        <pd:x>87</pd:x>
+        <pd:y>312</pd:y>
+        <pd:handler>true</pd:handler>
+        <config>
+            <catchAll>true</catchAll>
+        </config>
+        <pd:inputBindings/>
+    </pd:activity>
+    <pd:activity name="ErrorCreateAlert">
+        <pd:type>com.tibco.pe.core.WriteToLogActivity</pd:type>
+        <pd:resourceType>ae.activities.log</pd:resourceType>
+        <pd:x>277</pd:x>
+        <pd:y>314</pd:y>
+        <config>
+            <role>User</role>
+        </config>
+        <pd:inputBindings>
+            <ns4:ActivityInput>
+                <message>
+                    <xsl:value-of select="string($Catch/exceptiondata/*)"/>
+                </message>
+                <msgCode>
+                    <xsl:value-of select="'0000'"/>
+                </msgCode>
+            </ns4:ActivityInput>
+        </pd:inputBindings>
+    </pd:activity>
+    <pd:activity name="Call Process">
+        <pd:type>com.tibco.pe.core.CallProcessActivity</pd:type>
+        <pd:resourceType>ae.process.subprocess</pd:resourceType>
+        <pd:x>347</pd:x>
+        <pd:y>182</pd:y>
+        <config>
+            <processName>/BSFServices/ExceptionHandler/SendException.process</processName>
+        </config>
+        <pd:inputBindings>
+            <ns5:Exception>
+                <ApplicationID>
+                    <xsl:value-of select="$Start/pfx:Logger/pfx:ServiceRequestor"/>
+                </ApplicationID>
+                <ComponentName>
+                    <xsl:value-of select="$Start/pfx:Logger/pfx:ServiceID"/>
+                </ComponentName>
+                <Hostname>
+                    <xsl:value-of select="$Start/pfx:Logger/pfx:MachineName"/>
+                </Hostname>
+                <Timestamp>
+                    <xsl:value-of select="current-dateTime()"/>
+                </Timestamp>
+                <TransactionDomain>
+                    <xsl:value-of select="'SOI-1'"/>
+                </TransactionDomain>
+                <TransactionID>
+                    <xsl:value-of select="$Start/pfx:Logger/pfx:ProcessName"/>
+                </TransactionID>
+                <CorrelationID>
+                    <xsl:value-of select="$Start/pfx:Logger/pfx:LogGUID"/>
+                </CorrelationID>
+                <xsl:if test="$Start/pfx:Logger/pfx:OperationName">
+                    <InterfaceID>
+                        <xsl:value-of select="concat('BSFLogger', '|', $Start/pfx:Logger/pfx:OperationName)"/>
+                    </InterfaceID>
+                </xsl:if>
+                <Message>
+                    <xsl:value-of select="$Start/pfx:Logger/pfx:LogMessage"/>
+                </Message>
+                <ExceptionCode>
+                    <xsl:value-of select="$Start/pfx:Logger/pfx:LogCode"/>
+                </ExceptionCode>
+                <ExceptionCategory>
+                    <xsl:value-of select="'BusinessWorks'"/>
+                </ExceptionCategory>
+                <ExceptionType>
+                    <xsl:value-of select="$Start/pfx:Logger/pfx:LogType"/>
+                </ExceptionType>
+                <ExceptionSeverity>
+                    <xsl:value-of select="number($Start/pfx:Logger/pfx:LogLevel)"/>
+                </ExceptionSeverity>
+                <StackTrace>
+                    <xsl:value-of select="(substring-before(substring-after($Start/pfx:Logger/pfx:Payload, '&lt;com:StatusDesc>'), '&lt;/com:StatusDesc>'))"/>
+                </StackTrace>
+            </ns5:Exception>
+        </pd:inputBindings>
+    </pd:activity>
+    <pd:transition>
+        <pd:from>Catch</pd:from>
+        <pd:to>ErrorCreateAlert</pd:to>
+        <pd:lineType>Default</pd:lineType>
+        <pd:lineColor>-16777216</pd:lineColor>
+        <pd:conditionType>always</pd:conditionType>
+    </pd:transition>
+    <pd:transition>
+        <pd:from>ErrorCreateAlert</pd:from>
+        <pd:to>Generate Error</pd:to>
+        <pd:lineType>Default</pd:lineType>
+        <pd:lineColor>-16777216</pd:lineColor>
+        <pd:conditionType>always</pd:conditionType>
+    </pd:transition>
+    <pd:transition>
+        <pd:from>Start</pd:from>
+        <pd:to>LogAlertActivity</pd:to>
+        <pd:lineType>Default</pd:lineType>
+        <pd:lineColor>-16777216</pd:lineColor>
+        <pd:conditionType>always</pd:conditionType>
+    </pd:transition>
+    <pd:transition>
+        <pd:from>LogAlertActivity</pd:from>
+        <pd:to>Call Process</pd:to>
+        <pd:lineType>Default</pd:lineType>
+        <pd:lineColor>-16777216</pd:lineColor>
+        <pd:conditionType>always</pd:conditionType>
+    </pd:transition>
+    <pd:transition>
+        <pd:from>Call Process</pd:from>
+        <pd:to>End</pd:to>
+        <pd:lineType>Default</pd:lineType>
+        <pd:lineColor>-16777216</pd:lineColor>
+        <pd:conditionType>always</pd:conditionType>
+    </pd:transition>
+    <pd:label>
+        <pd:name>Label</pd:name>
+        <pd:description>BSFLOGGER_LOG en Entry in the log file. If the PublishFlag is set to TRUE then a rvmessage is sent to the BW Reporting engine of FPIP-U domain</pd:description>
+        <pd:x>161</pd:x>
+        <pd:y>50</pd:y>
+        <pd:width>323</pd:width>
+        <pd:height>101</pd:height>
+        <pd:fontColor>-13434829</pd:fontColor>
+        <pd:color>-13261</pd:color>
+        <pd:type>solid</pd:type>
+        <pd:thickness>0</pd:thickness>
+        <pd:fade>false</pd:fade>
+    </pd:label>
+</pd:ProcessDefinition>

@@ -1,0 +1,24 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<BWSharedResource>
+    <name>BSFDB LoggerJMSConnection</name>
+    <resourceType>ae.shared.JMSConnectionKey</resourceType>
+    <config>
+        <NamingEnvironment>
+            <UseJNDI>false</UseJNDI>
+            <ProviderURL>%%BusinessServices/BSFLogger/JMSUrl%%</ProviderURL>
+            <NamingURL>%%Connections/JMS/JNDIContextURL%%</NamingURL>
+            <NamingInitialContextFactory>%%Connections/JMS/JNDIContextFactory%%</NamingInitialContextFactory>
+            <TopicFactoryName/>
+            <QueueFactoryName>%%Connections/JMS/QueueConnectionFactory%%</QueueFactoryName>
+            <NamingPrincipal>%%Connections/JMS/JNDIUserName%%</NamingPrincipal>
+            <NamingCredential>%%Connections/JMS/JNDIPassword%%</NamingCredential>
+        </NamingEnvironment>
+        <ConnectionAttributes>
+            <username>%%Connections/JMS/UserName%%</username>
+            <password>%%Connections/JMS/Password%%</password>
+            <clientID/>
+            <autoGenClientID>true</autoGenClientID>
+        </ConnectionAttributes>
+        <UseXACF>false</UseXACF>
+    </config>
+</BWSharedResource>
